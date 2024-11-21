@@ -34,6 +34,7 @@ export const useInstances = () => {
           .from("1-chipsInstancias")
           .select("limiteEnviosDia")
           .eq("projeto", "ProjetHotGPT")
+          .eq("statusInstancia", "open")
       ]);
 
       if (onlineResult.error) throw onlineResult.error;
