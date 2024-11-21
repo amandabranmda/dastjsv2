@@ -56,11 +56,16 @@ export const useInstances = () => {
         totalClicks,
         totalSendingLimit
       };
-    }
+    },
+    // Adiciona refetchInterval para garantir atualizações frequentes
+    refetchInterval: 1000, // Atualiza a cada 1 segundo
+    // Habilita refetch em segundo plano
+    refetchIntervalInBackground: true,
+    // Mantém os dados anteriores enquanto recarrega
+    keepPreviousData: true,
   });
 
   useEffect(() => {
-    // Inscreve-se em todas as alterações da tabela
     const channel = supabase
       .channel('instances-changes')
       .on(
@@ -69,10 +74,9 @@ export const useInstances = () => {
           event: '*',
           schema: 'public',
           table: '1-chipsInstancias',
-          filter: `projeto=eq.ProjetHotGPT` // Adiciona filtro para o projeto específico
+          filter: `projeto=eq.ProjetHotGPT`
         },
         () => {
-          // Refetch os dados quando houver qualquer alteração
           refetch();
         }
       )
