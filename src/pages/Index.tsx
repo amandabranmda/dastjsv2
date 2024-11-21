@@ -57,7 +57,7 @@ const Index = () => {
           />
         </div>
 
-        {/* Metric Cards */}
+        {/* Metric Cards - First Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             title="Cliques"
@@ -75,6 +75,28 @@ const Index = () => {
             title="Limite de envios"
             value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
             change={calculateRemainingMessages()}
+            type="sales"
+          />
+        </div>
+
+        {/* Metric Cards - Second Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <MetricCard
+            title="Conversões"
+            value="324"
+            change="+12.5%"
+            type="preset"
+          />
+          <MetricCard
+            title="Taxa de Resposta"
+            value="67%"
+            change="+5.2%"
+            type="optin"
+          />
+          <MetricCard
+            title="ROI"
+            value="R$ 15.4k"
+            change="+23.1%"
             type="sales"
           />
         </div>
