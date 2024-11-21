@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface StatusCardProps {
   title: string;
@@ -75,12 +76,16 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[50px]">Selecionar</TableHead>
                   <TableHead>Número do Chip</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {chips?.map((chip) => (
                   <TableRow key={chip.numeroChip}>
+                    <TableCell>
+                      <Checkbox />
+                    </TableCell>
                     <TableCell 
                       onClick={() => handleCopyChip(chip.numeroChip)}
                       className="cursor-pointer hover:text-[#FFD700] active:text-[#DAA520] transition-colors"
