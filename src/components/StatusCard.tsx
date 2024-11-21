@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
 
 interface StatusCardProps {
   title: string;
@@ -12,6 +13,8 @@ interface StatusCardProps {
 }
 
 export function StatusCard({ title, value, type }: StatusCardProps) {
+  const { toast } = useToast();
+  
   const { data: chips } = useQuery({
     queryKey: ["disconnected-chips"],
     queryFn: async () => {
@@ -25,6 +28,22 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     },
     enabled: type === "closed"
   });
+
+  const handleCopyChip = async (chipNumber: string) => {
+    try {
+      await navigator.clipboard.writeText(chipNumber);
+      toast({
+        description: "Número do chip copiado com sucesso!",
+        duration: 2000,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Erro ao copiar número do chip",
+        duration: 2000,
+      });
+    }
+  };
 
   return (
     <Dialog>
@@ -62,7 +81,12 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
               <TableBody>
                 {chips?.map((chip) => (
                   <TableRow key={chip.numeroChip}>
-                    <TableCell>{chip.numeroChip}</TableCell>
+                    <TableCell 
+                      onClick={() => handleCopyChip(chip.numeroChip)}
+                      className="cursor-pointer hover:bg-accent/50 transition-colors"
+                    >
+                      {chip.numeroChip}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
