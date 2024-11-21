@@ -71,9 +71,9 @@ const Index = () => {
           />
           <MetricCard
             title="Limite de envios"
-            value="45"
+            value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
             change="R$ 12.5 ticket médio"
-            type="Limite"
+            type="sales"
           />
         </div>
 
