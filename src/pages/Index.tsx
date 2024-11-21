@@ -4,8 +4,11 @@ import { StatusCard } from "@/components/StatusCard";
 import { MetricCard } from "@/components/MetricCard";
 import { LeadChart } from "@/components/LeadChart";
 import { InstanceTable } from "@/components/InstanceTable";
+import { useInstances } from "@/hooks/useInstances";
 
 const Index = () => {
+  const { data: instancesData, isLoading } = useInstances();
+
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-[1400px] mx-auto space-y-8">
@@ -26,7 +29,11 @@ const Index = () => {
 
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatusCard title="Instâncias Online" value={239} type="online" />
+          <StatusCard 
+            title="Instâncias Online" 
+            value={isLoading ? "..." : instancesData?.onlineCount || 0} 
+            type="online" 
+          />
           <StatusCard title="Instâncias Close" value={17} type="closed" />
           <StatusCard title="Instâncias Enviando" value={183} type="sending" />
         </div>

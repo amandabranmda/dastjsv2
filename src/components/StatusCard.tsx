@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface StatusCardProps {
   title: string;
-  value: number;
+  value: number | string;
   type: "online" | "closed" | "sending";
 }
 
