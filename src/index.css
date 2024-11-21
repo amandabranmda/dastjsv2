@@ -45,7 +45,7 @@
   }
 
   .status-badge.online {
-    @apply bg-primary/20 text-primary;
+    @apply bg-[#10B981]/20 text-[#10B981];
   }
 
   .status-badge.closed {

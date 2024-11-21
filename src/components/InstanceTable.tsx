@@ -4,67 +4,29 @@ import { Copy, MessageSquare, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { useState } from "react";
 
 interface Instance {
   id: string;
   nomeInstancia: string;
   senderNumber: string;
   statusInstancia: string;
+  statusQR: string;
   enviosChipFull: number;
 }
 
 export function InstanceTable() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
-
   const { data, isLoading } = useQuery({
-    queryKey: ["instances", currentPage],
+    queryKey: ["instances"],
     queryFn: async () => {
-      const start = (currentPage - 1) * itemsPerPage;
-      const end = start + itemsPerPage - 1;
-
-      const { data, error, count } = await supabase
+      const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("nomeInstancia, senderNumber, statusInstancia, enviosChipFull", { count: "exact" })
-        .eq("statusInstancia", "open")
-        .range(start, end);
+        .select("nomeInstancia, senderNumber, statusInstancia, statusQR, enviosChipFull")
+        .eq("statusInstancia", "open");
 
       if (error) throw error;
-
-      return {
-        instances: data as Instance[],
-        totalCount: count || 0
-      };
+      return data as Instance[];
     }
   });
-
-  const totalPages = data ? Math.ceil(data.totalCount / itemsPerPage) : 0;
-
-  const renderPaginationItems = () => {
-    const items = [];
-    for (let i = 1; i <= totalPages; i++) {
-      items.push(
-        <PaginationItem key={i}>
-          <PaginationLink
-            onClick={() => setCurrentPage(i)}
-            isActive={currentPage === i}
-          >
-            {i}
-          </PaginationLink>
-        </PaginationItem>
-      );
-    }
-    return items;
-  };
 
   return (
     <Card className="glass-card p-6 animate-fade-in-scale">
@@ -93,6 +55,9 @@ export function InstanceTable() {
                   Total de Leads
                 </th>
                 <th className="text-left py-3 text-sm font-medium text-gray-400">
+                  Status do QR
+                </th>
+                <th className="text-left py-3 text-sm font-medium text-gray-400">
                   Ações
                 </th>
               </tr>
@@ -100,12 +65,12 @@ export function InstanceTable() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-4">
+                  <td colSpan={6} className="text-center py-4">
                     Carregando...
                   </td>
                 </tr>
               ) : (
-                data?.instances.map((instance) => (
+                data?.map((instance) => (
                   <tr key={instance.nomeInstancia} className="border-b border-border">
                     <td className="py-3 text-sm">{instance.nomeInstancia}</td>
                     <td className="py-3 text-sm">{instance.senderNumber}</td>
@@ -115,6 +80,11 @@ export function InstanceTable() {
                       </span>
                     </td>
                     <td className="py-3 text-sm">{instance.enviosChipFull}</td>
+                    <td className="py-3">
+                      <span className="status-badge online">
+                        {instance.statusQR === "connected" ? "connected" : "disconnected"}
+                      </span>
+                    </td>
                     <td className="py-3">
                       <div className="flex items-center gap-2">
                         <button className="p-1 hover:bg-white/10 rounded-lg transition-colors">
@@ -134,25 +104,6 @@ export function InstanceTable() {
             </tbody>
           </table>
         </div>
-        {totalPages > 1 && (
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                />
-              </PaginationItem>
-              {renderPaginationItems()}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
       </div>
     </Card>
   );
