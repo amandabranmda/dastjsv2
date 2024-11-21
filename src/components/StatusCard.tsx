@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 
 interface StatusCardProps {
   title: string;
@@ -15,6 +16,7 @@ interface StatusCardProps {
 
 export function StatusCard({ title, value, type }: StatusCardProps) {
   const { toast } = useToast();
+  const [selectedChips, setSelectedChips] = useState<string[]>([]);
   
   const { data: chips } = useQuery({
     queryKey: ["disconnected-chips"],
@@ -33,6 +35,9 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   const handleCopyChip = async (chipNumber: string) => {
     try {
       await navigator.clipboard.writeText(chipNumber);
+      if (!selectedChips.includes(chipNumber)) {
+        setSelectedChips([...selectedChips, chipNumber]);
+      }
       toast({
         description: "Número do chip copiado com sucesso!",
         duration: 2000,
@@ -88,7 +93,10 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
                     </TableCell>
                     <TableCell 
                       onClick={() => handleCopyChip(chip.numeroChip)}
-                      className="cursor-pointer hover:text-[#FFD700] active:text-[#DAA520] transition-colors"
+                      className={cn(
+                        "cursor-pointer hover:text-[#FFD700] transition-colors",
+                        selectedChips.includes(chip.numeroChip) ? "text-[#FFD700]" : ""
+                      )}
                     >
                       {chip.numeroChip}
                     </TableCell>
