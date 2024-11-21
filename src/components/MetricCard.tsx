@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface MetricCardProps {
   title: string;

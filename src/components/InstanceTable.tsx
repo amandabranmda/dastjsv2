@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Copy, MessageSquare, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Instance {
   id: string;
