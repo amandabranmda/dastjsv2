@@ -1,11 +1,63 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Button } from "@/components/ui/button";
+import { Contact2, MessageSquare } from "lucide-react";
+import { StatusCard } from "@/components/StatusCard";
+import { MetricCard } from "@/components/MetricCard";
+import { LeadChart } from "@/components/LeadChart";
+import { InstanceTable } from "@/components/InstanceTable";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen p-8">
+      <div className="max-w-[1400px] mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">Zaps Dashboard</h1>
+          <div className="flex items-center gap-4">
+            <Button variant="secondary" className="gap-2">
+              <Contact2 className="w-4 h-4" />
+              Contatos
+            </Button>
+            <Button variant="default" className="gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Criar Instância
+            </Button>
+          </div>
+        </div>
+
+        {/* Status Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatusCard title="Instâncias Online" value={239} type="online" />
+          <StatusCard title="Instâncias Close" value={17} type="closed" />
+          <StatusCard title="Instâncias Enviando" value={183} type="sending" />
+        </div>
+
+        {/* Chart */}
+        <LeadChart />
+
+        {/* Metric Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <MetricCard
+            title="Cliques"
+            value="4015"
+            change="+45"
+            type="preset"
+          />
+          <MetricCard
+            title="Leads"
+            value="1191"
+            change="+29.66% optin"
+            type="optin"
+          />
+          <MetricCard
+            title="Vendas Realizadas"
+            value="45"
+            change="R$ 12.5 ticket médio"
+            type="sales"
+          />
+        </div>
+
+        {/* Instance Table */}
+        <InstanceTable />
       </div>
     </div>
   );
