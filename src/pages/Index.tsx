@@ -16,18 +16,15 @@ const Index = () => {
   const calculateRemainingMessages = () => {
     if (!instancesData?.totalSendingLimit || !instancesData?.totalLeads) return "0";
     const remaining = instancesData.totalSendingLimit - instancesData.totalLeads;
-    return (
-      <div className="flex flex-col">
-        <span>{`Você ainda tem ${remaining} envios disponíveis`}</span>
-        <span className="text-xs text-white/80">{`Total: ${instancesData.totalSendingLimit}`}</span>
-      </div>
-    );
+    const message = `Você ainda tem ${remaining} envios disponíveis`;
+    const total = `Total: ${instancesData.totalSendingLimit}`;
+    return message + "\n" + total;
   };
 
   return (
     <div className="min-h-screen p-8">
+      {/* Header */}
       <div className="max-w-[1400px] mx-auto space-y-8">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Zaps Dashboard</h1>
           <div className="flex items-center gap-4">
