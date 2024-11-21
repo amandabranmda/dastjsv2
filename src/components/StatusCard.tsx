@@ -15,13 +15,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
           <span className={cn(
             "w-2 h-2 rounded-full",
             type === "online" && "bg-primary",
-            type === "closed" && "",
+            type === "closed" && "bg-destructive",
             type === "sending" && "bg-secondary"
           )} />
           <h3 className="text-sm text-gray-400">{title}</h3>
         </div>
         <div className="flex flex-col items-start">
-          <p className="text-4xl font-semibold">{value}</p>
+          <p className="text-4xl font-semibold tracking-tight">{value}</p>
         </div>
       </div>
     </Card>
