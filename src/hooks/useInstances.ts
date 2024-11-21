@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
 
 export const useInstances = () => {
-  return useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["instances"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -18,4 +19,27 @@ export const useInstances = () => {
       };
     }
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('instances-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: '1-chipsInstancias'
+        },
+        () => {
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
+
+  return { data, isLoading: !data };
 };
