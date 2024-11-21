@@ -43,7 +43,7 @@ export const useInstances = () => {
           event: '*',
           schema: 'public',
           table: '1-chipsInstancias',
-          filter: `statusChip=eq.✅emProducao`
+          filter: `statusChip=eq.✅emProducao,statusEnvios=eq.true`
         },
         (payload) => {
           console.log('Change received!', payload);
