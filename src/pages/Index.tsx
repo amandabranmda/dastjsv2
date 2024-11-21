@@ -3,7 +3,6 @@ import { Contact2, MessageSquare } from "lucide-react";
 import { StatusCard } from "@/components/StatusCard";
 import { MetricCard } from "@/components/MetricCard";
 import { useInstances } from "@/hooks/useInstances";
-import { Sidebar } from "@/components/Sidebar";
 
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
@@ -21,110 +20,105 @@ const Index = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 ml-64 p-8">
-        <div className="max-w-[1400px] mx-auto space-y-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold">Dashboard</h1>
-            <div className="flex items-center gap-4">
-              <Button variant="secondary" className="gap-2">
-                <Contact2 className="w-4 h-4" />
-                Contatos
-              </Button>
-              <Button variant="default" className="gap-2">
-                <MessageSquare className="w-4 h-4" />
-                Criar Instância
-              </Button>
-            </div>
-          </div>
-
-          {/* Status Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <StatusCard 
-              title="Instâncias Online" 
-              value={isLoading ? "..." : instancesData?.onlineCount || 0} 
-              type="online" 
-            />
-            <StatusCard 
-              title="❌verificarDesconexao" 
-              value={isLoading ? "..." : instancesData?.closedCount || 0} 
-              type="closed" 
-            />
-            <StatusCard 
-              title="Instâncias Enviando" 
-              value={isLoading ? "..." : instancesData?.sendingCount || 0} 
-              type="sending" 
-            />
-          </div>
-
-          {/* Metric Cards - First Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              title="Cliques"
-              value={isLoading ? "..." : instancesData?.totalClicks || 0}
-              change="+45"
-              type="preset"
-            />
-            <MetricCard
-              title="Leads"
-              value={isLoading ? "..." : instancesData?.totalLeads || 0}
-              change={`${calculateOptinRate()}% optin`}
-              type="optin"
-            />
-            <MetricCard
-              title="Limite de envios"
-              value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
-              change={calculateRemainingMessages()}
-              type="sales"
-            />
-          </div>
-
-          {/* Metric Cards - Second Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              title="Conversões"
-              value="324"
-              change="+12.5%"
-              type="preset"
-            />
-            <MetricCard
-              title="Taxa de Resposta"
-              value="67%"
-              change="+5.2%"
-              type="optin"
-            />
-            <MetricCard
-              title="ROI"
-              value="R$ 15.4k"
-              change="+23.1%"
-              type="sales"
-            />
-          </div>
-
-          {/* Metric Cards - Third Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              title="Engajamento"
-              value="89%"
-              change="+8.3%"
-              type="preset"
-            />
-            <MetricCard
-              title="Retenção"
-              value="78%"
-              change="+3.7%"
-              type="optin"
-            />
-            <MetricCard
-              title="Receita"
-              value="R$ 22.8k"
-              change="+15.4%"
-              type="sales"
-            />
-          </div>
+    <div className="max-w-[1400px] mx-auto space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <div className="flex items-center gap-4">
+          <Button variant="secondary" className="gap-2">
+            <Contact2 className="w-4 h-4" />
+            Contatos
+          </Button>
+          <Button variant="default" className="gap-2">
+            <MessageSquare className="w-4 h-4" />
+            Criar Instância
+          </Button>
         </div>
-      </main>
+      </div>
+
+      {/* Status Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatusCard 
+          title="Instâncias Online" 
+          value={isLoading ? "..." : instancesData?.onlineCount || 0} 
+          type="online" 
+        />
+        <StatusCard 
+          title="❌verificarDesconexao" 
+          value={isLoading ? "..." : instancesData?.closedCount || 0} 
+          type="closed" 
+        />
+        <StatusCard 
+          title="Instâncias Enviando" 
+          value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+          type="sending" 
+        />
+      </div>
+
+      {/* Metric Cards - First Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <MetricCard
+          title="Cliques"
+          value={isLoading ? "..." : instancesData?.totalClicks || 0}
+          change="+45"
+          type="preset"
+        />
+        <MetricCard
+          title="Leads"
+          value={isLoading ? "..." : instancesData?.totalLeads || 0}
+          change={`${calculateOptinRate()}% optin`}
+          type="optin"
+        />
+        <MetricCard
+          title="Limite de envios"
+          value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
+          change={calculateRemainingMessages()}
+          type="sales"
+        />
+      </div>
+
+      {/* Metric Cards - Second Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <MetricCard
+          title="Conversões"
+          value="324"
+          change="+12.5%"
+          type="preset"
+        />
+        <MetricCard
+          title="Taxa de Resposta"
+          value="67%"
+          change="+5.2%"
+          type="optin"
+        />
+        <MetricCard
+          title="ROI"
+          value="R$ 15.4k"
+          change="+23.1%"
+          type="sales"
+        />
+      </div>
+
+      {/* Metric Cards - Third Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <MetricCard
+          title="Engajamento"
+          value="89%"
+          change="+8.3%"
+          type="preset"
+        />
+        <MetricCard
+          title="Retenção"
+          value="78%"
+          change="+3.7%"
+          type="optin"
+        />
+        <MetricCard
+          title="Receita"
+          value="R$ 22.8k"
+          change="+15.4%"
+          type="sales"
+        />
+      </div>
     </div>
   );
 };
