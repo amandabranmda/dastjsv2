@@ -99,6 +99,28 @@ const Index = () => {
             type="sales"
           />
         </div>
+
+        {/* Metric Cards - Third Row (New) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <MetricCard
+            title="Engajamento"
+            value="89%"
+            change="+8.3%"
+            type="preset"
+          />
+          <MetricCard
+            title="Retenção"
+            value="78%"
+            change="+3.7%"
+            type="optin"
+          />
+          <MetricCard
+            title="Receita"
+            value="R$ 22.8k"
+            change="+15.4%"
+            type="sales"
+          />
+        </div>
       </div>
     </div>
   );
