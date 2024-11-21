@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
+import { Maximize2 } from "lucide-react";
 
 interface StatusCardProps {
   title: string;
@@ -17,6 +18,7 @@ interface StatusCardProps {
 export function StatusCard({ title, value, type }: StatusCardProps) {
   const { toast } = useToast();
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   
   const { data: chips, refetch } = useQuery({
     queryKey: ["disconnected-chips"],
@@ -76,19 +78,42 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullScreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullScreen(false);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Card className="glass-card p-6 animate-fade-in-scale cursor-pointer hover:bg-accent/50 transition-colors">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <span className={cn(
-                "w-2 h-2 rounded-full",
-                type === "online" && "bg-primary",
-                type === "closed" && "bg-destructive",
-                type === "sending" && "bg-secondary"
-              )} />
-              <h3 className="text-sm text-gray-400">{title}</h3>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className={cn(
+                  "w-2 h-2 rounded-full",
+                  type === "online" && "bg-primary",
+                  type === "closed" && "bg-destructive",
+                  type === "sending" && "bg-secondary"
+                )} />
+                <h3 className="text-sm text-gray-400">{title}</h3>
+              </div>
+              {type === "closed" && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFullScreen();
+                  }}
+                  className="p-1 hover:bg-gray-200/10 rounded-full transition-colors"
+                >
+                  <Maximize2 className="w-3 h-3 text-gray-400" />
+                </button>
+              )}
             </div>
             <div className="flex flex-col items-start">
               <p className="text-4xl font-semibold tracking-tight">{value}</p>
@@ -98,11 +123,11 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       </DialogTrigger>
 
       {type === "closed" && (
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className={cn("sm:max-w-[600px]", isFullScreen && "!max-w-[95vw] !h-[95vh]")}>
           <DialogHeader>
             <DialogTitle>Chips Desconectados</DialogTitle>
           </DialogHeader>
-          <div className="overflow-y-auto max-h-[400px]">
+          <div className={cn("overflow-y-auto", isFullScreen ? "max-h-[80vh]" : "max-h-[400px]")}>
             <Table>
               <TableHeader>
                 <TableRow>
