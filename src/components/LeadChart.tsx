@@ -1,19 +1,27 @@
 import { Card } from "@/components/ui/card";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-
-const data = [
-  { time: "00:00", value: 0 },
-  { time: "03:00", value: 100 },
-  { time: "06:00", value: 150 },
-  { time: "09:00", value: 200 },
-  { time: "12:00", value: 250 },
-  { time: "15:00", value: 300 },
-  { time: "18:00", value: 280 },
-  { time: "21:00", value: 200 },
-  { time: "23:00", value: 150 },
-];
+import { useInstances } from "@/hooks/useInstances";
 
 export function LeadChart() {
+  const { data: instancesData } = useInstances();
+  
+  const getLeadLimit = () => {
+    if (!instancesData?.totalSendingLimit) return 300; // fallback to default
+    return Math.round(instancesData.totalSendingLimit * 0.3); // 30% of total limit
+  };
+
+  const data = [
+    { time: "00:00", value: 0 },
+    { time: "03:00", value: 100 },
+    { time: "06:00", value: 150 },
+    { time: "09:00", value: 200 },
+    { time: "12:00", value: 250 },
+    { time: "15:00", value: getLeadLimit() },
+    { time: "18:00", value: 280 },
+    { time: "21:00", value: 200 },
+    { time: "23:00", value: 150 },
+  ];
+
   return (
     <Card className="glass-card p-6 animate-fade-in-scale">
       <div className="flex flex-col gap-4">
