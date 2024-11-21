@@ -81,7 +81,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">Selecionar</TableHead>
+                  <TableHead className="w-[50px]">Pedido Desbloqueio</TableHead>
                   <TableHead>Número do Chip</TableHead>
                 </TableRow>
               </TableHeader>
