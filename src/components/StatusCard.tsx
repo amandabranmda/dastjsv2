@@ -20,7 +20,9 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
           )} />
           <h3 className="text-sm text-gray-400">{title}</h3>
         </div>
-        <p className="text-4xl font-semibold">{value}</p>
+        <div className="flex flex-col items-start">
+          <p className="text-4xl font-semibold">{value}</p>
+        </div>
       </div>
     </Card>
   );
