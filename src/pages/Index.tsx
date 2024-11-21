@@ -22,7 +22,7 @@ const Index = () => {
   return (
     <div className="max-w-[1400px] mx-auto space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <h1 className="text-2xl font-semibold">Zaps Dashboard</h1>
         <div className="flex items-center gap-4">
           <Button variant="secondary" className="gap-2">
             <Contact2 className="w-4 h-4" />
