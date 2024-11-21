@@ -67,7 +67,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         duration: 2000,
       });
 
-      // Atualiza a lista de chips
       refetch();
     } catch (err) {
       toast({
@@ -91,29 +90,25 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card className="glass-card p-6 animate-fade-in-scale cursor-pointer hover:bg-accent/50 transition-colors">
+        <Card className="glass-card p-6 animate-fade-in-scale cursor-pointer hover:bg-accent/50 transition-colors relative">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFullScreen();
+            }}
+            className="absolute top-2 right-2 p-1 hover:bg-gray-200/10 rounded-full transition-colors"
+          >
+            <Maximize2 className="w-3 h-3 text-gray-400" />
+          </button>
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className={cn(
-                  "w-2 h-2 rounded-full",
-                  type === "online" && "bg-primary",
-                  type === "closed" && "bg-destructive",
-                  type === "sending" && "bg-secondary"
-                )} />
-                <h3 className="text-sm text-gray-400">{title}</h3>
-              </div>
-              {type === "closed" && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFullScreen();
-                  }}
-                  className="p-1 hover:bg-gray-200/10 rounded-full transition-colors"
-                >
-                  <Maximize2 className="w-3 h-3 text-gray-400" />
-                </button>
-              )}
+            <div className="flex items-center gap-2">
+              <span className={cn(
+                "w-2 h-2 rounded-full",
+                type === "online" && "bg-primary",
+                type === "closed" && "bg-destructive",
+                type === "sending" && "bg-secondary"
+              )} />
+              <h3 className="text-sm text-gray-400">{title}</h3>
             </div>
             <div className="flex flex-col items-start">
               <p className="text-4xl font-semibold tracking-tight">{value}</p>
