@@ -59,7 +59,7 @@ const Index = () => {
           />
           <MetricCard
             title="Leads"
-            value="1191"
+            value={isLoading ? "..." : instancesData?.totalLeads || 0}
             change="+29.66% optin"
             type="optin"
           />

@@ -25,7 +25,6 @@ export const useInstances = () => {
         supabase
           .from("1-chipsInstancias")
           .select("enviosDia")
-          .eq("projeto", "ProjetHotGPT")
       ]);
 
       if (onlineResult.error) throw onlineResult.error;
@@ -33,7 +32,7 @@ export const useInstances = () => {
       if (sendingResult.error) throw sendingResult.error;
       if (leadsResult.error) throw leadsResult.error;
 
-      const totalLeads = leadsResult.data?.reduce((sum, row) => sum + (row.enviosDia || 0), 0) || 0;
+      const totalLeads = leadsResult.data.reduce((sum, row) => sum + (row.enviosDia || 0), 0);
 
       return {
         onlineCount: onlineResult.data?.length || 0,
