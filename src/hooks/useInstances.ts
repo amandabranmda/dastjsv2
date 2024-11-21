@@ -28,15 +28,20 @@ export const useInstances = () => {
         {
           event: '*',
           schema: 'public',
-          table: '1-chipsInstancias'
+          table: '1-chipsInstancias',
+          filter: `statusChip=eq.✅emProducao`
         },
-        () => {
+        (payload) => {
+          console.log('Change received!', payload);
           refetch();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Realtime subscription status:', status);
+      });
 
     return () => {
+      console.log('Unsubscribing from realtime updates');
       supabase.removeChannel(channel);
     };
   }, [refetch]);
