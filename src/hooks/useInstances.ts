@@ -6,7 +6,7 @@ export const useInstances = () => {
   const { data, refetch } = useQuery({
     queryKey: ["instances"],
     queryFn: async () => {
-      const [onlineResult, closedResult, sendingResult] = await Promise.all([
+      const [onlineResult, closedResult, sendingResult, leadsResult] = await Promise.all([
         supabase
           .from("1-chipsInstancias")
           .select("*")
@@ -21,17 +21,25 @@ export const useInstances = () => {
           .select("*")
           .eq("statusEnvios", true)
           .eq("statusInstancia", "open")
+          .eq("projeto", "ProjetHotGPT"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("enviosDia")
           .eq("projeto", "ProjetHotGPT")
       ]);
 
       if (onlineResult.error) throw onlineResult.error;
       if (closedResult.error) throw closedResult.error;
       if (sendingResult.error) throw sendingResult.error;
+      if (leadsResult.error) throw leadsResult.error;
+
+      const totalLeads = leadsResult.data?.reduce((sum, row) => sum + (row.enviosDia || 0), 0) || 0;
 
       return {
         onlineCount: onlineResult.data?.length || 0,
         closedCount: closedResult.data?.length || 0,
-        sendingCount: sendingResult.data?.length || 0
+        sendingCount: sendingResult.data?.length || 0,
+        totalLeads
       };
     }
   });
