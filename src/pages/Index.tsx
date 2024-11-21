@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Contact2, MessageSquare } from "lucide-react";
 import { StatusCard } from "@/components/StatusCard";
 import { MetricCard } from "@/components/MetricCard";
-import { LeadChart } from "@/components/LeadChart";
 import { InstanceTable } from "@/components/InstanceTable";
 import { useInstances } from "@/hooks/useInstances";
 
@@ -57,9 +56,6 @@ const Index = () => {
             type="sending" 
           />
         </div>
-
-        {/* Chart */}
-        <LeadChart />
 
         {/* Metric Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
