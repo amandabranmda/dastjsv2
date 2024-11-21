@@ -16,12 +16,7 @@ const Index = () => {
   const calculateRemainingMessages = () => {
     if (!instancesData?.totalSendingLimit || !instancesData?.totalLeads) return "0";
     const remaining = instancesData.totalSendingLimit - instancesData.totalLeads;
-    return (
-      <span className="flex flex-col">
-        <span>{`Você ainda tem ${remaining} envios disponíveis`}</span>
-        <span className="text-xs text-white/80">{`Total: ${instancesData.rawTotalSendingLimit}`}</span>
-      </span>
-    );
+    return `Você ainda tem ${remaining} envios disponíveis`;
   };
 
   return (
