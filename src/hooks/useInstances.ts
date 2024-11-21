@@ -60,6 +60,7 @@ export const useInstances = () => {
   });
 
   useEffect(() => {
+    // Inscreve-se em todas as alterações da tabela
     const channel = supabase
       .channel('instances-changes')
       .on(
@@ -67,19 +68,17 @@ export const useInstances = () => {
         {
           event: '*',
           schema: 'public',
-          table: '1-chipsInstancias'
+          table: '1-chipsInstancias',
+          filter: `projeto=eq.ProjetHotGPT` // Adiciona filtro para o projeto específico
         },
-        (payload) => {
-          console.log('Change received!', payload);
+        () => {
+          // Refetch os dados quando houver qualquer alteração
           refetch();
         }
       )
-      .subscribe((status) => {
-        console.log('Realtime subscription status:', status);
-      });
+      .subscribe();
 
     return () => {
-      console.log('Unsubscribing from realtime updates');
       supabase.removeChannel(channel);
     };
   }, [refetch]);
