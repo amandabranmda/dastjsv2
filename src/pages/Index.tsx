@@ -15,6 +15,12 @@ const Index = () => {
     return rate.toFixed(2);
   };
 
+  const calculateRemainingMessages = () => {
+    if (!instancesData?.totalSendingLimit || !instancesData?.totalLeads) return "0";
+    const remaining = instancesData.totalSendingLimit - instancesData.totalLeads;
+    return `Você ainda tem ${remaining} envios disponíveis`;
+  };
+
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-[1400px] mx-auto space-y-8">
@@ -72,7 +78,7 @@ const Index = () => {
           <MetricCard
             title="Limite de envios"
             value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
-            change="R$ 12.5 ticket médio"
+            change={calculateRemainingMessages()}
             type="sales"
           />
         </div>
