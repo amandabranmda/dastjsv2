@@ -18,7 +18,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   const { toast } = useToast();
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
   
-  const { data: chips } = useQuery({
+  const { data: chips, refetch } = useQuery({
     queryKey: ["disconnected-chips"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -46,6 +46,31 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       toast({
         variant: "destructive",
         description: "Erro ao copiar número do chip",
+        duration: 2000,
+      });
+    }
+  };
+
+  const handleCheckboxChange = async (chipNumber: string, checked: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("1-chipsInstancias")
+        .update({ statusChip: checked ? "✅emProducao" : "❌verificarDesconexao" })
+        .eq("numeroChip", chipNumber);
+
+      if (error) throw error;
+
+      toast({
+        description: `Status do chip ${chipNumber} atualizado com sucesso!`,
+        duration: 2000,
+      });
+
+      // Atualiza a lista de chips
+      refetch();
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Erro ao atualizar status do chip",
         duration: 2000,
       });
     }
@@ -89,7 +114,11 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
                 {chips?.map((chip) => (
                   <TableRow key={chip.numeroChip}>
                     <TableCell>
-                      <Checkbox />
+                      <Checkbox 
+                        onCheckedChange={(checked) => 
+                          handleCheckboxChange(chip.numeroChip, checked as boolean)
+                        }
+                      />
                     </TableCell>
                     <TableCell 
                       onClick={() => handleCopyChip(chip.numeroChip)}
