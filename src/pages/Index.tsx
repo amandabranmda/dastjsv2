@@ -9,6 +9,12 @@ import { useInstances } from "@/hooks/useInstances";
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
 
+  const calculateOptinRate = () => {
+    if (!instancesData?.totalClicks || !instancesData?.totalLeads) return "0";
+    const rate = (instancesData.totalLeads / instancesData.totalClicks) * 100;
+    return rate.toFixed(2);
+  };
+
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-[1400px] mx-auto space-y-8">
@@ -60,7 +66,7 @@ const Index = () => {
           <MetricCard
             title="Leads"
             value={isLoading ? "..." : instancesData?.totalLeads || 0}
-            change="+29.66% optin"
+            change={`${calculateOptinRate()}% optin`}
             type="optin"
           />
           <MetricCard
