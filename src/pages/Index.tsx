@@ -70,10 +70,10 @@ const Index = () => {
             type="optin"
           />
           <MetricCard
-            title="Vendas Realizadas"
+            title="Limite de envios"
             value="45"
             change="R$ 12.5 ticket médio"
-            type="sales"
+            type="Limite"
           />
         </div>
 
