@@ -34,9 +34,8 @@ export const useInstances = () => {
             .eq("projeto", "ProjetHotGPT"),
           supabase
             .from("1-chipsInstancias")
-            .select("limiteEnviosDia")
+            .select("enviosDia")
             .eq("projeto", "ProjetHotGPT")
-            .eq("statusInstancia", "open")
         ]);
 
         // Check for errors in any of the results
@@ -49,8 +48,7 @@ export const useInstances = () => {
 
         const totalLeads = leadsResult.data?.reduce((sum, row) => sum + (row.enviosDia || 0), 0) || 0;
         const totalClicks = clicksResult.data?.reduce((sum, row) => sum + (row.cliquesRedirect || 0), 0) || 0;
-        const totalSendingLimit = limitsResult.data?.reduce((sum, row) => sum + (row.limiteEnviosDia || 0), 0) || 0;
-        const availableSendingLimit = Math.round(totalSendingLimit * 0.35); // Calculate 35% of total limit
+        const totalSendingLimit = limitsResult.data?.reduce((sum, row) => sum + (row.enviosDia || 0), 0) || 0;
 
         return {
           onlineCount: onlineResult.data?.length || 0,
@@ -58,7 +56,7 @@ export const useInstances = () => {
           sendingCount: sendingResult.data?.length || 0,
           totalLeads,
           totalClicks,
-          totalSendingLimit: availableSendingLimit // Now returning 35% of the total limit
+          totalSendingLimit
         };
       } catch (error) {
         console.error('Error fetching instances:', error);
@@ -76,7 +74,6 @@ export const useInstances = () => {
   });
 
   useEffect(() => {
-    // Subscribe to ALL changes in the table
     const channel = supabase
       .channel('table-db-changes')
       .on(

@@ -16,12 +16,7 @@ const Index = () => {
   const calculateRemainingMessages = () => {
     if (!instancesData?.totalSendingLimit || !instancesData?.totalLeads) return "0";
     const remaining = instancesData.totalSendingLimit - instancesData.totalLeads;
-    return (
-      <div className="flex flex-col">
-        <span>{`Você ainda tem ${remaining} envios disponíveis`}</span>
-        <span className="text-xs text-white/80">{`Total: ${instancesData.totalSendingLimit}`}</span>
-      </div>
-    );
+    return remaining.toString();
   };
 
   return (
@@ -77,12 +72,11 @@ const Index = () => {
           <MetricCard
             title="Limite de envios"
             value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
-            change={calculateRemainingMessages()}
+            change={`Você ainda tem ${calculateRemainingMessages()} envios disponíveis`}
             type="sales"
           />
         </div>
 
-        {/* Metric Cards - Second Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             title="Conversões"
