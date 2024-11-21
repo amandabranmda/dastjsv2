@@ -15,7 +15,7 @@ const Index = () => {
 
   const calculateRemainingMessages = () => {
     if (!instancesData?.totalSendingLimit || !instancesData?.totalLeads) return "0";
-    const remaining = Math.round(instancesData.totalSendingLimit * 0.35) - instancesData.totalLeads;
+    const remaining = instancesData.totalSendingLimit - instancesData.totalLeads;
     return (
       <div className="flex flex-col">
         <span>{`Você ainda tem ${remaining} envios disponíveis`}</span>
@@ -76,7 +76,7 @@ const Index = () => {
           />
           <MetricCard
             title="Limite de envios"
-            value={isLoading ? "..." : Math.round(instancesData?.totalSendingLimit * 0.35) || 0}
+            value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
             change={calculateRemainingMessages()}
             type="sales"
           />
