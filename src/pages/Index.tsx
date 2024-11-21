@@ -34,7 +34,11 @@ const Index = () => {
             value={isLoading ? "..." : instancesData?.onlineCount || 0} 
             type="online" 
           />
-          <StatusCard title="Instâncias Close" value={17} type="closed" />
+          <StatusCard 
+            title="Instâncias Close" 
+            value={isLoading ? "..." : instancesData?.closedCount || 0} 
+            type="closed" 
+          />
           <StatusCard title="Instâncias Enviando" value={183} type="sending" />
         </div>
 

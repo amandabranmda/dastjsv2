@@ -6,16 +6,24 @@ export const useInstances = () => {
   const { data, refetch } = useQuery({
     queryKey: ["instances"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "✅emProducao")
-        .eq("statusInstancia", "open");
+      const [onlineResult, closedResult] = await Promise.all([
+        supabase
+          .from("1-chipsInstancias")
+          .select("*")
+          .eq("statusChip", "✅emProducao")
+          .eq("statusInstancia", "open"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("*")
+          .eq("statusChip", "❌verificarDesconexao")
+      ]);
 
-      if (error) throw error;
+      if (onlineResult.error) throw onlineResult.error;
+      if (closedResult.error) throw closedResult.error;
 
       return {
-        onlineCount: data?.length || 0
+        onlineCount: onlineResult.data?.length || 0,
+        closedCount: closedResult.data?.length || 0
       };
     }
   });
