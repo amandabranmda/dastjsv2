@@ -25,6 +25,7 @@ export const useInstances = () => {
         supabase
           .from("1-chipsInstancias")
           .select("enviosDia")
+          .eq("projeto", "ProjetHotGPT")
       ]);
 
       if (onlineResult.error) throw onlineResult.error;
