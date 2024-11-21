@@ -83,7 +83,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
                   <TableRow key={chip.numeroChip}>
                     <TableCell 
                       onClick={() => handleCopyChip(chip.numeroChip)}
-                      className="cursor-pointer hover:bg-accent/50 transition-colors"
+                      className="cursor-pointer hover:text-[#FFD700] active:text-[#DAA520] transition-colors"
                     >
                       {chip.numeroChip}
                     </TableCell>
