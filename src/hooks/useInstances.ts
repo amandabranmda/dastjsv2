@@ -69,23 +69,21 @@ export const useInstances = () => {
         throw error;
       }
     },
-    retry: 3,
-    retryDelay: 1000,
     refetchInterval: 1000,
     refetchIntervalInBackground: true,
     gcTime: 0
   });
 
   useEffect(() => {
+    // Subscribe to ALL changes in the table
     const channel = supabase
-      .channel('instances-changes')
+      .channel('table-db-changes')
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: '1-chipsInstancias',
-          filter: `projeto=eq.ProjetHotGPT`
+          table: '1-chipsInstancias'
         },
         () => {
           refetch();

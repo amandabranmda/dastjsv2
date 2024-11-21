@@ -4,6 +4,7 @@ import { Copy, MessageSquare, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
 
 interface Instance {
   id: string;
@@ -15,8 +16,8 @@ interface Instance {
 }
 
 export function InstanceTable() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["instances"],
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["instances-table"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
@@ -27,6 +28,27 @@ export function InstanceTable() {
       return data as Instance[];
     }
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('instance-table-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: '1-chipsInstancias'
+        },
+        () => {
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
 
   return (
     <Card className="glass-card p-6 animate-fade-in-scale">
