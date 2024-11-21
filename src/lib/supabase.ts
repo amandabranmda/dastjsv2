@@ -7,10 +7,23 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: window.localStorage
   },
-  global: {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
+  realtime: {
+    params: {
+      eventsPerSecond: 10
+    }
   },
+  db: {
+    schema: 'public'
+  }
+})
+
+// Add error handling for Supabase client
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT') {
+    // Clear any cached data
+    localStorage.clear()
+  }
 })
