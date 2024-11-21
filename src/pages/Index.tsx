@@ -53,7 +53,7 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             title="Cliques"
-            value="4015"
+            value={isLoading ? "..." : instancesData?.totalClicks || 0}
             change="+45"
             type="preset"
           />
