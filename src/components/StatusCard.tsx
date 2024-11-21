@@ -55,7 +55,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ statusChip: checked ? "✅emProducao" : "❌verificarDesconexao" })
+        .update({ statusChip: checked ? "aguardando desbloqueio" : "❌verificarDesconexao" })
         .eq("numeroChip", chipNumber);
 
       if (error) throw error;
