@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Contact2, MessageSquare } from "lucide-react";
 import { StatusCard } from "@/components/StatusCard";
 import { MetricCard } from "@/components/MetricCard";
-import { InstanceTable } from "@/components/InstanceTable";
 import { useInstances } from "@/hooks/useInstances";
 
 const Index = () => {
@@ -100,9 +99,6 @@ const Index = () => {
             type="sales"
           />
         </div>
-
-        {/* Instance Table */}
-        <InstanceTable />
       </div>
     </div>
   );
