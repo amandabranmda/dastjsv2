@@ -45,7 +45,7 @@ const Index = () => {
             type="online" 
           />
           <StatusCard 
-            title="Instâncias Close" 
+            title="❌verificarDesconexao" 
             value={isLoading ? "..." : instancesData?.closedCount || 0} 
             type="closed" 
           />
