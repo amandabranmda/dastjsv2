@@ -57,12 +57,9 @@ export const useInstances = () => {
         totalSendingLimit
       };
     },
-    // Adiciona refetchInterval para garantir atualizações frequentes
-    refetchInterval: 1000, // Atualiza a cada 1 segundo
-    // Habilita refetch em segundo plano
+    refetchInterval: 1000,
     refetchIntervalInBackground: true,
-    // Mantém os dados anteriores enquanto recarrega
-    keepPreviousData: true,
+    gcTime: 0
   });
 
   useEffect(() => {
