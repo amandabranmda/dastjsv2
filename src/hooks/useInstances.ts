@@ -6,7 +6,7 @@ export const useInstances = () => {
   const { data, refetch } = useQuery({
     queryKey: ["instances"],
     queryFn: async () => {
-      const [onlineResult, closedResult] = await Promise.all([
+      const [onlineResult, closedResult, sendingResult] = await Promise.all([
         supabase
           .from("1-chipsInstancias")
           .select("*")
@@ -15,15 +15,21 @@ export const useInstances = () => {
         supabase
           .from("1-chipsInstancias")
           .select("*")
-          .eq("statusChip", "❌verificarDesconexao")
+          .eq("statusChip", "❌verificarDesconexao"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("*")
+          .eq("statusEnvios", true)
       ]);
 
       if (onlineResult.error) throw onlineResult.error;
       if (closedResult.error) throw closedResult.error;
+      if (sendingResult.error) throw sendingResult.error;
 
       return {
         onlineCount: onlineResult.data?.length || 0,
-        closedCount: closedResult.data?.length || 0
+        closedCount: closedResult.data?.length || 0,
+        sendingCount: sendingResult.data?.length || 0
       };
     }
   });

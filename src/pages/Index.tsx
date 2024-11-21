@@ -39,7 +39,11 @@ const Index = () => {
             value={isLoading ? "..." : instancesData?.closedCount || 0} 
             type="closed" 
           />
-          <StatusCard title="Instâncias Enviando" value={183} type="sending" />
+          <StatusCard 
+            title="Instâncias Enviando" 
+            value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+            type="sending" 
+          />
         </div>
 
         {/* Chart */}
