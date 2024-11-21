@@ -35,8 +35,8 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="flex min-h-screen">
-            {!isFullScreen && <Sidebar />}
-            <main className={`flex-1 ${!isFullScreen ? 'ml-64' : ''} p-8`}>
+            <Sidebar />
+            <main className="flex-1 ml-64 p-8">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/messages" element={<div>Página de Mensagens em Construção</div>} />
