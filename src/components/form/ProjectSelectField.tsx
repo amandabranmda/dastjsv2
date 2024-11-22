@@ -24,7 +24,7 @@ export function ProjectSelectField({ form }: ProjectSelectFieldProps) {
       control={form.control}
       name="project"
       render={({ field }) => (
-        <FormItem className="glass-card p-4 rounded-lg border border-emerald-600/20 hover:border-emerald-600/30 transition-colors">
+        <FormItem className="glass-card p-4 rounded-lg border border-sky-600/20 hover:border-sky-600/30 transition-colors">
           <FormLabel className="text-lg font-semibold text-white/90">Projeto</FormLabel>
           <FormControl>
             {!showCustomProject ? (
@@ -39,15 +39,15 @@ export function ProjectSelectField({ form }: ProjectSelectFieldProps) {
                 }}
                 defaultValue={field.value}
               >
-                <SelectTrigger className="bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors">
+                <SelectTrigger className="bg-white/5 border-sky-600/20 text-white hover:bg-sky-900/20 transition-colors">
                   <SelectValue placeholder="Selecione um projeto" />
                 </SelectTrigger>
-                <SelectContent className="glass-dropdown border-emerald-600/20">
+                <SelectContent className="glass-dropdown border-sky-600/20">
                   {projects.map((project) => (
                     <SelectItem 
                       key={project} 
                       value={project}
-                      className="hover:bg-emerald-900/20"
+                      className="hover:bg-sky-900/20"
                     >
                       {project}
                     </SelectItem>
@@ -58,7 +58,7 @@ export function ProjectSelectField({ form }: ProjectSelectFieldProps) {
               <div className="space-y-2">
                 <Input
                   placeholder="Digite o nome do projeto"
-                  className="bg-white/5 border-emerald-600/20 text-white"
+                  className="bg-white/5 border-sky-600/20 text-white"
                   {...field}
                 />
                 <Button
@@ -66,7 +66,7 @@ export function ProjectSelectField({ form }: ProjectSelectFieldProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowCustomProject(false)}
-                  className="w-full border-emerald-600/20 hover:bg-emerald-900/20"
+                  className="w-full border-sky-600/20 hover:bg-sky-900/20"
                 >
                   Voltar para lista
                 </Button>

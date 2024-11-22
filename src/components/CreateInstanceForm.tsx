@@ -4,7 +4,6 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { toast } from "sonner"
-import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { UserSelectField } from "./form/UserSelectField"
@@ -78,7 +77,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-gradient-to-br from-emerald-900/20 to-emerald-800/10 p-6 rounded-xl backdrop-blur-sm">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-gradient-to-br from-sky-900/20 to-sky-800/10 p-6 rounded-xl backdrop-blur-sm">
         <div className="space-y-6">
           <CustomFormField
             form={form}
@@ -96,18 +95,18 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        <div className="flex justify-end space-x-4 pt-6 border-t border-emerald-600/20">
+        <div className="flex justify-end space-x-4 pt-6 border-t border-sky-600/20">
           <Button 
             variant="outline" 
             type="button" 
             onClick={onClose}
-            className="bg-transparent border-emerald-600/30 text-emerald-50 hover:bg-emerald-900/20 transition-colors"
+            className="bg-transparent border-sky-600/30 text-sky-50 hover:bg-sky-900/20 transition-colors"
           >
             Cancelar
           </Button>
           <Button 
             type="submit"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white transition-colors"
+            className="bg-sky-600 hover:bg-sky-700 text-white transition-colors"
           >
             Criar Instância
           </Button>
