@@ -3,7 +3,7 @@ import { Card } from "./ui/card";
 interface QRCodeDisplayProps {
   base64Image: string | null;
   isLoading: boolean;
-  instanceName?: string;
+  instanceName?: string | null;
 }
 
 export function QRCodeDisplay({ base64Image, isLoading, instanceName }: QRCodeDisplayProps) {
