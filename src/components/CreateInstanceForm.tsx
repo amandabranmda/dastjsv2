@@ -23,6 +23,9 @@ const formSchema = z.object({
   user: z.string().min(2, {
     message: "Usuário deve ter pelo menos 2 caracteres.",
   }),
+  project: z.string().min(2, {
+    message: "Projeto deve ter pelo menos 2 caracteres.",
+  }),
 })
 
 export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
@@ -32,6 +35,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
       instanceName: "",
       evolution: "",
       user: "",
+      project: "",
     },
   })
 
@@ -92,6 +96,19 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
               <FormLabel>Usuário</FormLabel>
               <FormControl>
                 <Input placeholder="Digite o usuário" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="project"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Projeto</FormLabel>
+              <FormControl>
+                <Input placeholder="Digite o projeto" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
