@@ -64,7 +64,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true);
-      const response = await fetch('YOUR_WEBHOOK_URL', {
+      const response = await fetch('https://n8n-hot.wpp-app.com/webhook/instanciasDast', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
