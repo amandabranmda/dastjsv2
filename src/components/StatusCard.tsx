@@ -6,7 +6,8 @@ import { supabase } from "@/lib/supabase";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { ChipTable } from "./ChipTable";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface StatusCardProps {
   title: string;
@@ -45,20 +46,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       return data;
     },
     enabled: type === "closed" && title.includes("Aguardando Desbloqueio")
-  });
-
-  const { data: releasedChips, refetch: refetchReleased } = useQuery({
-    queryKey: ["released-chips"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "liberado");
-
-      if (error) throw error;
-      return data;
-    },
-    enabled: title.includes("Chips Liberados")
   });
 
   const handleCopyChip = async (chipNumber: string) => {
@@ -103,7 +90,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       } else {
         refetchWaiting();
       }
-      refetchReleased();
     } catch (err) {
       toast({
         variant: "destructive",
@@ -125,15 +111,11 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
 
   const chips = title.includes("verificarDesconexao") 
     ? disconnectedChips 
-    : title.includes("Aguardando Desbloqueio")
-    ? waitingUnlockChips
-    : releasedChips;
+    : waitingUnlockChips;
     
   const dialogTitle = title.includes("verificarDesconexao") 
     ? "Chips Desconectados" 
-    : title.includes("Aguardando Desbloqueio")
-    ? "Chips Aguardando Desbloqueio"
-    : "Chips Liberados";
+    : "Chips Aguardando Desbloqueio";
 
   return (
     <Dialog>
@@ -165,19 +147,48 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         </Card>
       </DialogTrigger>
 
-      {(type === "closed" || title.includes("Chips Liberados")) && (
+      {type === "closed" && (
         <DialogContent className={cn("sm:max-w-[600px]", isFullScreen && "!max-w-[95vw] !h-[95vh]")}>
           <DialogHeader>
             <DialogTitle>{dialogTitle}</DialogTitle>
           </DialogHeader>
           <div className={cn("overflow-y-auto", isFullScreen ? "max-h-[80vh]" : "max-h-[400px]")}>
-            <ChipTable
-              chips={chips}
-              title={title}
-              selectedChips={selectedChips}
-              onCopyChip={handleCopyChip}
-              onCheckboxChange={handleCheckboxChange}
-            />
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">
+                    {title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Liberado"}
+                  </TableHead>
+                  <TableHead>Número do Chip</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {chips?.map((chip) => (
+                  <TableRow key={chip.numeroChip}>
+                    <TableCell>
+                      <Checkbox 
+                        onCheckedChange={(checked) => 
+                          handleCheckboxChange(
+                            chip.numeroChip, 
+                            checked as boolean, 
+                            title.includes("verificarDesconexao")
+                          )
+                        }
+                      />
+                    </TableCell>
+                    <TableCell 
+                      onClick={() => handleCopyChip(chip.numeroChip)}
+                      className={cn(
+                        "cursor-pointer hover:text-[#FFD700] transition-colors",
+                        selectedChips.includes(chip.numeroChip) ? "text-[#FFD700]" : ""
+                      )}
+                    >
+                      {chip.numeroChip}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </DialogContent>
       )}
