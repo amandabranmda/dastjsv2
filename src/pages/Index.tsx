@@ -29,11 +29,11 @@ const Index = () => {
             Zaps Dashboard
           </h1>
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Button variant="secondary" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none hover:scale-105 transition-transform">
+            <Button variant="secondary" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-[#9b87f5] hover:bg-[#8b77e5] transition-colors">
               <Contact2 className="w-4 h-4" />
               Contatos
             </Button>
-            <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-primary to-secondary hover:scale-105 transition-transform">
+            <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity">
               <MessageSquare className="w-4 h-4" />
               Criar Instância
             </Button>
