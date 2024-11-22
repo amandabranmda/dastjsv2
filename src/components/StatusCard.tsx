@@ -23,7 +23,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   
-  const { data: chips, refetch } = useQuery({
+  const { data: disconnectedChips, refetch: refetchDisconnected } = useQuery({
     queryKey: ["disconnected-chips"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -34,7 +34,21 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       if (error) throw error;
       return data;
     },
-    enabled: type === "closed"
+    enabled: type === "closed" && title.includes("verificarDesconexao")
+  });
+
+  const { data: waitingUnlockChips, refetch: refetchWaiting } = useQuery({
+    queryKey: ["waiting-unlock-chips"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("numeroChip")
+        .eq("statusChip", "aguardando desbloqueio");
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: type === "closed" && title.includes("Aguardando Desbloqueio")
   });
 
   const handleCopyChip = async (chipNumber: string) => {
@@ -56,11 +70,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
-  const handleCheckboxChange = async (chipNumber: string, checked: boolean) => {
+  const handleCheckboxChange = async (chipNumber: string, checked: boolean, isDisconnected: boolean) => {
     try {
+      const newStatus = checked ? "liberado" : (isDisconnected ? "❌verificarDesconexao" : "aguardando desbloqueio");
+      
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ statusChip: checked ? "liberado" : "❌verificarDesconexao" })
+        .update({ statusChip: newStatus })
         .eq("numeroChip", chipNumber);
 
       if (error) throw error;
@@ -70,7 +86,11 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         duration: 2000,
       });
 
-      refetch();
+      if (isDisconnected) {
+        refetchDisconnected();
+      } else {
+        refetchWaiting();
+      }
     } catch (err) {
       toast({
         variant: "destructive",
@@ -89,6 +109,9 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       setIsFullScreen(false);
     }
   };
+
+  const chips = title.includes("verificarDesconexao") ? disconnectedChips : waitingUnlockChips;
+  const dialogTitle = title.includes("verificarDesconexao") ? "Chips Desconectados" : "Chips Aguardando Desbloqueio";
 
   return (
     <Dialog>
@@ -123,7 +146,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       {type === "closed" && (
         <DialogContent className={cn("sm:max-w-[600px]", isFullScreen && "!max-w-[95vw] !h-[95vh]")}>
           <DialogHeader>
-            <DialogTitle>Chips Desconectados</DialogTitle>
+            <DialogTitle>{dialogTitle}</DialogTitle>
           </DialogHeader>
           <div className={cn("overflow-y-auto", isFullScreen ? "max-h-[80vh]" : "max-h-[400px]")}>
             <Table>
@@ -139,7 +162,11 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
                     <TableCell>
                       <Checkbox 
                         onCheckedChange={(checked) => 
-                          handleCheckboxChange(chip.numeroChip, checked as boolean)
+                          handleCheckboxChange(
+                            chip.numeroChip, 
+                            checked as boolean, 
+                            title.includes("verificarDesconexao")
+                          )
                         }
                       />
                     </TableCell>
