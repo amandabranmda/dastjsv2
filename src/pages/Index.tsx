@@ -20,103 +20,129 @@ const Index = () => {
   };
 
   return (
-    <div className="max-w-full mx-auto space-y-4 px-2 sm:px-4 md:px-6 lg:px-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
-        <h1 className="text-xl sm:text-2xl font-semibold">Zaps Dashboard</h1>
-        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
-          <Button variant="secondary" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none">
-            <Contact2 className="w-4 h-4" />
-            Contatos
-          </Button>
-          <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none">
-            <MessageSquare className="w-4 h-4" />
-            Criar Instância
-          </Button>
+    <div className="relative min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#2D3748] p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      
+      <div className="relative">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            Zaps Dashboard
+          </h1>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <Button variant="secondary" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none hover:scale-105 transition-transform">
+              <Contact2 className="w-4 h-4" />
+              Contatos
+            </Button>
+            <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-primary to-secondary hover:scale-105 transition-transform">
+              <MessageSquare className="w-4 h-4" />
+              Criar Instância
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Status Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <StatusCard 
-          title="Instâncias Enviando" 
-          value={isLoading ? "..." : instancesData?.sendingCount || 0} 
-          type="sending" 
-        />
-        <StatusCard 
-          title="Instâncias Online" 
-          value={isLoading ? "..." : instancesData?.onlineCount || 0} 
-          type="online" 
-        />
-        <StatusCard 
-          title="❌verificarDesconexao" 
-          value={isLoading ? "..." : instancesData?.closedCount || 0} 
-          type="closed" 
-        />
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="animate-fade-in [animation-delay:200ms]">
+            <StatusCard 
+              title="Instâncias Enviando" 
+              value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+              type="sending" 
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:400ms]">
+            <StatusCard 
+              title="Instâncias Online" 
+              value={isLoading ? "..." : instancesData?.onlineCount || 0} 
+              type="online" 
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:600ms]">
+            <StatusCard 
+              title="❌verificarDesconexao" 
+              value={isLoading ? "..." : instancesData?.closedCount || 0} 
+              type="closed" 
+            />
+          </div>
+        </div>
 
-      {/* Metric Cards - First Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <MetricCard
-          title="Cliques"
-          value={isLoading ? "..." : instancesData?.totalClicks || 0}
-          change="+45"
-          type="preset"
-        />
-        <MetricCard
-          title="Leads"
-          value={isLoading ? "..." : instancesData?.totalLeads || 0}
-          change={`${calculateOptinRate()}% optin`}
-          type="optin"
-        />
-        <MetricCard
-          title="Limite de envios"
-          value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
-          change={calculateRemainingMessages()}
-          type="sales"
-        />
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:800ms]">
+            <MetricCard
+              title="Cliques"
+              value={isLoading ? "..." : instancesData?.totalClicks || 0}
+              change="+45"
+              type="preset"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1000ms]">
+            <MetricCard
+              title="Leads"
+              value={isLoading ? "..." : instancesData?.totalLeads || 0}
+              change={`${calculateOptinRate()}% optin`}
+              type="optin"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1200ms]">
+            <MetricCard
+              title="Limite de envios"
+              value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
+              change={calculateRemainingMessages()}
+              type="sales"
+            />
+          </div>
+        </div>
 
-      {/* Metric Cards - Second Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <StatusCard 
-          title="Aguardando Desbloqueio" 
-          value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
-          type="closed" 
-        />
-        <MetricCard
-          title="Taxa de Resposta"
-          value="67%"
-          change="+5.2%"
-          type="optin"
-        />
-        <MetricCard
-          title="ROI"
-          value="R$ 15.4k"
-          change="+23.1%"
-          type="sales"
-        />
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:1400ms]">
+            <StatusCard 
+              title="Aguardando Desbloqueio" 
+              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+              type="closed" 
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1600ms]">
+            <MetricCard
+              title="Taxa de Resposta"
+              value="67%"
+              change="+5.2%"
+              type="optin"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1800ms]">
+            <MetricCard
+              title="ROI"
+              value="R$ 15.4k"
+              change="+23.1%"
+              type="sales"
+            />
+          </div>
+        </div>
 
-      {/* Metric Cards - Third Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <MetricCard
-          title="Engajamento"
-          value="89%"
-          change="+8.3%"
-          type="preset"
-        />
-        <MetricCard
-          title="Retenção"
-          value="78%"
-          change="+3.7%"
-          type="optin"
-        />
-        <MetricCard
-          title="Receita"
-          value="R$ 22.8k"
-          change="+15.4%"
-          type="sales"
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:2000ms]">
+            <MetricCard
+              title="Engajamento"
+              value="89%"
+              change="+8.3%"
+              type="preset"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:2200ms]">
+            <MetricCard
+              title="Retenção"
+              value="78%"
+              change="+3.7%"
+              type="optin"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:2400ms]">
+            <MetricCard
+              title="Receita"
+              value="R$ 22.8k"
+              change="+15.4%"
+              type="sales"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
