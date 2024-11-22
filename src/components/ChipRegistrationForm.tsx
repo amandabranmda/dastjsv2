@@ -131,20 +131,11 @@ export function ChipRegistrationForm() {
         <Card className="p-6 mt-4 bg-gradient-to-br from-emerald-900/20 to-emerald-800/10 backdrop-blur-sm">
           <div className="space-y-4">
             <div>
-              <Label>Número do Chip</Label>
-              <Input
-                value={formData.numeroChip}
-                readOnly
-                className="bg-white/5 border-emerald-600/20"
-              />
-            </div>
-            
-            <div>
               <Label>Local do Chip</Label>
               <Input
                 placeholder="Digite o local do chip"
                 value={formData.localChip}
-                onChange={(e) => setFormData({ ...formData, localChip: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, localChip: e.target.value, numeroChip: searchNumber })}
                 className="bg-white/5 border-emerald-600/20"
               />
             </div>
@@ -153,7 +144,7 @@ export function ChipRegistrationForm() {
               <Label>Status do Chip</Label>
               <Select 
                 value={formData.statusChip}
-                onValueChange={(value) => setFormData({ ...formData, statusChip: value })}
+                onValueChange={(value) => setFormData({ ...formData, statusChip: value, numeroChip: searchNumber })}
               >
                 <SelectTrigger className="bg-white/5 border-emerald-600/20">
                   <SelectValue placeholder="Selecione o status" />
