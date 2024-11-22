@@ -38,6 +38,11 @@ const Index = () => {
       {/* Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatusCard 
+          title="Instâncias Enviando" 
+          value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+          type="sending" 
+        />
+        <StatusCard 
           title="Instâncias Online" 
           value={isLoading ? "..." : instancesData?.onlineCount || 0} 
           type="online" 
@@ -46,11 +51,6 @@ const Index = () => {
           title="❌verificarDesconexao" 
           value={isLoading ? "..." : instancesData?.closedCount || 0} 
           type="closed" 
-        />
-        <StatusCard 
-          title="Instâncias Enviando" 
-          value={isLoading ? "..." : instancesData?.sendingCount || 0} 
-          type="sending" 
         />
       </div>
 
