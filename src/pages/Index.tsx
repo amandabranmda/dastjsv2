@@ -134,14 +134,6 @@ const Index = () => {
               type="optin"
             />
           </div>
-          <div className="animate-fade-in [animation-delay:2400ms]">
-            <MetricCard
-              title="Receita"
-              value="R$ 22.8k"
-              change="+15.4%"
-              type="sales"
-            />
-          </div>
         </div>
       </div>
     </div>
