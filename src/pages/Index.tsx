@@ -41,13 +41,6 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="animate-fade-in [animation-delay:200ms]">
-            <StatusCard 
-              title="Aguardando Desbloqueio" 
-              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
-              type="closed" 
-            />
-          </div>
           <div className="animate-fade-in [animation-delay:400ms]">
             <StatusCard 
               title="Instâncias Online" 
@@ -124,6 +117,13 @@ const Index = () => {
               value="67%"
               change="+5.2%"
               type="optin"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:2200ms]">
+            <StatusCard 
+              title="Aguardando Desbloqueio" 
+              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+              type="closed" 
             />
           </div>
         </div>
