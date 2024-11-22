@@ -78,11 +78,10 @@ const Index = () => {
 
       {/* Metric Cards - Second Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <MetricCard
-          title="Aguardando Desbloqueio"
-          value="324"
-          change="+12.5%"
-          type="preset"
+        <StatusCard 
+          title="Aguardando Desbloqueio" 
+          value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+          type="closed" 
         />
         <MetricCard
           title="Taxa de Resposta"

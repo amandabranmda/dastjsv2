@@ -8,7 +8,7 @@ export const useInstances = () => {
     queryKey: ["instances"],
     queryFn: async () => {
       try {
-        const [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult] = await Promise.all([
+        const [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult] = await Promise.all([
           supabase
             .from("1-chipsInstancias")
             .select("*")
@@ -36,11 +36,15 @@ export const useInstances = () => {
             .from("1-chipsInstancias")
             .select("limiteEnviosDia")
             .eq("projeto", "ProjetHotGPT")
-            .eq("statusInstancia", "open")
+            .eq("statusInstancia", "open"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("*")
+            .eq("statusChip", "aguardando desbloqueio")
         ]);
 
         // Check for errors in any of the results
-        const results = [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult];
+        const results = [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult];
         for (const result of results) {
           if (result.error) {
             throw result.error;
@@ -56,9 +60,10 @@ export const useInstances = () => {
           onlineCount: onlineResult.data?.length || 0,
           closedCount: closedResult.data?.length || 0,
           sendingCount: sendingResult.data?.length || 0,
+          waitingUnlockCount: waitingUnlockResult.data?.length || 0,
           totalLeads,
           totalClicks,
-          totalSendingLimit: availableSendingLimit // Now returning 35% of the total limit
+          totalSendingLimit: availableSendingLimit
         };
       } catch (error) {
         console.error('Error fetching instances:', error);
