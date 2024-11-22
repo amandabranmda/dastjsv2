@@ -17,7 +17,7 @@ export const useInstances = () => {
           supabase
             .from("1-chipsInstancias")
             .select("*")
-            .eq("statusChip", "aguardando desbloqueio"),
+            .eq("statusChip", "❌verificarDesconexao"),
           supabase
             .from("1-chipsInstancias")
             .select("*")
@@ -40,7 +40,7 @@ export const useInstances = () => {
           supabase
             .from("1-chipsInstancias")
             .select("*")
-            .eq("statusChip", "❌verificarDesconexao")
+            .eq("statusChip", "aguardando desbloqueio")
         ]);
 
         // Check for errors in any of the results
