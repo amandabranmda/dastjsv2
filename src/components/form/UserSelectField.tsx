@@ -37,7 +37,7 @@ export function UserSelectField({ form }: UserSelectFieldProps) {
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione um usuário" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="glass-dropdown">
                   {USER_OPTIONS.map((user) => (
                     <SelectItem key={user} value={user}>
                       {user}

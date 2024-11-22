@@ -118,7 +118,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione um número de chip" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="glass-dropdown">
                       {releasedChips?.map((chip) => (
                         <SelectItem key={chip.numeroChip} value={chip.numeroChip}>
                           {chip.numeroChip}
@@ -187,7 +187,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione um projeto" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="glass-dropdown">
                       {projects.map((project) => (
                         <SelectItem key={project} value={project}>
                           {project}

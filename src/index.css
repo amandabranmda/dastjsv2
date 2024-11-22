@@ -40,6 +40,10 @@
     @apply bg-card/70 backdrop-blur-md border border-white/10 shadow-lg;
   }
 
+  .glass-dropdown {
+    @apply bg-popover backdrop-blur-md border border-white/10 shadow-lg !important;
+  }
+
   .status-badge {
     @apply px-2 py-0.5 rounded-full text-xs font-medium;
   }

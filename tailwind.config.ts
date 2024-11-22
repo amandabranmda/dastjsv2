@@ -44,6 +44,10 @@ export default {
           DEFAULT: "#1E293B",
           foreground: "#FFFFFF",
         },
+        popover: {
+          DEFAULT: "rgba(17, 24, 39, 0.95)",
+          foreground: "#FFFFFF",
+        },
         card: {
           DEFAULT: "rgba(30, 41, 59, 0.7)",
           foreground: "#FFFFFF",
