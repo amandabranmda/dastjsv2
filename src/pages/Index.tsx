@@ -3,9 +3,13 @@ import { Contact2, MessageSquare } from "lucide-react";
 import { StatusCard } from "@/components/StatusCard";
 import { MetricCard } from "@/components/MetricCard";
 import { useInstances } from "@/hooks/useInstances";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { CreateInstanceForm } from "@/components/CreateInstanceForm";
+import { useState } from "react";
 
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const calculateOptinRate = () => {
     if (!instancesData?.totalClicks || !instancesData?.totalLeads) return "0";
@@ -33,10 +37,17 @@ const Index = () => {
               <Contact2 className="w-4 h-4" />
               Contatos
             </Button>
-            <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity">
-              <MessageSquare className="w-4 h-4" />
-              Criar Instância
-            </Button>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity">
+                  <MessageSquare className="w-4 h-4" />
+                  Criar Instância
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <CreateInstanceForm onClose={() => setDialogOpen(false)} />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
