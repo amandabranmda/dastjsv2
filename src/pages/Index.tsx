@@ -106,25 +106,6 @@ const Index = () => {
               type="closed" 
             />
           </div>
-          <div className="animate-fade-in [animation-delay:1800ms]">
-            <MetricCard
-              title="Engajamento"
-              value="89%"
-              change="+8.3%"
-              type="preset"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:2000ms]">
-            <MetricCard
-              title="Retenção"
-              value="78%"
-              change="+3.7%"
-              type="optin"
-            />
-          </div>
         </div>
       </div>
     </div>
