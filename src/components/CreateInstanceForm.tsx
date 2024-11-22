@@ -23,6 +23,7 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { UserSelectField } from "./form/UserSelectField"
+import { ChipSelectItem } from "./form/ChipSelectItem"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -96,128 +97,138 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="instanceName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome Instância</FormLabel>
-              <FormControl>
-                {!showCustomInstance ? (
-                  <Select 
-                    onValueChange={(value) => {
-                      if (value === "custom") {
-                        setShowCustomInstance(true);
-                        field.onChange("");
-                      } else {
-                        field.onChange(value);
-                      }
-                    }}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione um número de chip" />
-                    </SelectTrigger>
-                    <SelectContent className="glass-dropdown">
-                      {releasedChips?.map((chip) => (
-                        <SelectItem key={chip.numeroChip} value={chip.numeroChip}>
-                          {chip.numeroChip} - {chip.localChip || 'Sem local'}
-                        </SelectItem>
-                      ))}
-                      <SelectItem value="custom">Digitar manualmente</SelectItem>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <div className="space-y-2">
-                    <Input 
-                      placeholder="Digite o nome da instância" 
-                      {...field}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowCustomInstance(false)}
-                      className="w-full"
-                    >
-                      Voltar para lista
-                    </Button>
-                  </div>
-                )}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="evolution"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Evolution</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o evolution" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <UserSelectField form={form} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="instanceName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome Instância</FormLabel>
+                  <FormControl>
+                    {!showCustomInstance ? (
+                      <Select 
+                        onValueChange={(value) => {
+                          if (value === "custom") {
+                            setShowCustomInstance(true);
+                            field.onChange("");
+                          } else {
+                            field.onChange(value);
+                          }
+                        }}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className="h-20">
+                          <SelectValue placeholder="Selecione um número de chip" />
+                        </SelectTrigger>
+                        <SelectContent className="glass-dropdown max-h-[300px]">
+                          {releasedChips?.map((chip) => (
+                            <ChipSelectItem 
+                              key={chip.numeroChip}
+                              numeroChip={chip.numeroChip}
+                              localChip={chip.localChip}
+                            />
+                          ))}
+                          <SelectItem value="custom">Digitar manualmente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="space-y-2">
+                        <Input 
+                          placeholder="Digite o nome da instância" 
+                          {...field}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowCustomInstance(false)}
+                          className="w-full"
+                        >
+                          Voltar para lista
+                        </Button>
+                      </div>
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="project"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Projeto</FormLabel>
-              <FormControl>
-                {!showCustomProject ? (
-                  <Select 
-                    onValueChange={(value) => {
-                      if (value === "Outro") {
-                        setShowCustomProject(true);
-                        field.onChange("");
-                      } else {
-                        field.onChange(value);
-                      }
-                    }} 
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione um projeto" />
-                    </SelectTrigger>
-                    <SelectContent className="glass-dropdown">
-                      {projects.map((project) => (
-                        <SelectItem key={project} value={project}>
-                          {project}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <div className="space-y-2">
-                    <Input 
-                      placeholder="Digite o nome do projeto" 
-                      {...field}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowCustomProject(false)}
-                      className="w-full"
-                    >
-                      Voltar para lista
-                    </Button>
-                  </div>
-                )}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-end space-x-4">
+            <FormField
+              control={form.control}
+              name="evolution"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Evolution</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Digite o evolution" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="space-y-6">
+            <UserSelectField form={form} />
+
+            <FormField
+              control={form.control}
+              name="project"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Projeto</FormLabel>
+                  <FormControl>
+                    {!showCustomProject ? (
+                      <Select 
+                        onValueChange={(value) => {
+                          if (value === "Outro") {
+                            setShowCustomProject(true);
+                            field.onChange("");
+                          } else {
+                            field.onChange(value);
+                          }
+                        }} 
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um projeto" />
+                        </SelectTrigger>
+                        <SelectContent className="glass-dropdown">
+                          {projects.map((project) => (
+                            <SelectItem key={project} value={project}>
+                              {project}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="space-y-2">
+                        <Input 
+                          placeholder="Digite o nome do projeto" 
+                          {...field}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowCustomProject(false)}
+                          className="w-full"
+                        >
+                          Voltar para lista
+                        </Button>
+                      </div>
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-4 pt-4">
           <Button variant="outline" type="button" onClick={onClose}>
             Cancelar
           </Button>
