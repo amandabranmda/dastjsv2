@@ -72,7 +72,9 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
 
   const handleCheckboxChange = async (chipNumber: string, checked: boolean, isDisconnected: boolean) => {
     try {
-      const newStatus = checked ? "liberado" : (isDisconnected ? "❌verificarDesconexao" : "aguardando desbloqueio");
+      const newStatus = checked ? 
+        (isDisconnected ? "aguardando desbloqueio" : "liberado") : 
+        (isDisconnected ? "❌verificarDesconexao" : "aguardando desbloqueio");
       
       const { error } = await supabase
         .from("1-chipsInstancias")
