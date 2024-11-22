@@ -61,7 +61,7 @@ export function QRCodeDisplay({ base64Image, isLoading, instanceName }: QRCodeDi
         variant="ghost"
         size="icon"
         onClick={toggleFullScreen}
-        className="absolute top-2 right-2 text-sky-400 hover:text-sky-300"
+        className="md:hidden absolute top-2 right-2 text-sky-400 hover:text-sky-300"
       >
         {isFullScreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
       </Button>
