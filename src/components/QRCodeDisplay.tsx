@@ -72,8 +72,6 @@ export function QRCodeDisplay({ base64Image, isLoading, instanceName }: QRCodeDi
         </h3>
       )}
       
-      <h3 className="text-base sm:text-lg font-semibold text-sky-400">QR Code da Instância</h3>
-      
       <div className={`flex items-center justify-center bg-white p-2 sm:p-4 rounded-lg ${
         isFullScreen ? 'w-auto h-[80vh] aspect-square' : 'w-full aspect-square max-w-[250px] sm:max-w-[280px]'
       }`}>
@@ -84,6 +82,7 @@ export function QRCodeDisplay({ base64Image, isLoading, instanceName }: QRCodeDi
         />
       </div>
       
+      <h3 className="text-base sm:text-lg font-semibold text-sky-400">QR Code da Instância</h3>
       <p className="text-sm text-sky-400/80">Escaneie o QR Code para conectar</p>
     </Card>
   );
