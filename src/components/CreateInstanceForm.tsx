@@ -13,6 +13,7 @@ import { ChipSelectItem } from "./form/ChipSelectItem"
 import { CustomFormField } from "./form/FormField"
 import { DeviceSelectField } from "./form/DeviceSelectField"
 import { Input } from "./ui/input"
+import { EvolutionSelectField } from "./form/EvolutionSelectField"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -142,12 +143,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
           </CustomFormField>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <CustomFormField
-              form={form}
-              name="evolution"
-              label="Evolution"
-              placeholder="Digite o evolution"
-            />
+            <EvolutionSelectField form={form} />
 
             <CustomFormField
               form={form}
