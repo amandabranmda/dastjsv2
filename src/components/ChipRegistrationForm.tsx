@@ -25,6 +25,18 @@ export function ChipRegistrationForm() {
     statusChip: ""
   });
 
+  const clearForm = () => {
+    setSearchNumber("");
+    setChipExists(false);
+    setChipDetails(null);
+    setShowRegistrationForm(false);
+    setFormData({
+      numeroChip: "",
+      localChip: "",
+      statusChip: ""
+    });
+  };
+
   const handleSearch = async () => {
     if (!searchNumber.trim()) {
       toast.error("Digite um número de chip");
@@ -48,6 +60,7 @@ export function ChipRegistrationForm() {
         setChipDetails(null);
         setShowRegistrationForm(true);
         setFormData({ ...formData, numeroChip: searchNumber });
+        setSearchNumber(""); // Clear search when showing registration form
       }
     } catch (error) {
       console.error("Erro ao buscar chip:", error);
@@ -70,13 +83,7 @@ export function ChipRegistrationForm() {
       if (error) throw error;
 
       toast.success("Chip cadastrado com sucesso!");
-      setShowRegistrationForm(false);
-      setSearchNumber("");
-      setFormData({
-        numeroChip: "",
-        localChip: "",
-        statusChip: ""
-      });
+      clearForm();
     } catch (error) {
       console.error("Erro ao cadastrar chip:", error);
       toast.error("Erro ao cadastrar chip");
@@ -87,7 +94,16 @@ export function ChipRegistrationForm() {
     <div className="w-full">
       <Card className={`p-6 ${showRegistrationForm ? 'bg-gradient-to-br from-emerald-900/20 to-emerald-800/10' : 'bg-gradient-to-br from-sky-900/20 to-sky-800/10'} backdrop-blur-sm transition-colors duration-300`}>
         <div className="space-y-4">
-          <Label htmlFor="chipNumber">Cadastro de Chip</Label>
+          <div className="flex justify-between items-center">
+            <Label htmlFor="chipNumber">Cadastro de Chip</Label>
+            <Button 
+              variant="ghost" 
+              onClick={clearForm}
+              className="text-sm hover:bg-white/5"
+            >
+              Limpar
+            </Button>
+          </div>
           <div className="flex gap-2">
             <Input
               id="chipNumber"
