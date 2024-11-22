@@ -8,9 +8,10 @@ interface ChipsTableProps {
   onCheckboxChange: (chipNumber: string, checked: boolean, isDisconnected: boolean) => void;
   onCopyChip: (chipNumber: string) => void;
   selectedChips: string[];
+  checkedChips: string[];
 }
 
-export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selectedChips }: ChipsTableProps) {
+export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selectedChips, checkedChips }: ChipsTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -27,6 +28,7 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
           <TableRow key={chip.numeroChip}>
             <TableCell>
               <Checkbox 
+                checked={title.includes("Chips Liberados") ? checkedChips.includes(chip.numeroChip) : undefined}
                 onCheckedChange={(checked) => 
                   onCheckboxChange(
                     chip.numeroChip, 

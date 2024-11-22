@@ -18,6 +18,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   const { toast } = useToast();
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [checkedChips, setCheckedChips] = useState<string[]>([]);
 
   const { data: disconnectedChips, refetch: refetchDisconnected } = useQuery({
     queryKey: ["disconnected-chips"],
@@ -81,6 +82,17 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   };
 
   const handleCheckboxChange = async (chipNumber: string, checked: boolean, isDisconnected: boolean) => {
+    // For "Chips Liberados" card, only update the local state
+    if (title.includes("Chips Liberados")) {
+      if (checked) {
+        setCheckedChips(prev => [...prev, chipNumber]);
+      } else {
+        setCheckedChips(prev => prev.filter(chip => chip !== chipNumber));
+      }
+      return;
+    }
+
+    // For other cards, keep the existing behavior
     try {
       const newStatus = checked ? 
         (isDisconnected ? "aguardando desbloqueio" : "liberado") : 
@@ -176,6 +188,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
               onCheckboxChange={handleCheckboxChange}
               onCopyChip={handleCopyChip}
               selectedChips={selectedChips}
+              checkedChips={checkedChips}
             />
           </div>
         </DialogContent>
