@@ -2,15 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form } from "@/components/ui/form"
 import { toast } from "sonner"
 import {
   Select,
@@ -24,6 +16,8 @@ import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { UserSelectField } from "./form/UserSelectField"
 import { ChipSelectItem } from "./form/ChipSelectItem"
+import { CustomFormField } from "./form/FormField"
+import { Input } from "./ui/input"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -76,7 +70,6 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // Here you would add your webhook URL
       const response = await fetch('YOUR_WEBHOOK_URL', {
         method: 'POST',
         headers: {
@@ -97,134 +90,115 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="instanceName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome Instância</FormLabel>
-                  <FormControl>
-                    {!showCustomInstance ? (
-                      <Select 
-                        onValueChange={(value) => {
-                          if (value === "custom") {
-                            setShowCustomInstance(true);
-                            field.onChange("");
-                          } else {
-                            field.onChange(value);
-                          }
-                        }}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger className="h-20">
-                          <SelectValue placeholder="Selecione um número de chip" />
-                        </SelectTrigger>
-                        <SelectContent className="glass-dropdown max-h-[300px]">
-                          {releasedChips?.map((chip) => (
-                            <ChipSelectItem 
-                              key={chip.numeroChip}
-                              numeroChip={chip.numeroChip}
-                              localChip={chip.localChip}
-                            />
-                          ))}
-                          <SelectItem value="custom">Digitar manualmente</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <div className="space-y-2">
-                        <Input 
-                          placeholder="Digite o nome da instância" 
-                          {...field}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setShowCustomInstance(false)}
-                          className="w-full"
-                        >
-                          Voltar para lista
-                        </Button>
-                      </div>
-                    )}
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <div className="grid grid-cols-1 gap-6">
+          <CustomFormField
+            form={form}
+            name="instanceName"
+            label="Nome Instância"
+            placeholder="Selecione um número de chip"
+          >
+            {!showCustomInstance ? (
+              <Select 
+                onValueChange={(value) => {
+                  if (value === "custom") {
+                    setShowCustomInstance(true);
+                    form.setValue("instanceName", "");
+                  } else {
+                    form.setValue("instanceName", value);
+                  }
+                }}
+              >
+                <SelectTrigger className="h-20 bg-white/5 border-white/10 text-white">
+                  <SelectValue placeholder="Selecione um número de chip" />
+                </SelectTrigger>
+                <SelectContent className="glass-dropdown max-h-[300px]">
+                  {releasedChips?.map((chip) => (
+                    <ChipSelectItem 
+                      key={chip.numeroChip}
+                      numeroChip={chip.numeroChip}
+                      localChip={chip.localChip}
+                    />
+                  ))}
+                  <SelectItem value="custom">Digitar manualmente</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <div className="space-y-2">
+                <Input 
+                  placeholder="Digite o nome da instância" 
+                  className="bg-white/5 border-white/10 text-white"
+                  onChange={(e) => form.setValue("instanceName", e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomInstance(false)}
+                  className="w-full"
+                >
+                  Voltar para lista
+                </Button>
+              </div>
+            )}
+          </CustomFormField>
 
-            <FormField
-              control={form.control}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CustomFormField
+              form={form}
               name="evolution"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Evolution</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Digite o evolution" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Evolution"
+              placeholder="Digite o evolution"
             />
-          </div>
 
-          <div className="space-y-6">
-            <UserSelectField form={form} />
-
-            <FormField
-              control={form.control}
+            <CustomFormField
+              form={form}
               name="project"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Projeto</FormLabel>
-                  <FormControl>
-                    {!showCustomProject ? (
-                      <Select 
-                        onValueChange={(value) => {
-                          if (value === "Outro") {
-                            setShowCustomProject(true);
-                            field.onChange("");
-                          } else {
-                            field.onChange(value);
-                          }
-                        }} 
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione um projeto" />
-                        </SelectTrigger>
-                        <SelectContent className="glass-dropdown">
-                          {projects.map((project) => (
-                            <SelectItem key={project} value={project}>
-                              {project}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <div className="space-y-2">
-                        <Input 
-                          placeholder="Digite o nome do projeto" 
-                          {...field}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setShowCustomProject(false)}
-                          className="w-full"
-                        >
-                          Voltar para lista
-                        </Button>
-                      </div>
-                    )}
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              label="Projeto"
+              placeholder="Selecione um projeto"
+            >
+              {!showCustomProject ? (
+                <Select 
+                  onValueChange={(value) => {
+                    if (value === "Outro") {
+                      setShowCustomProject(true);
+                      form.setValue("project", "");
+                    } else {
+                      form.setValue("project", value);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                    <SelectValue placeholder="Selecione um projeto" />
+                  </SelectTrigger>
+                  <SelectContent className="glass-dropdown">
+                    {projects.map((project) => (
+                      <SelectItem key={project} value={project}>
+                        {project}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="space-y-2">
+                  <Input 
+                    placeholder="Digite o nome do projeto" 
+                    className="bg-white/5 border-white/10 text-white"
+                    onChange={(e) => form.setValue("project", e.target.value)}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowCustomProject(false)}
+                    className="w-full"
+                  >
+                    Voltar para lista
+                  </Button>
+                </div>
               )}
-            />
+            </CustomFormField>
+
+            <UserSelectField form={form} />
           </div>
         </div>
 
