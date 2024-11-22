@@ -100,6 +100,13 @@ const Index = () => {
             />
           </div>
           <div className="animate-fade-in [animation-delay:1600ms]">
+            <StatusCard 
+              title="Copy Aguardando Desbloqueio" 
+              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+              type="closed" 
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1800ms]">
             <MetricCard
               title="Engajamento"
               value="89%"
@@ -107,22 +114,14 @@ const Index = () => {
               type="preset"
             />
           </div>
-          <div className="animate-fade-in [animation-delay:1800ms]">
-            <MetricCard
-              title="Retenção"
-              value="78%"
-              change="+3.7%"
-              type="optin"
-            />
-          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
           <div className="animate-fade-in [animation-delay:2000ms]">
             <MetricCard
-              title="Chips Liberados"
-              value="67%"
-              change="+5.2%"
+              title="Retenção"
+              value="78%"
+              change="+3.7%"
               type="optin"
             />
           </div>
