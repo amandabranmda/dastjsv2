@@ -6,8 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
+import { ChipsTable } from "./ChipsTable";
 
 interface StatusCardProps {
   title: string;
@@ -25,7 +24,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip")
+        .select("numeroChip,localChip")
         .eq("statusChip", "❌verificarDesconexao");
 
       if (error) throw error;
@@ -39,7 +38,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip")
+        .select("numeroChip,localChip")
         .eq("statusChip", "aguardando desbloqueio");
 
       if (error) throw error;
@@ -53,13 +52,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip")
+        .select("numeroChip,localChip")
         .eq("statusChip", "liberado");
 
       if (error) throw error;
       return data;
     },
-    enabled: type === "closed" && title.includes("Copy Aguardando Desbloqueio")
+    enabled: type === "closed" && title.includes("Chips Liberados")
   });
 
   const handleCopyChip = async (chipNumber: string) => {
@@ -171,42 +170,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
             <DialogTitle>{dialogTitle}</DialogTitle>
           </DialogHeader>
           <div className={cn("overflow-y-auto", isFullScreen ? "max-h-[80vh]" : "max-h-[400px]")}>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[50px]">
-                    {title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Liberado"}
-                  </TableHead>
-                  <TableHead>Número do Chip</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {chips?.map((chip) => (
-                  <TableRow key={chip.numeroChip}>
-                    <TableCell>
-                      <Checkbox 
-                        onCheckedChange={(checked) => 
-                          handleCheckboxChange(
-                            chip.numeroChip, 
-                            checked as boolean, 
-                            title.includes("verificarDesconexao")
-                          )
-                        }
-                      />
-                    </TableCell>
-                    <TableCell 
-                      onClick={() => handleCopyChip(chip.numeroChip)}
-                      className={cn(
-                        "cursor-pointer hover:text-[#FFD700] transition-colors",
-                        selectedChips.includes(chip.numeroChip) ? "text-[#FFD700]" : ""
-                      )}
-                    >
-                      {chip.numeroChip}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <ChipsTable
+              chips={chips || []}
+              title={title}
+              onCheckboxChange={handleCheckboxChange}
+              onCopyChip={handleCopyChip}
+              selectedChips={selectedChips}
+            />
           </div>
         </DialogContent>
       )}
