@@ -85,7 +85,7 @@ export function ChipRegistrationForm() {
 
   return (
     <div className="w-full">
-      <Card className="p-6 bg-gradient-to-br from-sky-900/20 to-sky-800/10 backdrop-blur-sm">
+      <Card className={`p-6 ${showRegistrationForm ? 'bg-gradient-to-br from-emerald-900/20 to-emerald-800/10' : 'bg-gradient-to-br from-sky-900/20 to-sky-800/10'} backdrop-blur-sm transition-colors duration-300`}>
         <div className="space-y-4">
           <Label htmlFor="chipNumber">Cadastro de Chip</Label>
           <div className="flex gap-2">
@@ -94,22 +94,20 @@ export function ChipRegistrationForm() {
               placeholder="Digite o número do chip"
               value={searchNumber}
               onChange={(e) => setSearchNumber(e.target.value)}
-              className="bg-white/5 border-sky-600/20"
+              className={`bg-white/5 ${showRegistrationForm ? 'border-emerald-600/20' : 'border-sky-600/20'}`}
             />
             <Button 
               onClick={handleSearch}
               disabled={isSearching}
-              className="bg-sky-600 hover:bg-sky-700"
+              className={showRegistrationForm ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-sky-600 hover:bg-sky-700'}
             >
               {isSearching ? "Buscando..." : "Buscar"}
             </Button>
           </div>
         </div>
-      </Card>
 
-      {chipExists && chipDetails && (
-        <Card className="p-6 mt-4 bg-red-900/20 backdrop-blur-sm border-red-600/20">
-          <div className="space-y-4">
+        {chipExists && chipDetails && (
+          <div className="mt-4 space-y-4">
             <p className="text-center text-red-200 mb-4">
               Este número já consta no banco de dados
             </p>
@@ -124,12 +122,10 @@ export function ChipRegistrationForm() {
               </div>
             </div>
           </div>
-        </Card>
-      )}
+        )}
 
-      {showRegistrationForm && (
-        <Card className="p-6 mt-4 bg-gradient-to-br from-emerald-900/20 to-emerald-800/10 backdrop-blur-sm">
-          <div className="space-y-4">
+        {showRegistrationForm && (
+          <div className="mt-4 space-y-4">
             <div>
               <Label>Local do Chip</Label>
               <Input
@@ -165,8 +161,8 @@ export function ChipRegistrationForm() {
               Cadastrar
             </Button>
           </div>
-        </Card>
-      )}
+        )}
+      </Card>
     </div>
   );
 }
