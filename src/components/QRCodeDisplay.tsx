@@ -21,11 +21,13 @@ export function QRCodeDisplay({ base64Image, isLoading }: QRCodeDisplayProps) {
   return (
     <Card className="glass-card p-6 flex flex-col items-center gap-4">
       <h3 className="text-lg font-semibold text-sky-400">QR Code da Instância</h3>
-      <img
-        src={`data:image/png;base64,${base64Image}`}
-        alt="QR Code"
-        className="max-w-[200px] w-full"
-      />
+      <div className="w-[300px] h-[300px] flex items-center justify-center bg-white p-4 rounded-lg">
+        <img
+          src={base64Image}
+          alt="QR Code"
+          className="w-full h-full object-contain"
+        />
+      </div>
       <p className="text-sm text-sky-400/80">Escaneie o QR Code para conectar</p>
     </Card>
   );

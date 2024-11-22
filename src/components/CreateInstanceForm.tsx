@@ -77,7 +77,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
       const data = await response.json();
       
       if (data.qrcode) {
-        setQrCode(data.qrcode);
+        setQrCode(data.qrcode); // Now we use the full base64 string directly
         toast.success(`Instância ${data.instancia} criada com sucesso!`);
       } else {
         throw new Error('QR Code não recebido');
