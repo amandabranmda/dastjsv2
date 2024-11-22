@@ -79,32 +79,6 @@ const Index = () => {
           </div>
         </div>
 
-        <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
-              <AlertDialogDescription>
-                {isGeneratingQR 
-                  ? "Você está gerando um QR Code. Se fechar agora, perderá o progresso."
-                  : "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  setShowCloseAlert(false);
-                  setDialogOpen(false);
-                  setIsGeneratingQR(false);
-                  setIsCheckingStatus(false);
-                }}
-              >
-                Sim, fechar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="animate-fade-in [animation-delay:400ms]">
             <StatusCard 
@@ -156,7 +130,7 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 mt-6">
           <div className="animate-fade-in [animation-delay:1400ms]">
             <StatusCard 
               title="Aguardando Desbloqueio" 
@@ -173,10 +147,38 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="col-span-full mt-6">
-          <ChipRegistrationForm />
+        <div className="grid grid-cols-1 mt-6">
+          <div className="animate-fade-in [animation-delay:1800ms]">
+            <ChipRegistrationForm />
+          </div>
         </div>
       </div>
+
+      <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isGeneratingQR 
+                ? "Você está gerando um QR Code. Se fechar agora, perderá o progresso."
+                : "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowCloseAlert(false);
+                setDialogOpen(false);
+                setIsGeneratingQR(false);
+                setIsCheckingStatus(false);
+              }}
+            >
+              Sim, fechar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
