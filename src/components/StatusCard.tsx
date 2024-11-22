@@ -125,13 +125,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
 
   const chips = title.includes("verificarDesconexao") 
     ? disconnectedChips 
-    : title.includes("Copy Aguardando Desbloqueio")
+    : title.includes("Chips Liberados")
     ? releasedChips
     : waitingUnlockChips;
     
   const dialogTitle = title.includes("verificarDesconexao") 
     ? "Chips Desconectados" 
-    : title.includes("Copy Aguardando Desbloqueio")
+    : title.includes("Chips Liberados")
     ? "Chips Liberados"
     : "Chips Aguardando Desbloqueio";
 
