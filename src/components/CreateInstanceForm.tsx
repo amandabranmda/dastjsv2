@@ -173,6 +173,7 @@ export function CreateInstanceForm({
               base64Image={qrCode} 
               isLoading={isLoading}
               instanceName={instanceName}
+              isCheckingStatus={shouldCheckStatus}
             />
           </div>
         )}
