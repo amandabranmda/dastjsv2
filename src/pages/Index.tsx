@@ -43,9 +43,9 @@ const Index = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="animate-fade-in [animation-delay:200ms]">
             <StatusCard 
-              title="Instâncias Enviando" 
-              value={isLoading ? "..." : instancesData?.sendingCount || 0} 
-              type="sending" 
+              title="Aguardando Desbloqueio" 
+              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+              type="closed" 
             />
           </div>
           <div className="animate-fade-in [animation-delay:400ms]">
