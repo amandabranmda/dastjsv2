@@ -164,7 +164,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
               <span className={cn(
                 "w-2 h-2 rounded-full",
                 type === "online" && "bg-[#10B981]",
-                type === "closed" && "bg-destructive",
+                type === "closed" && "bg-[#0EA5E9]",
                 type === "sending" && "bg-[#9333EA]"
               )} />
               <h3 className="text-sm text-gray-400 font-medium">{title}</h3>
