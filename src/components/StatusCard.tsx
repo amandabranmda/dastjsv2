@@ -51,6 +51,20 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     enabled: type === "closed" && title.includes("Aguardando Desbloqueio")
   });
 
+  const { data: releasedChips, refetch: refetchReleased } = useQuery({
+    queryKey: ["released-chips"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("numeroChip")
+        .eq("statusChip", "liberado");
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: title.includes("Chips Liberados")
+  });
+
   const handleCopyChip = async (chipNumber: string) => {
     try {
       await navigator.clipboard.writeText(chipNumber);
@@ -93,6 +107,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       } else {
         refetchWaiting();
       }
+      refetchReleased();
     } catch (err) {
       toast({
         variant: "destructive",
@@ -112,8 +127,17 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
-  const chips = title.includes("verificarDesconexao") ? disconnectedChips : waitingUnlockChips;
-  const dialogTitle = title.includes("verificarDesconexao") ? "Chips Desconectados" : "Chips Aguardando Desbloqueio";
+  const chips = title.includes("verificarDesconexao") 
+    ? disconnectedChips 
+    : title.includes("Aguardando Desbloqueio")
+    ? waitingUnlockChips
+    : releasedChips;
+    
+  const dialogTitle = title.includes("verificarDesconexao") 
+    ? "Chips Desconectados" 
+    : title.includes("Aguardando Desbloqueio")
+    ? "Chips Aguardando Desbloqueio"
+    : "Chips Liberados";
 
   return (
     <Dialog>
@@ -145,7 +169,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         </Card>
       </DialogTrigger>
 
-      {type === "closed" && (
+      {(type === "closed" || title.includes("Chips Liberados")) && (
         <DialogContent className={cn("sm:max-w-[600px]", isFullScreen && "!max-w-[95vw] !h-[95vh]")}>
           <DialogHeader>
             <DialogTitle>{dialogTitle}</DialogTitle>
@@ -154,7 +178,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">{title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Liberado"}</TableHead>
+                  <TableHead className="w-[50px]">
+                    {title.includes("verificarDesconexao") 
+                      ? "Pedido Desbloqueio" 
+                      : title.includes("Aguardando Desbloqueio")
+                      ? "Liberado"
+                      : "Status"}
+                  </TableHead>
                   <TableHead>Número do Chip</TableHead>
                 </TableRow>
               </TableHeader>
