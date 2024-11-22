@@ -17,7 +17,7 @@ export const useInstances = () => {
           supabase
             .from("1-chipsInstancias")
             .select("*")
-            .eq("statusChip", "❌verificarDesconexao"),
+            .eq("statusChip", "aguardando desbloqueio"),
           supabase
             .from("1-chipsInstancias")
             .select("*")
@@ -40,7 +40,7 @@ export const useInstances = () => {
           supabase
             .from("1-chipsInstancias")
             .select("*")
-            .eq("statusChip", "aguardando desbloqueio")
+            .eq("statusChip", "❌verificarDesconexao")
         ]);
 
         // Check for errors in any of the results
@@ -54,7 +54,7 @@ export const useInstances = () => {
         const totalLeads = leadsResult.data?.reduce((sum, row) => sum + (row.enviosDia || 0), 0) || 0;
         const totalClicks = clicksResult.data?.reduce((sum, row) => sum + (row.cliquesRedirect || 0), 0) || 0;
         const totalSendingLimit = limitsResult.data?.reduce((sum, row) => sum + (row.limiteEnviosDia || 0), 0) || 0;
-        const availableSendingLimit = Math.round(totalSendingLimit * 0.35); // Calculate 35% of total limit
+        const availableSendingLimit = Math.round(totalSendingLimit * 0.35);
 
         return {
           onlineCount: onlineResult.data?.length || 0,
