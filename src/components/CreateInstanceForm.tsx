@@ -36,6 +36,7 @@ const formSchema = z.object({
 export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [instanceName, setInstanceName] = useState<string | null>(null);
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
@@ -77,7 +78,8 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
       const data = await response.json();
       
       if (data.qrcode) {
-        setQrCode(data.qrcode); // Now we use the full base64 string directly
+        setQrCode(data.qrcode);
+        setInstanceName(data.instancia);
         toast.success(`Instância ${data.instancia} criada com sucesso!`);
       } else {
         throw new Error('QR Code não recebido');
@@ -85,6 +87,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
     } catch (error) {
       toast.error("Erro ao criar instância. Tente novamente.");
       setQrCode(null);
+      setInstanceName(null);
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +115,11 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
 
         {(isLoading || qrCode) && (
           <div className="mt-6">
-            <QRCodeDisplay base64Image={qrCode} isLoading={isLoading} />
+            <QRCodeDisplay 
+              base64Image={qrCode} 
+              isLoading={isLoading}
+              instanceName={instanceName}
+            />
           </div>
         )}
 
