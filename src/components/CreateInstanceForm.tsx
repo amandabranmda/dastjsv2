@@ -13,6 +13,7 @@ import { DeviceSelectField } from "./form/DeviceSelectField"
 import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
 import { QRCodeDisplay } from "./QRCodeDisplay"
+import { StatusResultCard } from "./StatusResultCard"
 import { useState, useEffect } from "react"
 
 const formSchema = z.object({
@@ -49,6 +50,8 @@ export function CreateInstanceForm({
   const [instanceName, setInstanceName] = useState<string | null>(null);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [shouldCheckStatus, setShouldCheckStatus] = useState(false);
+  const [showStatusCard, setShowStatusCard] = useState(false);
+  const [instanceStatus, setInstanceStatus] = useState<string | null>(null);
 
   const { data: chipStatus, refetch: refetchChipStatus } = useQuery({
     queryKey: ["chip-status", selectedChip],
@@ -73,7 +76,9 @@ export function CreateInstanceForm({
       const timer = setTimeout(() => {
         refetchChipStatus().then((result) => {
           if (result.data) {
-            toast.info(`Status da instância: ${result.data}`);
+            setInstanceStatus(result.data);
+            setShowStatusCard(true);
+            toast.info(`Status da instância verificado!`);
           }
           setShouldCheckStatus(false);
           onStatusCheckComplete();
@@ -191,6 +196,13 @@ export function CreateInstanceForm({
           </Button>
         </div>
       </form>
+
+      {showStatusCard && instanceStatus && (
+        <StatusResultCard 
+          status={instanceStatus} 
+          onClose={() => setShowStatusCard(false)} 
+        />
+      )}
     </Form>
   );
 }
