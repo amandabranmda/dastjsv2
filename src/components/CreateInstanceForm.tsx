@@ -12,6 +12,8 @@ import { CustomFormField } from "./form/FormField"
 import { DeviceSelectField } from "./form/DeviceSelectField"
 import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
+import { QRCodeDisplay } from "./QRCodeDisplay"
+import { useState } from "react"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -32,6 +34,9 @@ const formSchema = z.object({
 })
 
 export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
     queryFn: async () => {
@@ -58,6 +63,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      setIsLoading(true);
       const response = await fetch('YOUR_WEBHOOK_URL', {
         method: 'POST',
         headers: {
@@ -68,10 +74,19 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
 
       if (!response.ok) throw new Error('Falha ao criar instância');
 
-      toast.success("Instância criada com sucesso!");
-      onClose();
+      const data = await response.json();
+      
+      if (data.qrCode) {
+        setQrCode(data.qrCode);
+        toast.success("Instância criada com sucesso!");
+      } else {
+        throw new Error('QR Code não recebido');
+      }
     } catch (error) {
       toast.error("Erro ao criar instância. Tente novamente.");
+      setQrCode(null);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -95,6 +110,12 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
+        {(isLoading || qrCode) && (
+          <div className="mt-6">
+            <QRCodeDisplay base64Image={qrCode} isLoading={isLoading} />
+          </div>
+        )}
+
         <div className="flex justify-end space-x-4 pt-6 border-t border-sky-600/20">
           <Button 
             variant="outline" 
@@ -107,8 +128,9 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
           <Button 
             type="submit"
             className="bg-sky-600 hover:bg-sky-700 text-white transition-colors"
+            disabled={isLoading}
           >
-            Criar Instância
+            {isLoading ? "Criando..." : "Criar Instância"}
           </Button>
         </div>
       </form>

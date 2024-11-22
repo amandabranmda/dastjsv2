@@ -1,0 +1,32 @@
+import { Card } from "./ui/card";
+
+interface QRCodeDisplayProps {
+  base64Image: string | null;
+  isLoading: boolean;
+}
+
+export function QRCodeDisplay({ base64Image, isLoading }: QRCodeDisplayProps) {
+  if (isLoading) {
+    return (
+      <Card className="glass-card p-6 flex items-center justify-center">
+        <div className="text-sky-400">Aguardando QR Code...</div>
+      </Card>
+    );
+  }
+
+  if (!base64Image) {
+    return null;
+  }
+
+  return (
+    <Card className="glass-card p-6 flex flex-col items-center gap-4">
+      <h3 className="text-lg font-semibold text-sky-400">QR Code da Instância</h3>
+      <img
+        src={`data:image/png;base64,${base64Image}`}
+        alt="QR Code"
+        className="max-w-[200px] w-full"
+      />
+      <p className="text-sm text-sky-400/80">Escaneie o QR Code para conectar</p>
+    </Card>
+  );
+}
