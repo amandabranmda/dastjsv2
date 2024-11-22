@@ -20,6 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { supabase } from "@/lib/supabase"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -45,6 +47,20 @@ const projects = [
 
 export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
   const [showCustomProject, setShowCustomProject] = useState(false);
+  const [showCustomInstance, setShowCustomInstance] = useState(false);
+  
+  const { data: releasedChips } = useQuery({
+    queryKey: ["released-chips"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("numeroChip")
+        .eq("statusChip", "liberado");
+
+      if (error) throw error;
+      return data;
+    }
+  });
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -86,7 +102,47 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
             <FormItem>
               <FormLabel>Nome Instância</FormLabel>
               <FormControl>
-                <Input placeholder="Digite o nome da instância" {...field} />
+                {!showCustomInstance ? (
+                  <Select 
+                    onValueChange={(value) => {
+                      if (value === "custom") {
+                        setShowCustomInstance(true);
+                        field.onChange("");
+                      } else {
+                        field.onChange(value);
+                      }
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um número de chip" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {releasedChips?.map((chip) => (
+                        <SelectItem key={chip.numeroChip} value={chip.numeroChip}>
+                          {chip.numeroChip}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="custom">Digitar manualmente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="space-y-2">
+                    <Input 
+                      placeholder="Digite o nome da instância" 
+                      {...field}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowCustomInstance(false)}
+                      className="w-full"
+                    >
+                      Voltar para lista
+                    </Button>
+                  </div>
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
