@@ -36,11 +36,13 @@ const formSchema = z.object({
 export function CreateInstanceForm({ 
   onClose, 
   onQRGenerationStart, 
-  onQRGenerationEnd 
+  onQRGenerationEnd,
+  onStatusCheckComplete 
 }: { 
   onClose: () => void;
   onQRGenerationStart: () => void;
   onQRGenerationEnd: () => void;
+  onStatusCheckComplete: () => void;
 }) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,12 +76,13 @@ export function CreateInstanceForm({
             toast.info(`Status da instância: ${result.data}`);
           }
           setShouldCheckStatus(false);
+          onStatusCheckComplete();
         });
       }, 30000);
 
       return () => clearTimeout(timer);
     }
-  }, [shouldCheckStatus, refetchChipStatus]);
+  }, [shouldCheckStatus, refetchChipStatus, onStatusCheckComplete]);
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],

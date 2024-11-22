@@ -22,6 +22,7 @@ const Index = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showCloseAlert, setShowCloseAlert] = useState(false);
   const [isGeneratingQR, setIsGeneratingQR] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
 
   const calculateOptinRate = () => {
     if (!instancesData?.totalClicks || !instancesData?.totalLeads) return "0";
@@ -36,7 +37,7 @@ const Index = () => {
   };
 
   const handleCloseAttempt = () => {
-    if (isGeneratingQR) {
+    if (isGeneratingQR || isCheckingStatus) {
       setShowCloseAlert(true);
     } else {
       setDialogOpen(false);
@@ -65,8 +66,12 @@ const Index = () => {
               <DialogContent>
                 <CreateInstanceForm 
                   onClose={() => setDialogOpen(false)} 
-                  onQRGenerationStart={() => setIsGeneratingQR(true)}
+                  onQRGenerationStart={() => {
+                    setIsGeneratingQR(true);
+                    setIsCheckingStatus(true);
+                  }}
                   onQRGenerationEnd={() => setIsGeneratingQR(false)}
+                  onStatusCheckComplete={() => setIsCheckingStatus(false)}
                 />
               </DialogContent>
             </Dialog>
@@ -78,7 +83,9 @@ const Index = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
               <AlertDialogDescription>
-                Você está gerando um QR Code. Se fechar agora, perderá o progresso.
+                {isGeneratingQR 
+                  ? "Você está gerando um QR Code. Se fechar agora, perderá o progresso."
+                  : "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -88,6 +95,7 @@ const Index = () => {
                   setShowCloseAlert(false);
                   setDialogOpen(false);
                   setIsGeneratingQR(false);
+                  setIsCheckingStatus(false);
                 }}
               >
                 Sim, fechar
