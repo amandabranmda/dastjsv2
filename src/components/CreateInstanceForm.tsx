@@ -13,7 +13,7 @@ import { DeviceSelectField } from "./form/DeviceSelectField"
 import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
 import { QRCodeDisplay } from "./QRCodeDisplay"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -45,6 +45,41 @@ export function CreateInstanceForm({
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [instanceName, setInstanceName] = useState<string | null>(null);
+  const [selectedChip, setSelectedChip] = useState<string | null>(null);
+  const [shouldCheckStatus, setShouldCheckStatus] = useState(false);
+
+  const { data: chipStatus, refetch: refetchChipStatus } = useQuery({
+    queryKey: ["chip-status", selectedChip],
+    queryFn: async () => {
+      if (!selectedChip) return null;
+      
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("statusInstancia")
+        .eq("numeroChip", selectedChip)
+        .single();
+
+      if (error) throw error;
+      return data?.statusInstancia;
+    },
+    enabled: shouldCheckStatus,
+    refetchInterval: false,
+  });
+
+  useEffect(() => {
+    if (shouldCheckStatus) {
+      const timer = setTimeout(() => {
+        refetchChipStatus().then((result) => {
+          if (result.data) {
+            toast.info(`Status da instância: ${result.data}`);
+          }
+          setShouldCheckStatus(false);
+        });
+      }, 30000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [shouldCheckStatus, refetchChipStatus]);
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
@@ -89,6 +124,8 @@ export function CreateInstanceForm({
       if (data.qrcode) {
         setQrCode(data.qrcode);
         setInstanceName(data.instancia);
+        setSelectedChip(values.instanceName);
+        setShouldCheckStatus(true);
         toast.success(`Instância ${data.instancia} criada com sucesso!`);
       } else {
         throw new Error('QR Code não recebido');
