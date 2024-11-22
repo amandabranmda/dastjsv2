@@ -55,7 +55,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip")
+        .select("numeroChip, localChip")
         .eq("statusChip", "liberado");
 
       if (error) throw error;
@@ -121,7 +121,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
                     <SelectContent className="glass-dropdown">
                       {releasedChips?.map((chip) => (
                         <SelectItem key={chip.numeroChip} value={chip.numeroChip}>
-                          {chip.numeroChip}
+                          {chip.numeroChip} - {chip.localChip || 'Sem local'}
                         </SelectItem>
                       ))}
                       <SelectItem value="custom">Digitar manualmente</SelectItem>
