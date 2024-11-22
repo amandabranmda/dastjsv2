@@ -1,6 +1,9 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { ArrowUpDown } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface ChipsTableProps {
   chips: any[];
@@ -12,6 +15,23 @@ interface ChipsTableProps {
 }
 
 export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selectedChips, checkedChips }: ChipsTableProps) {
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const sortedChips = [...chips].sort((a, b) => {
+    const locationA = (a.localChip || '').toLowerCase();
+    const locationB = (b.localChip || '').toLowerCase();
+    
+    if (sortOrder === 'asc') {
+      return locationA.localeCompare(locationB);
+    } else {
+      return locationB.localeCompare(locationA);
+    }
+  });
+
+  const toggleSort = () => {
+    setSortOrder(current => current === 'asc' ? 'desc' : 'asc');
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -20,11 +40,20 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
             {title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Liberado"}
           </TableHead>
           <TableHead>Número do Chip</TableHead>
-          <TableHead>Local do Chip</TableHead>
+          <TableHead>
+            <Button 
+              variant="ghost" 
+              onClick={toggleSort}
+              className="hover:bg-transparent p-0 h-auto font-medium text-muted-foreground flex items-center gap-1"
+            >
+              Local do Chip
+              <ArrowUpDown className="h-4 w-4" />
+            </Button>
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {chips?.map((chip) => (
+        {sortedChips?.map((chip) => (
           <TableRow key={chip.numeroChip}>
             <TableCell>
               <Checkbox 
