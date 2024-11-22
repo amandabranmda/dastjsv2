@@ -22,6 +22,7 @@ import {
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
+import { UserSelectField } from "./form/UserSelectField"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -161,19 +162,9 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="user"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Usuário</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o usuário" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        
+        <UserSelectField form={form} />
+
         <FormField
           control={form.control}
           name="project"
