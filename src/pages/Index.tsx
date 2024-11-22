@@ -20,15 +20,15 @@ const Index = () => {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Zaps Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <Button variant="secondary" className="gap-2">
+    <div className="max-w-full mx-auto space-y-4 px-2 sm:px-4 md:px-6 lg:px-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+        <h1 className="text-xl sm:text-2xl font-semibold">Zaps Dashboard</h1>
+        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <Button variant="secondary" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none">
             <Contact2 className="w-4 h-4" />
             Contatos
           </Button>
-          <Button variant="default" className="gap-2">
+          <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none">
             <MessageSquare className="w-4 h-4" />
             Criar Instância
           </Button>
@@ -36,7 +36,7 @@ const Index = () => {
       </div>
 
       {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <StatusCard 
           title="Instâncias Enviando" 
           value={isLoading ? "..." : instancesData?.sendingCount || 0} 
@@ -55,7 +55,7 @@ const Index = () => {
       </div>
 
       {/* Metric Cards - First Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <MetricCard
           title="Cliques"
           value={isLoading ? "..." : instancesData?.totalClicks || 0}
@@ -77,7 +77,7 @@ const Index = () => {
       </div>
 
       {/* Metric Cards - Second Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <StatusCard 
           title="Aguardando Desbloqueio" 
           value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
@@ -98,7 +98,7 @@ const Index = () => {
       </div>
 
       {/* Metric Cards - Third Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <MetricCard
           title="Engajamento"
           value="89%"
