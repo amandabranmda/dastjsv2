@@ -119,13 +119,6 @@ const Index = () => {
               type="optin"
             />
           </div>
-          <div className="animate-fade-in [animation-delay:2200ms]">
-            <StatusCard 
-              title="Aguardando Desbloqueio" 
-              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
-              type="closed" 
-            />
-          </div>
         </div>
       </div>
     </div>
