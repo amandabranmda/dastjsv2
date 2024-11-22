@@ -6,6 +6,7 @@ import { useInstances } from "@/hooks/useInstances";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
+import { ChipRegistrationForm } from "@/components/ChipRegistrationForm";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -170,6 +171,10 @@ const Index = () => {
               type="closed" 
             />
           </div>
+        </div>
+
+        <div className="mt-6">
+          <ChipRegistrationForm />
         </div>
       </div>
     </div>

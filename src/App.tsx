@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import { useState, useEffect } from "react";
-import { ChipRegistrationForm } from "./components/ChipRegistrationForm";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,7 +42,6 @@ const App = () => {
                 <Route path="/reports" element={<div>Página de Relatórios em Construção</div>} />
                 <Route path="/settings" element={<div>Página de Configurações em Construção</div>} />
                 <Route path="/help" element={<div>Página de Ajuda em Construção</div>} />
-                <Route path="/register-chip" element={<ChipRegistrationForm />} />
               </Routes>
             </main>
           </div>
