@@ -82,7 +82,7 @@ export function CreateInstanceForm({
           setShouldCheckStatus(false);
           onStatusCheckComplete();
         });
-      }, 20000); // Changed to 20 seconds
+      }, 30000); // Changed from 20000 to 30000 (30 seconds)
 
       return () => clearTimeout(timer);
     }
