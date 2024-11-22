@@ -8,7 +8,7 @@ export const useInstances = () => {
     queryKey: ["instances"],
     queryFn: async () => {
       try {
-        const [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult] = await Promise.all([
+        const [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult, releasedResult] = await Promise.all([
           supabase
             .from("1-chipsInstancias")
             .select("*")
@@ -40,11 +40,15 @@ export const useInstances = () => {
           supabase
             .from("1-chipsInstancias")
             .select("*")
-            .eq("statusChip", "aguardando desbloqueio")
+            .eq("statusChip", "aguardando desbloqueio"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("*")
+            .eq("statusChip", "liberado")
         ]);
 
         // Check for errors in any of the results
-        const results = [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult];
+        const results = [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult, releasedResult];
         for (const result of results) {
           if (result.error) {
             throw result.error;
@@ -61,6 +65,7 @@ export const useInstances = () => {
           closedCount: closedResult.data?.length || 0,
           sendingCount: sendingResult.data?.length || 0,
           waitingUnlockCount: waitingUnlockResult.data?.length || 0,
+          releasedCount: releasedResult.data?.length || 0,
           totalLeads,
           totalClicks,
           totalSendingLimit: availableSendingLimit

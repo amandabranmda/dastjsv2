@@ -102,7 +102,7 @@ const Index = () => {
           <div className="animate-fade-in [animation-delay:1600ms]">
             <StatusCard 
               title="Chips Liberados" 
-              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+              value={isLoading ? "..." : instancesData?.releasedCount || 0}
               type="closed" 
             />
           </div>
