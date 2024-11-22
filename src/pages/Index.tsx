@@ -42,83 +42,6 @@ const Index = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="animate-fade-in [animation-delay:200ms]">
-            <StatusCard 
-              title="Instâncias Enviando" 
-              value={isLoading ? "..." : instancesData?.sendingCount || 0} 
-              type="sending" 
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:400ms]">
-            <StatusCard 
-              title="Instâncias Online" 
-              value={isLoading ? "..." : instancesData?.onlineCount || 0} 
-              type="online" 
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:600ms]">
-            <StatusCard 
-              title="❌verificarDesconexao" 
-              value={isLoading ? "..." : instancesData?.closedCount || 0} 
-              type="closed" 
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:800ms]">
-            <MetricCard
-              title="Cliques"
-              value={isLoading ? "..." : instancesData?.totalClicks || 0}
-              change="+45"
-              type="preset"
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1000ms]">
-            <MetricCard
-              title="Leads"
-              value={isLoading ? "..." : instancesData?.totalLeads || 0}
-              change={`${calculateOptinRate()}% optin`}
-              type="optin"
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1200ms]">
-            <MetricCard
-              title="Limite de envios"
-              value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
-              change={calculateRemainingMessages()}
-              type="sales"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:1400ms]">
-            <StatusCard 
-              title="Aguardando Desbloqueio" 
-              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
-              type="closed" 
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1600ms]">
-            <MetricCard
-              title="Chips Liberados"
-              value="67%"
-              change="+5.2%"
-              type="optin"
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1800ms]">
-            <MetricCard
-              title="ROI"
-              value="R$ 15.4k"
-              change="+23.1%"
-              type="sales"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:2000ms]">
             <MetricCard
               title="Engajamento"
               value="89%"
@@ -126,11 +49,80 @@ const Index = () => {
               type="preset"
             />
           </div>
-          <div className="animate-fade-in [animation-delay:2200ms]">
+          <div className="animate-fade-in [animation-delay:400ms]">
             <MetricCard
               title="Retenção"
               value="78%"
               change="+3.7%"
+              type="optin"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:600ms]">
+            <StatusCard 
+              title="Instâncias Enviando" 
+              value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+              type="sending" 
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:800ms]">
+            <StatusCard 
+              title="Instâncias Online" 
+              value={isLoading ? "..." : instancesData?.onlineCount || 0} 
+              type="online" 
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1000ms]">
+            <StatusCard 
+              title="❌verificarDesconexao" 
+              value={isLoading ? "..." : instancesData?.closedCount || 0} 
+              type="closed" 
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1200ms]">
+            <MetricCard
+              title="Cliques"
+              value={isLoading ? "..." : instancesData?.totalClicks || 0}
+              change="+45"
+              type="preset"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:1400ms]">
+            <MetricCard
+              title="Leads"
+              value={isLoading ? "..." : instancesData?.totalLeads || 0}
+              change={`${calculateOptinRate()}% optin`}
+              type="optin"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1600ms]">
+            <MetricCard
+              title="Limite de envios"
+              value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
+              change={calculateRemainingMessages()}
+              type="sales"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1800ms]">
+            <StatusCard 
+              title="Aguardando Desbloqueio" 
+              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+              type="closed" 
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:2000ms]">
+            <MetricCard
+              title="Chips Liberados"
+              value="67%"
+              change="+5.2%"
               type="optin"
             />
           </div>
