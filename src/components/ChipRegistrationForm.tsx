@@ -59,15 +59,17 @@ export function ChipRegistrationForm() {
 
     setIsSearching(true);
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("1-chipsInstancias")
         .select("numeroChip, localChip, statusChip")
-        .eq("numeroChip", searchNumber)
-        .single();
+        .eq("numeroChip", searchNumber);
 
-      if (data) {
+      if (error) throw error;
+
+      // Verifica se há dados e se o array não está vazio
+      if (data && data.length > 0) {
         setChipExists(true);
-        setChipDetails(data);
+        setChipDetails(data[0]);
         setShowRegistrationForm(false);
       } else {
         setChipExists(false);
@@ -77,6 +79,7 @@ export function ChipRegistrationForm() {
       }
     } catch (error) {
       console.error("Erro ao buscar chip:", error);
+      toast.error("Erro ao buscar chip. Tente novamente.");
     } finally {
       setIsSearching(false);
     }
