@@ -60,12 +60,18 @@ export function ChipRegistrationForm() {
         setChipDetails(null);
         setShowRegistrationForm(true);
         setFormData({ ...formData, numeroChip: searchNumber });
-        // Removed the line that was clearing the search number
       }
     } catch (error) {
       console.error("Erro ao buscar chip:", error);
     } finally {
       setIsSearching(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
     }
   };
 
@@ -110,6 +116,7 @@ export function ChipRegistrationForm() {
               placeholder="Digite o número do chip"
               value={searchNumber}
               onChange={(e) => setSearchNumber(e.target.value)}
+              onKeyPress={handleKeyPress}
               className={`bg-white/5 ${showRegistrationForm ? 'border-emerald-600/20' : 'border-sky-600/20'}`}
             />
             <Button 
