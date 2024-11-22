@@ -48,6 +48,20 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     enabled: type === "closed" && title.includes("Aguardando Desbloqueio")
   });
 
+  const { data: releasedChips, refetch: refetchReleased } = useQuery({
+    queryKey: ["released-chips"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("numeroChip")
+        .eq("statusChip", "liberado");
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: type === "closed" && title.includes("Copy Aguardando Desbloqueio")
+  });
+
   const handleCopyChip = async (chipNumber: string) => {
     try {
       await navigator.clipboard.writeText(chipNumber);
@@ -111,10 +125,14 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
 
   const chips = title.includes("verificarDesconexao") 
     ? disconnectedChips 
+    : title.includes("Copy Aguardando Desbloqueio")
+    ? releasedChips
     : waitingUnlockChips;
     
   const dialogTitle = title.includes("verificarDesconexao") 
     ? "Chips Desconectados" 
+    : title.includes("Copy Aguardando Desbloqueio")
+    ? "Chips Liberados"
     : "Chips Aguardando Desbloqueio";
 
   return (
