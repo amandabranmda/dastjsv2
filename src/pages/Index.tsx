@@ -42,46 +42,30 @@ const Index = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="animate-fade-in [animation-delay:200ms]">
-            <MetricCard
-              title="Engajamento"
-              value="89%"
-              change="+8.3%"
-              type="preset"
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:400ms]">
-            <MetricCard
-              title="Retenção"
-              value="78%"
-              change="+3.7%"
-              type="optin"
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:600ms]">
             <StatusCard 
               title="Instâncias Enviando" 
               value={isLoading ? "..." : instancesData?.sendingCount || 0} 
               type="sending" 
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:800ms]">
+          <div className="animate-fade-in [animation-delay:400ms]">
             <StatusCard 
               title="Instâncias Online" 
               value={isLoading ? "..." : instancesData?.onlineCount || 0} 
               type="online" 
             />
           </div>
-          <div className="animate-fade-in [animation-delay:1000ms]">
+          <div className="animate-fade-in [animation-delay:600ms]">
             <StatusCard 
               title="❌verificarDesconexao" 
               value={isLoading ? "..." : instancesData?.closedCount || 0} 
               type="closed" 
             />
           </div>
-          <div className="animate-fade-in [animation-delay:1200ms]">
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:800ms]">
             <MetricCard
               title="Cliques"
               value={isLoading ? "..." : instancesData?.totalClicks || 0}
@@ -89,10 +73,7 @@ const Index = () => {
               type="preset"
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:1400ms]">
+          <div className="animate-fade-in [animation-delay:1000ms]">
             <MetricCard
               title="Leads"
               value={isLoading ? "..." : instancesData?.totalLeads || 0}
@@ -100,7 +81,7 @@ const Index = () => {
               type="optin"
             />
           </div>
-          <div className="animate-fade-in [animation-delay:1600ms]">
+          <div className="animate-fade-in [animation-delay:1200ms]">
             <MetricCard
               title="Limite de envios"
               value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
@@ -108,11 +89,30 @@ const Index = () => {
               type="sales"
             />
           </div>
-          <div className="animate-fade-in [animation-delay:1800ms]">
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+          <div className="animate-fade-in [animation-delay:1400ms]">
             <StatusCard 
               title="Aguardando Desbloqueio" 
               value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
               type="closed" 
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1600ms]">
+            <MetricCard
+              title="Engajamento"
+              value="89%"
+              change="+8.3%"
+              type="preset"
+            />
+          </div>
+          <div className="animate-fade-in [animation-delay:1800ms]">
+            <MetricCard
+              title="Retenção"
+              value="78%"
+              change="+3.7%"
+              type="optin"
             />
           </div>
         </div>
