@@ -101,7 +101,7 @@ const Index = () => {
           </div>
           <div className="animate-fade-in [animation-delay:1600ms]">
             <MetricCard
-              title="Taxa de Resposta"
+              title="Chips Liberados"
               value="67%"
               change="+5.2%"
               type="optin"
