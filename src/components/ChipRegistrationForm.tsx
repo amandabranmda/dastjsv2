@@ -78,7 +78,7 @@ export function ChipRegistrationForm() {
     <div className="space-y-4 max-w-md mx-auto">
       <Card className="p-6 bg-gradient-to-br from-sky-900/20 to-sky-800/10 backdrop-blur-sm">
         <div className="space-y-4">
-          <Label htmlFor="chipNumber">Número do Chip</Label>
+          <Label htmlFor="chipNumber">Cadastro de Chip</Label>
           <div className="flex gap-2">
             <Input
               id="chipNumber"
