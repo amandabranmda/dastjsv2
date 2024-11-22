@@ -60,7 +60,7 @@ export function ChipRegistrationForm() {
         setChipDetails(null);
         setShowRegistrationForm(true);
         setFormData({ ...formData, numeroChip: searchNumber });
-        setSearchNumber(""); // Clear search when showing registration form
+        // Removed the line that was clearing the search number
       }
     } catch (error) {
       console.error("Erro ao buscar chip:", error);
