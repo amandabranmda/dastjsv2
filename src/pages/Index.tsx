@@ -20,12 +20,12 @@ const Index = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#2D3748] p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-[#1E293B] to-[#0F172A] p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       
       <div className="relative">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
             Zaps Dashboard
           </h1>
           <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -33,7 +33,7 @@ const Index = () => {
               <Contact2 className="w-4 h-4" />
               Contatos
             </Button>
-            <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-primary to-secondary hover:scale-105 transition-transform">
+            <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-[#0EA5E9] to-[#38BDF8] hover:scale-105 transition-transform">
               <MessageSquare className="w-4 h-4" />
               Criar Instância
             </Button>
