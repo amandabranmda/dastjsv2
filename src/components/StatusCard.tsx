@@ -152,7 +152,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">Pedido Desbloqueio</TableHead>
+                  <TableHead className="w-[50px]">{title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Liberado"}</TableHead>
                   <TableHead>Número do Chip</TableHead>
                 </TableRow>
               </TableHeader>
