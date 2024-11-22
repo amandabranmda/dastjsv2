@@ -173,7 +173,7 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="col-span-full mt-6">
           <ChipRegistrationForm />
         </div>
       </div>

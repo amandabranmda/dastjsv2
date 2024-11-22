@@ -75,7 +75,7 @@ export function ChipRegistrationForm() {
   };
 
   return (
-    <div className="space-y-4 max-w-md mx-auto">
+    <div className="w-full">
       <Card className="p-6 bg-gradient-to-br from-sky-900/20 to-sky-800/10 backdrop-blur-sm">
         <div className="space-y-4">
           <Label htmlFor="chipNumber">Cadastro de Chip</Label>
@@ -99,7 +99,7 @@ export function ChipRegistrationForm() {
       </Card>
 
       {chipExists && (
-        <Card className="p-6 bg-red-900/20 backdrop-blur-sm border-red-600/20">
+        <Card className="p-6 mt-4 bg-red-900/20 backdrop-blur-sm border-red-600/20">
           <p className="text-center text-red-200">
             Este número já consta no banco de dados
           </p>
@@ -107,7 +107,7 @@ export function ChipRegistrationForm() {
       )}
 
       {showRegistrationForm && (
-        <Card className="p-6 bg-gradient-to-br from-emerald-900/20 to-emerald-800/10 backdrop-blur-sm">
+        <Card className="p-6 mt-4 bg-gradient-to-br from-emerald-900/20 to-emerald-800/10 backdrop-blur-sm">
           <div className="space-y-4">
             <div>
               <Label>Número do Chip</Label>
