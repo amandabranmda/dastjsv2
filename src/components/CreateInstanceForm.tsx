@@ -12,6 +12,13 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -27,6 +34,14 @@ const formSchema = z.object({
     message: "Projeto deve ter pelo menos 2 caracteres.",
   }),
 })
+
+const projects = [
+  "ProjetHotGPT",
+  "ProjetColdGPT",
+  "ProjetWarmGPT",
+  "ProjetIceGPT",
+  "ProjetFireGPT"
+]
 
 export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -108,7 +123,18 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
             <FormItem>
               <FormLabel>Projeto</FormLabel>
               <FormControl>
-                <Input placeholder="Digite o projeto" {...field} />
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um projeto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {projects.map((project) => (
+                      <SelectItem key={project} value={project}>
+                        {project}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
