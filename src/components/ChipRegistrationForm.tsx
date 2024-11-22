@@ -7,10 +7,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
+interface ChipDetails {
+  numeroChip: string;
+  localChip: string;
+  statusChip: string;
+}
+
 export function ChipRegistrationForm() {
   const [searchNumber, setSearchNumber] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [chipExists, setChipExists] = useState(false);
+  const [chipDetails, setChipDetails] = useState<ChipDetails | null>(null);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [formData, setFormData] = useState({
     numeroChip: "",
@@ -28,15 +35,17 @@ export function ChipRegistrationForm() {
     try {
       const { data } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip")
+        .select("numeroChip, localChip, statusChip")
         .eq("numeroChip", searchNumber)
         .single();
 
       if (data) {
         setChipExists(true);
+        setChipDetails(data);
         setShowRegistrationForm(false);
       } else {
         setChipExists(false);
+        setChipDetails(null);
         setShowRegistrationForm(true);
         setFormData({ ...formData, numeroChip: searchNumber });
       }
@@ -98,11 +107,23 @@ export function ChipRegistrationForm() {
         </div>
       </Card>
 
-      {chipExists && (
+      {chipExists && chipDetails && (
         <Card className="p-6 mt-4 bg-red-900/20 backdrop-blur-sm border-red-600/20">
-          <p className="text-center text-red-200">
-            Este número já consta no banco de dados
-          </p>
+          <div className="space-y-4">
+            <p className="text-center text-red-200 mb-4">
+              Este número já consta no banco de dados
+            </p>
+            <div className="space-y-2">
+              <div>
+                <Label className="text-red-200">Local do Chip</Label>
+                <p className="text-red-100">{chipDetails.localChip || '-'}</p>
+              </div>
+              <div>
+                <Label className="text-red-200">Status do Chip</Label>
+                <p className="text-red-100">{chipDetails.statusChip || '-'}</p>
+              </div>
+            </div>
+          </div>
         </Card>
       )}
 
