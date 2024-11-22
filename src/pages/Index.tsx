@@ -55,6 +55,13 @@ const Index = () => {
               type="closed" 
             />
           </div>
+          <div className="animate-fade-in [animation-delay:800ms]">
+            <StatusCard 
+              title="Instâncias Enviando" 
+              value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+              type="sending" 
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
