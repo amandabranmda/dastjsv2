@@ -3,13 +3,25 @@ import { Contact2, MessageSquare } from "lucide-react";
 import { StatusCard } from "@/components/StatusCard";
 import { MetricCard } from "@/components/MetricCard";
 import { useInstances } from "@/hooks/useInstances";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [showCloseAlert, setShowCloseAlert] = useState(false);
+  const [isGeneratingQR, setIsGeneratingQR] = useState(false);
 
   const calculateOptinRate = () => {
     if (!instancesData?.totalClicks || !instancesData?.totalLeads) return "0";
@@ -21,6 +33,14 @@ const Index = () => {
     if (!instancesData?.totalSendingLimit || !instancesData?.totalLeads) return "0";
     const remaining = instancesData.totalSendingLimit - instancesData.totalLeads;
     return `Você ainda tem ${remaining} envios disponíveis`;
+  };
+
+  const handleCloseAttempt = () => {
+    if (isGeneratingQR) {
+      setShowCloseAlert(true);
+    } else {
+      setDialogOpen(false);
+    }
   };
 
   return (
@@ -37,19 +57,44 @@ const Index = () => {
               <Contact2 className="w-4 h-4" />
               Contatos
             </Button>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="default" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity">
-                  <MessageSquare className="w-4 h-4" />
-                  Criar Instância
-                </Button>
-              </DialogTrigger>
+            <Dialog open={dialogOpen} onOpenChange={handleCloseAttempt}>
+              <Button variant="default" onClick={() => setDialogOpen(true)} className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity">
+                <MessageSquare className="w-4 h-4" />
+                Criar Instância
+              </Button>
               <DialogContent>
-                <CreateInstanceForm onClose={() => setDialogOpen(false)} />
+                <CreateInstanceForm 
+                  onClose={() => setDialogOpen(false)} 
+                  onQRGenerationStart={() => setIsGeneratingQR(true)}
+                  onQRGenerationEnd={() => setIsGeneratingQR(false)}
+                />
               </DialogContent>
             </Dialog>
           </div>
         </div>
+
+        <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Você está gerando um QR Code. Se fechar agora, perderá o progresso.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  setShowCloseAlert(false);
+                  setDialogOpen(false);
+                  setIsGeneratingQR(false);
+                }}
+              >
+                Sim, fechar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="animate-fade-in [animation-delay:400ms]">

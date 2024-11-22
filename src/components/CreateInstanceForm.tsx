@@ -33,7 +33,15 @@ const formSchema = z.object({
   }),
 })
 
-export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
+export function CreateInstanceForm({ 
+  onClose, 
+  onQRGenerationStart, 
+  onQRGenerationEnd 
+}: { 
+  onClose: () => void;
+  onQRGenerationStart: () => void;
+  onQRGenerationEnd: () => void;
+}) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [instanceName, setInstanceName] = useState<string | null>(null);
@@ -65,6 +73,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true);
+      onQRGenerationStart();
       const response = await fetch('https://ct103n8nwebhook.wpp-app.com/webhook/qrDast', {
         method: 'POST',
         headers: {
@@ -90,6 +99,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
       setInstanceName(null);
     } finally {
       setIsLoading(false);
+      onQRGenerationEnd();
     }
   }
 
