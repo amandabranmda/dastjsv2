@@ -82,7 +82,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   };
 
   const handleCheckboxChange = async (chipNumber: string, checked: boolean, isDisconnected: boolean) => {
-    // For "Chips Liberados" card, only update the local state
     if (title.includes("Chips Liberados")) {
       if (checked) {
         setCheckedChips(prev => [...prev, chipNumber]);
@@ -92,7 +91,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       return;
     }
 
-    // For other cards, keep the existing behavior
     try {
       const newStatus = checked ? 
         (isDisconnected ? "aguardando desbloqueio" : "liberado") : 
