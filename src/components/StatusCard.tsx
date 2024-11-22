@@ -29,7 +29,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
         .select("numeroChip")
-        .eq("statusChip", "❌verificarDesconexao");
+        .eq("statusChip", "aguardando desbloqueio");
 
       if (error) throw error;
       return data;
@@ -60,7 +60,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ statusChip: checked ? "liberado" : "❌verificarDesconexao" })
+        .update({ statusChip: checked ? "liberado" : "aguardando desbloqueio" })
         .eq("numeroChip", chipNumber);
 
       if (error) throw error;
@@ -123,7 +123,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       {type === "closed" && (
         <DialogContent className={cn("sm:max-w-[600px]", isFullScreen && "!max-w-[95vw] !h-[95vh]")}>
           <DialogHeader>
-            <DialogTitle>Chips Desconectados</DialogTitle>
+            <DialogTitle>Chips Aguardando Desbloqueio</DialogTitle>
           </DialogHeader>
           <div className={cn("overflow-y-auto", isFullScreen ? "max-h-[80vh]" : "max-h-[400px]")}>
             <Table>
