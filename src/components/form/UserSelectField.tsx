@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { USER_OPTIONS } from "@/constants/userOptions";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import * as z from "zod";
 
 interface UserSelectFieldProps {
   form: UseFormReturn<any>;
@@ -19,8 +18,8 @@ export function UserSelectField({ form }: UserSelectFieldProps) {
       control={form.control}
       name="user"
       render={({ field }) => (
-        <FormItem>
-          <FormLabel>Usuário</FormLabel>
+        <FormItem className="glass-card p-4 rounded-lg">
+          <FormLabel className="text-lg font-semibold text-white/90">Usuário</FormLabel>
           <FormControl>
             {!showCustomUser ? (
               <Select
@@ -34,7 +33,7 @@ export function UserSelectField({ form }: UserSelectFieldProps) {
                 }}
                 defaultValue={field.value}
               >
-                <SelectTrigger>
+                <SelectTrigger className="bg-white/5 border-white/10 text-white">
                   <SelectValue placeholder="Selecione um usuário" />
                 </SelectTrigger>
                 <SelectContent className="glass-dropdown">
@@ -50,6 +49,7 @@ export function UserSelectField({ form }: UserSelectFieldProps) {
               <div className="space-y-2">
                 <Input
                   placeholder="Digite o nome do usuário"
+                  className="bg-white/5 border-white/10 text-white"
                   {...field}
                 />
                 <Button

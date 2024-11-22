@@ -4,19 +4,14 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { toast } from "sonner"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { UserSelectField } from "./form/UserSelectField"
 import { ChipSelectItem } from "./form/ChipSelectItem"
 import { CustomFormField } from "./form/FormField"
+import { DeviceSelectField } from "./form/DeviceSelectField"
 import { Input } from "./ui/input"
 
 const formSchema = z.object({
@@ -31,6 +26,9 @@ const formSchema = z.object({
   }),
   project: z.string().min(2, {
     message: "Projeto deve ter pelo menos 2 caracteres.",
+  }),
+  device: z.string().min(2, {
+    message: "Dispositivo deve ser selecionado.",
   }),
 })
 
@@ -65,6 +63,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
       evolution: "",
       user: "",
       project: "",
+      device: "",
     },
   })
 
@@ -108,7 +107,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
                   }
                 }}
               >
-                <SelectTrigger className="h-20 bg-white/5 border-white/10 text-white">
+                <SelectTrigger className="h-20 bg-white/5 border-white/10 text-white hover:bg-emerald-900/20 transition-colors">
                   <SelectValue placeholder="Selecione um número de chip" />
                 </SelectTrigger>
                 <SelectContent className="glass-dropdown max-h-[300px]">
@@ -167,7 +166,7 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
                     }
                   }}
                 >
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                  <SelectTrigger className="bg-white/5 border-white/10 text-white hover:bg-emerald-900/20 transition-colors">
                     <SelectValue placeholder="Selecione um projeto" />
                   </SelectTrigger>
                   <SelectContent className="glass-dropdown">
@@ -199,16 +198,27 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
             </CustomFormField>
 
             <UserSelectField form={form} />
+            <DeviceSelectField form={form} />
           </div>
         </div>
 
         <div className="flex justify-end space-x-4 pt-4">
-          <Button variant="outline" type="button" onClick={onClose}>
+          <Button 
+            variant="outline" 
+            type="button" 
+            onClick={onClose}
+            className="hover:bg-emerald-900/20 transition-colors"
+          >
             Cancelar
           </Button>
-          <Button type="submit">Criar Instância</Button>
+          <Button 
+            type="submit"
+            className="bg-emerald-600 hover:bg-emerald-700 transition-colors"
+          >
+            Criar Instância
+          </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

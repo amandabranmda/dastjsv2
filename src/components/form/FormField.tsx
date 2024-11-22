@@ -16,18 +16,18 @@ export function CustomFormField({ form, name, label, placeholder, children }: Cu
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="glass-card p-4 rounded-lg">
+        <FormItem className="glass-card p-4 rounded-lg border border-emerald-600/20 hover:border-emerald-600/30 transition-colors">
           <FormLabel className="text-lg font-semibold text-white/90">{label}</FormLabel>
           <FormControl>
             {children || (
               <Input 
                 placeholder={placeholder} 
                 {...field} 
-                className="bg-white/5 border-white/10 text-white"
+                className="bg-white/5 border-white/10 text-white hover:bg-emerald-900/20 transition-colors"
               />
             )}
           </FormControl>
-          <FormMessage />
+          <FormMessage className="text-red-400" />
         </FormItem>
       )}
     />
