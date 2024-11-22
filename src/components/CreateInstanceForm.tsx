@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useState } from "react"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -37,13 +38,14 @@ const formSchema = z.object({
 
 const projects = [
   "ProjetHotGPT",
-  "ProjetColdGPT",
-  "ProjetWarmGPT",
-  "ProjetIceGPT",
-  "ProjetFireGPT"
+  "Carol",
+  "Adm",
+  "Outro"
 ]
 
 export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
+  const [showCustomProject, setShowCustomProject] = useState(false);
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -123,18 +125,46 @@ export function CreateInstanceForm({ onClose }: { onClose: () => void }) {
             <FormItem>
               <FormLabel>Projeto</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione um projeto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {projects.map((project) => (
-                      <SelectItem key={project} value={project}>
-                        {project}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {!showCustomProject ? (
+                  <Select 
+                    onValueChange={(value) => {
+                      if (value === "Outro") {
+                        setShowCustomProject(true);
+                        field.onChange("");
+                      } else {
+                        field.onChange(value);
+                      }
+                    }} 
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um projeto" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map((project) => (
+                        <SelectItem key={project} value={project}>
+                          {project}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="space-y-2">
+                    <Input 
+                      placeholder="Digite o nome do projeto" 
+                      {...field}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowCustomProject(false)}
+                      className="w-full"
+                    >
+                      Voltar para lista
+                    </Button>
+                  </div>
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
