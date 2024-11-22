@@ -149,7 +149,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-6 animate-fade-in-scale cursor-pointer hover:bg-[#1F2937]/50 transition-colors relative">
+        <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-4 sm:p-6 animate-fade-in-scale cursor-pointer hover:bg-[#1F2937]/50 transition-colors relative min-h-[120px] sm:min-h-[140px]">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -159,7 +159,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
           >
             <Maximize2 className="w-4 h-4 text-gray-400" />
           </button>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
               <span className={cn(
                 "w-2 h-2 rounded-full",
@@ -167,21 +167,28 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
                 type === "closed" && title.includes("Aguardando Desbloqueio") ? "bg-[#F97316]" : "bg-[#0EA5E9]",
                 type === "sending" && "bg-[#9333EA]"
               )} />
-              <h3 className="text-sm text-gray-400 font-medium">{title}</h3>
+              <h3 className="text-xs sm:text-sm text-gray-400 font-medium">{title}</h3>
             </div>
             <div className="flex flex-col items-start">
-              <p className="text-4xl font-semibold tracking-tight text-white">{value}</p>
+              <p className="text-2xl sm:text-4xl font-semibold tracking-tight text-white">{value}</p>
             </div>
           </div>
         </Card>
       </DialogTrigger>
 
       {type === "closed" && (
-        <DialogContent className={cn("sm:max-w-[600px]", isFullScreen && "!max-w-[95vw] !h-[95vh]")}>
+        <DialogContent className={cn(
+          "w-[95vw] sm:max-w-[600px]",
+          "max-h-[90vh] sm:max-h-[80vh]",
+          isFullScreen && "!w-[95vw] !h-[95vh]"
+        )}>
           <DialogHeader>
             <DialogTitle>{dialogTitle}</DialogTitle>
           </DialogHeader>
-          <div className={cn("overflow-y-auto", isFullScreen ? "max-h-[80vh]" : "max-h-[400px]")}>
+          <div className={cn(
+            "overflow-y-auto",
+            isFullScreen ? "max-h-[80vh]" : "max-h-[60vh] sm:max-h-[400px]"
+          )}>
             <ChipsTable
               chips={chips || []}
               title={title}
