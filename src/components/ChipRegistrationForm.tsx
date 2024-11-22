@@ -113,7 +113,7 @@ export function ChipRegistrationForm() {
             <p className="text-center text-red-200 mb-4">
               Este número já consta no banco de dados
             </p>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-red-200">Local do Chip</Label>
                 <p className="text-red-100">{chipDetails.localChip || '-'}</p>
