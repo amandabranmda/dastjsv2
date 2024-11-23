@@ -15,6 +15,7 @@ import { ProjectSelectField } from "./form/ProjectSelectField"
 import { QRCodeDisplay } from "./QRCodeDisplay"
 import { StatusResultCard } from "./StatusResultCard"
 import { useState, useEffect } from "react"
+import { X } from "lucide-react"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -149,21 +150,51 @@ export function CreateInstanceForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-gradient-to-br from-sky-900/20 to-sky-800/10 p-6 rounded-xl backdrop-blur-sm">
+      <form 
+        onSubmit={form.handleSubmit(onSubmit)} 
+        className="relative space-y-6 rounded-xl bg-[#0A1A2A] p-6 border border-[#1E3A5F]"
+      >
+        <div className="absolute top-4 right-4">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="text-gray-400 hover:text-white hover:bg-white/10"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+
         <div className="space-y-6">
+          <h2 className="text-xl font-semibold text-white mb-6">Criar Nova Instância</h2>
+          
           <CustomFormField
             form={form}
             name="instanceName"
             label="Nome Instância"
             placeholder="Selecione um número de chip"
             releasedChips={releasedChips}
+            className="bg-[#0D2139] border-[#1E3A5F] text-white"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <EvolutionSelectField form={form} />
-            <ProjectSelectField form={form} />
-            <UserSelectField form={form} />
-            <DeviceSelectField form={form} />
+            <EvolutionSelectField 
+              form={form} 
+              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
+            />
+            <ProjectSelectField 
+              form={form} 
+              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
+            />
+            <UserSelectField 
+              form={form} 
+              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
+            />
+            <DeviceSelectField 
+              form={form} 
+              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
+            />
           </div>
         </div>
 
@@ -178,19 +209,19 @@ export function CreateInstanceForm({
           </div>
         )}
 
-        <div className="flex justify-end space-x-4 pt-6 border-t border-sky-600/20">
+        <div className="flex justify-end space-x-4 pt-6">
           <Button 
-            variant="outline" 
             type="button" 
             onClick={onClose}
-            className="bg-transparent border-sky-600/30 text-sky-50 hover:bg-sky-900/20 transition-colors"
+            variant="ghost"
+            className="text-gray-400 hover:text-white hover:bg-white/10"
           >
             Cancelar
           </Button>
           <Button 
             type="submit"
-            className="bg-sky-600 hover:bg-sky-700 text-white transition-colors"
             disabled={isLoading}
+            className="bg-[#0EA5E9] hover:bg-[#0284C7] text-white"
           >
             {isLoading ? "Criando..." : "Criar Instância"}
           </Button>
