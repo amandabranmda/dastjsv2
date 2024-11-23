@@ -7,14 +7,12 @@ interface QRCodeDisplayProps {
   base64Image: string | null;
   isLoading: boolean;
   instanceName?: string | null;
-  isCheckingStatus?: boolean;
 }
 
 export function QRCodeDisplay({ 
   base64Image, 
   isLoading, 
-  instanceName,
-  isCheckingStatus = false 
+  instanceName
 }: QRCodeDisplayProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -54,22 +52,6 @@ export function QRCodeDisplay({
     return null;
   }
 
-  // When QR is generated and status is being checked, show only the QR code centered
-  if (isCheckingStatus) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-        <div className="bg-white p-4 rounded-lg max-w-[280px] w-full aspect-square">
-          <img
-            src={base64Image}
-            alt="QR Code"
-            className="w-full h-full object-contain"
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // Regular card display for other states
   return (
     <Card 
       id="qr-container"

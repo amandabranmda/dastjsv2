@@ -14,7 +14,6 @@ export const useInstanceCreation = ({
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [instanceName, setInstanceName] = useState<string | null>(null);
-  const [shouldCheckStatus, setShouldCheckStatus] = useState(false);
 
   const createInstance = async (values: CreateInstancePayload) => {
     setIsLoading(true);
@@ -25,7 +24,6 @@ export const useInstanceCreation = ({
       
       setQrCode(data.qrcode);
       setInstanceName(data.instancia);
-      setShouldCheckStatus(true);
       toast.success(`Instância ${data.instancia} criada com sucesso!`);
       
       return data;
@@ -45,8 +43,6 @@ export const useInstanceCreation = ({
     qrCode,
     isLoading,
     instanceName,
-    shouldCheckStatus,
-    setShouldCheckStatus,
     createInstance
   };
 };

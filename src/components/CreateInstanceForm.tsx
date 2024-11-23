@@ -8,8 +8,6 @@ import { DeviceSelectField } from "./form/DeviceSelectField"
 import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
 import { QRCodeDisplay } from "./QRCodeDisplay"
-import { StatusResultCard } from "./StatusResultCard"
-import { useState, useEffect } from "react"
 import { X } from "lucide-react"
 import { useInstanceCreation } from "@/hooks/useInstanceCreation"
 import { ChipSelect } from "./form/ChipSelect"
@@ -39,64 +37,23 @@ type FormValues = z.infer<typeof formSchema>;
 export function CreateInstanceForm({ 
   onClose, 
   onQRGenerationStart, 
-  onQRGenerationEnd,
-  onStatusCheckComplete 
+  onQRGenerationEnd
 }: { 
   onClose: () => void;
   onQRGenerationStart: () => void;
   onQRGenerationEnd: () => void;
-  onStatusCheckComplete: () => void;
 }) {
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
-  const [showStatusCard, setShowStatusCard] = useState(false);
-  const [instanceStatus, setInstanceStatus] = useState<string | null>(null);
 
   const {
     qrCode,
     isLoading,
     instanceName,
-    shouldCheckStatus,
-    setShouldCheckStatus,
     createInstance
   } = useInstanceCreation({
     onQRGenerationStart,
     onQRGenerationEnd
   });
-
-  const { data: chipStatus, refetch: refetchChipStatus } = useQuery({
-    queryKey: ["chip-status", selectedChip],
-    queryFn: async () => {
-      if (!selectedChip) return null;
-      
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("statusInstancia")
-        .eq("numeroChip", selectedChip)
-        .single();
-
-      if (error) throw error;
-      return data?.statusInstancia;
-    },
-    enabled: shouldCheckStatus,
-    refetchInterval: false,
-  });
-
-  useEffect(() => {
-    if (shouldCheckStatus) {
-      const timer = setTimeout(() => {
-        refetchChipStatus().then((result) => {
-          if (result.data) {
-            setInstanceStatus(result.data);
-            setShowStatusCard(true);
-          }
-          setShouldCheckStatus(false);
-          onStatusCheckComplete();
-        });
-      }, 30000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [shouldCheckStatus, refetchChipStatus, onStatusCheckComplete, setShouldCheckStatus]);
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
@@ -191,7 +148,6 @@ export function CreateInstanceForm({
               base64Image={qrCode} 
               isLoading={isLoading}
               instanceName={instanceName}
-              isCheckingStatus={shouldCheckStatus}
             />
           </div>
         )}
@@ -214,13 +170,6 @@ export function CreateInstanceForm({
           </Button>
         </div>
       </form>
-
-      {showStatusCard && instanceStatus && (
-        <StatusResultCard 
-          status={instanceStatus} 
-          onClose={() => setShowStatusCard(false)} 
-        />
-      )}
     </Form>
   );
 }
