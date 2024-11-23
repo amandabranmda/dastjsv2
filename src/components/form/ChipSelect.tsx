@@ -38,6 +38,12 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
     (chip.localChip && chip.localChip.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <FormField
       control={form.control}
@@ -56,7 +62,7 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
                     field.onChange(value);
                   }
                 }}
-                defaultValue={field.value}
+                value={field.value}
               >
                 <SelectTrigger className={className}>
                   <SelectValue placeholder={placeholder} />
@@ -68,7 +74,8 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
                       <Input
                         placeholder="Buscar chip..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={handleSearchInputChange}
+                        onKeyDown={(e) => e.stopPropagation()}
                         className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 h-8 p-0"
                       />
                     </div>
