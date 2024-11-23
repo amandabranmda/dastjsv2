@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "./ui/button";
+import { toast } from "./ui/use-toast";
 
 interface ChipsTableProps {
   chips: any[];
@@ -30,6 +31,17 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
 
   const toggleSort = () => {
     setSortOrder(current => current === 'asc' ? 'desc' : 'asc');
+  };
+
+  const handleCopyChip = (chipNumber: string) => {
+    if (title.includes("verificarDesconexao")) {
+      navigator.clipboard.writeText(chipNumber);
+      toast({
+        description: "Número do chip copiado!",
+        duration: 2000,
+      });
+      onCopyChip(chipNumber);
+    }
   };
 
   return (
@@ -68,10 +80,11 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
               />
             </TableCell>
             <TableCell 
-              onClick={() => onCopyChip(chip.numeroChip)}
+              onClick={() => handleCopyChip(chip.numeroChip)}
               className={cn(
                 "cursor-pointer hover:text-[#FFD700] transition-colors",
-                selectedChips.includes(chip.numeroChip) ? "text-[#FFD700]" : ""
+                selectedChips.includes(chip.numeroChip) ? "text-[#FFD700]" : "",
+                title.includes("verificarDesconexao") && "hover:text-blue-400"
               )}
             >
               {chip.numeroChip}
