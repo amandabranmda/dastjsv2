@@ -13,6 +13,7 @@ import { useInstanceCreation } from "@/hooks/useInstanceCreation"
 import { ChipSelect } from "./form/ChipSelect"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
+import { useState } from "react"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {

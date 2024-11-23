@@ -23,7 +23,6 @@ const Index = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showCloseAlert, setShowCloseAlert] = useState(false);
   const [isGeneratingQR, setIsGeneratingQR] = useState(false);
-  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
 
   const calculateOptinRate = () => {
     if (!instancesData?.totalClicks || !instancesData?.totalLeads) return "0";
@@ -38,7 +37,7 @@ const Index = () => {
   };
 
   const handleCloseAttempt = () => {
-    if (isGeneratingQR || isCheckingStatus) {
+    if (isGeneratingQR) {
       setShowCloseAlert(true);
     } else {
       setDialogOpen(false);
@@ -67,12 +66,8 @@ const Index = () => {
               <DialogContent>
                 <CreateInstanceForm 
                   onClose={() => setDialogOpen(false)} 
-                  onQRGenerationStart={() => {
-                    setIsGeneratingQR(true);
-                    setIsCheckingStatus(true);
-                  }}
+                  onQRGenerationStart={() => setIsGeneratingQR(true)}
                   onQRGenerationEnd={() => setIsGeneratingQR(false)}
-                  onStatusCheckComplete={() => setIsCheckingStatus(false)}
                 />
               </DialogContent>
             </Dialog>
@@ -168,7 +163,6 @@ const Index = () => {
                 setShowCloseAlert(false);
                 setDialogOpen(false);
                 setIsGeneratingQR(false);
-                setIsCheckingStatus(false);
               }}
             >
               Sim, fechar
