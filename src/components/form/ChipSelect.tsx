@@ -1,7 +1,10 @@
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 interface ChipSelectProps {
@@ -13,6 +16,8 @@ interface ChipSelectProps {
 }
 
 export function ChipSelect({ form, name, label, placeholder, className }: ChipSelectProps) {
+  const [showCustomInput, setShowCustomInput] = useState(false);
+
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
     queryFn: async () => {
@@ -33,27 +38,62 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className={className}>
-                <SelectValue placeholder={placeholder} />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {releasedChips?.map((chip) => (
-                <SelectItem 
-                  key={chip.numeroChip} 
-                  value={chip.numeroChip}
-                  className="flex items-center justify-between gap-2 hover:bg-white/5"
+          <FormControl>
+            {!showCustomInput ? (
+              <Select
+                onValueChange={(value) => {
+                  if (value === "custom") {
+                    setShowCustomInput(true);
+                    field.onChange("");
+                  } else {
+                    field.onChange(value);
+                  }
+                }}
+                defaultValue={field.value}
+              >
+                <SelectTrigger className={className}>
+                  <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem 
+                    value="custom"
+                    className="hover:bg-white/5"
+                  >
+                    Digitar manualmente
+                  </SelectItem>
+                  {releasedChips?.map((chip) => (
+                    <SelectItem 
+                      key={chip.numeroChip} 
+                      value={chip.numeroChip}
+                      className="flex items-center justify-between gap-2 hover:bg-white/5"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium text-base">{chip.numeroChip}</span>
+                        <span className="text-sm text-muted-foreground">{chip.localChip || 'Sem local'}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <div className="space-y-2">
+                <Input
+                  placeholder="Digite o número do chip"
+                  className={className}
+                  {...field}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomInput(false)}
+                  className="w-full"
                 >
-                  <div className="flex flex-col">
-                    <span className="font-medium text-base">{chip.numeroChip}</span>
-                    <span className="text-sm text-muted-foreground">{chip.localChip || 'Sem local'}</span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                  Voltar para lista
+                </Button>
+              </div>
+            )}
+          </FormControl>
         </FormItem>
       )}
     />
