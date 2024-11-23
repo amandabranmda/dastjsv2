@@ -14,7 +14,7 @@ export function EvolutionSelectField({ form, className }: EvolutionSelectFieldPr
       name="evolution"
       render={({ field }) => (
         <FormItem className="glass-card p-4 rounded-lg">
-          <FormLabel className="text-lg font-semibold text-white/90">Evolution</FormLabel>
+          <FormLabel className="text-lg font-semibold text-white/90">Evo</FormLabel>
           <FormControl>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <SelectTrigger className={cn("bg-white/5 border-white/10 text-white", className)}>
