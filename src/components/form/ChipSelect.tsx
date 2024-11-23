@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { Search } from "lucide-react";
 
 interface ChipSelectProps {
   form: UseFormReturn<any>;
@@ -17,6 +18,7 @@ interface ChipSelectProps {
 
 export function ChipSelect({ form, name, label, placeholder, className }: ChipSelectProps) {
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
@@ -30,6 +32,11 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
       return data;
     }
   });
+
+  const filteredChips = releasedChips?.filter(chip => 
+    chip.numeroChip.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (chip.localChip && chip.localChip.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
     <FormField
@@ -54,14 +61,25 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
                 <SelectTrigger className={className}>
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="relative">
+                  <div className="sticky top-0 p-2 bg-popover">
+                    <div className="flex items-center px-2 py-1 bg-background/50 border rounded-md">
+                      <Search className="w-4 h-4 mr-2 text-muted-foreground" />
+                      <Input
+                        placeholder="Buscar chip..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 h-8 p-0"
+                      />
+                    </div>
+                  </div>
                   <SelectItem 
                     value="custom"
                     className="hover:bg-white/5"
                   >
                     Digitar manualmente
                   </SelectItem>
-                  {releasedChips?.map((chip) => (
+                  {filteredChips?.map((chip) => (
                     <SelectItem 
                       key={chip.numeroChip} 
                       value={chip.numeroChip}
