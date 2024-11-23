@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const DEVICE_OPTIONS = [
   "App Deletado",
@@ -13,9 +14,10 @@ const DEVICE_OPTIONS = [
 
 interface DeviceSelectFieldProps {
   form: UseFormReturn<any>;
+  className?: string;
 }
 
-export function DeviceSelectField({ form }: DeviceSelectFieldProps) {
+export function DeviceSelectField({ form, className }: DeviceSelectFieldProps) {
   const [showCustomDevice, setShowCustomDevice] = useState(false);
 
   return (
@@ -38,7 +40,7 @@ export function DeviceSelectField({ form }: DeviceSelectFieldProps) {
                 }}
                 defaultValue={field.value}
               >
-                <SelectTrigger className="bg-white/5 border-white/10 text-white hover:bg-emerald-900/20 transition-colors">
+                <SelectTrigger className={cn("bg-white/5 border-white/10 text-white hover:bg-emerald-900/20 transition-colors", className)}>
                   <SelectValue placeholder="Selecione um dispositivo" />
                 </SelectTrigger>
                 <SelectContent className="glass-dropdown">
@@ -54,7 +56,7 @@ export function DeviceSelectField({ form }: DeviceSelectFieldProps) {
               <div className="space-y-2">
                 <Input
                   placeholder="Digite o nome do dispositivo"
-                  className="bg-white/5 border-white/10 text-white"
+                  className={cn("bg-white/5 border-white/10 text-white", className)}
                   {...field}
                 />
                 <Button

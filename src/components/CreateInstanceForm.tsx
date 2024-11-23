@@ -35,6 +35,8 @@ const formSchema = z.object({
   }),
 })
 
+type FormValues = z.infer<typeof formSchema>;
+
 export function CreateInstanceForm({ 
   onClose, 
   onQRGenerationStart, 
@@ -110,7 +112,7 @@ export function CreateInstanceForm({
     }
   });
   
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       instanceName: "",
@@ -121,7 +123,7 @@ export function CreateInstanceForm({
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: FormValues) {
     const result = await createInstance(values);
     if (result) {
       setSelectedChip(values.instanceName);

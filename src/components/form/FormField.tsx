@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { ChipSelectItem } from "./ChipSelectItem";
+import { cn } from "@/lib/utils";
 
 interface CustomFormFieldProps {
   form: UseFormReturn<any>;
@@ -12,9 +13,17 @@ interface CustomFormFieldProps {
   label: string;
   placeholder: string;
   releasedChips?: any[];
+  className?: string;
 }
 
-export function CustomFormField({ form, name, label, placeholder, releasedChips }: CustomFormFieldProps) {
+export function CustomFormField({ 
+  form, 
+  name, 
+  label, 
+  placeholder, 
+  releasedChips,
+  className 
+}: CustomFormFieldProps) {
   const [showCustomInput, setShowCustomInput] = useState(false);
 
   return (
@@ -38,7 +47,7 @@ export function CustomFormField({ form, name, label, placeholder, releasedChips 
                   }}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger className="bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors">
+                  <SelectTrigger className={cn("bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors", className)}>
                     <SelectValue placeholder={placeholder} />
                   </SelectTrigger>
                   <SelectContent className="glass-dropdown">
@@ -56,7 +65,7 @@ export function CustomFormField({ form, name, label, placeholder, releasedChips 
                 <div className="space-y-2">
                   <Input
                     placeholder="Digite o nome da instância"
-                    className="bg-white/5 border-emerald-600/20 text-white"
+                    className={cn("bg-white/5 border-emerald-600/20 text-white", className)}
                     {...field}
                   />
                   <Button
@@ -74,7 +83,7 @@ export function CustomFormField({ form, name, label, placeholder, releasedChips 
               <Input
                 placeholder={placeholder}
                 {...field}
-                className="bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors"
+                className={cn("bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors", className)}
               />
             )}
           </FormControl>

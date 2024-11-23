@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { USER_OPTIONS } from "@/constants/userOptions";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 interface UserSelectFieldProps {
   form: UseFormReturn<any>;
+  className?: string;
 }
 
-export function UserSelectField({ form }: UserSelectFieldProps) {
+export function UserSelectField({ form, className }: UserSelectFieldProps) {
   const [showCustomUser, setShowCustomUser] = useState(false);
 
   return (
@@ -33,7 +35,7 @@ export function UserSelectField({ form }: UserSelectFieldProps) {
                 }}
                 defaultValue={field.value}
               >
-                <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                <SelectTrigger className={cn("bg-white/5 border-white/10 text-white", className)}>
                   <SelectValue placeholder="Selecione um usuário" />
                 </SelectTrigger>
                 <SelectContent className="glass-dropdown">
@@ -49,7 +51,7 @@ export function UserSelectField({ form }: UserSelectFieldProps) {
               <div className="space-y-2">
                 <Input
                   placeholder="Digite o nome do usuário"
-                  className="bg-white/5 border-white/10 text-white"
+                  className={cn("bg-white/5 border-white/10 text-white", className)}
                   {...field}
                 />
                 <Button
