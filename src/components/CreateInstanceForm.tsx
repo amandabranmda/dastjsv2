@@ -13,6 +13,8 @@ import { useState, useEffect } from "react"
 import { X } from "lucide-react"
 import { useInstanceCreation } from "@/hooks/useInstanceCreation"
 import { ChipSelect } from "./form/ChipSelect"
+import { useQuery } from "@tanstack/react-query"
+import { supabase } from "@/lib/supabase"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
