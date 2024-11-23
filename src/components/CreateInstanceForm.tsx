@@ -3,11 +3,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
-import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/lib/supabase"
 import { UserSelectField } from "./form/UserSelectField"
-import { ChipSelectItem } from "./form/ChipSelectItem"
-import { CustomFormField } from "./form/FormField"
 import { DeviceSelectField } from "./form/DeviceSelectField"
 import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
@@ -16,6 +12,7 @@ import { StatusResultCard } from "./StatusResultCard"
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
 import { useInstanceCreation } from "@/hooks/useInstanceCreation"
+import { ChipSelect } from "./form/ChipSelect"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -158,12 +155,11 @@ export function CreateInstanceForm({
         <div className="space-y-6">
           <h2 className="text-xl font-semibold text-white mb-6">Criar Nova Instância</h2>
           
-          <CustomFormField
+          <ChipSelect
             form={form}
             name="instanceName"
             label="Instância"
             placeholder="Selecione um número de chip"
-            releasedChips={releasedChips}
             className="bg-[#0D2139] border-[#1E3A5F] text-white"
           />
 
