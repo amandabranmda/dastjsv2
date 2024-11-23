@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
-import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { UserSelectField } from "./form/UserSelectField"
@@ -16,6 +15,7 @@ import { QRCodeDisplay } from "./QRCodeDisplay"
 import { StatusResultCard } from "./StatusResultCard"
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
+import { useInstanceCreation } from "@/hooks/useInstanceCreation"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -46,13 +46,21 @@ export function CreateInstanceForm({
   onQRGenerationEnd: () => void;
   onStatusCheckComplete: () => void;
 }) {
-  const [qrCode, setQrCode] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [instanceName, setInstanceName] = useState<string | null>(null);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
-  const [shouldCheckStatus, setShouldCheckStatus] = useState(false);
   const [showStatusCard, setShowStatusCard] = useState(false);
   const [instanceStatus, setInstanceStatus] = useState<string | null>(null);
+
+  const {
+    qrCode,
+    isLoading,
+    instanceName,
+    shouldCheckStatus,
+    setShouldCheckStatus,
+    createInstance
+  } = useInstanceCreation({
+    onQRGenerationStart,
+    onQRGenerationEnd
+  });
 
   const { data: chipStatus, refetch: refetchChipStatus } = useQuery({
     queryKey: ["chip-status", selectedChip],
@@ -83,11 +91,11 @@ export function CreateInstanceForm({
           setShouldCheckStatus(false);
           onStatusCheckComplete();
         });
-      }, 30000); // Changed from 20000 to 30000 (30 seconds)
+      }, 30000);
 
       return () => clearTimeout(timer);
     }
-  }, [shouldCheckStatus, refetchChipStatus, onStatusCheckComplete]);
+  }, [shouldCheckStatus, refetchChipStatus, onStatusCheckComplete, setShouldCheckStatus]);
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
@@ -114,37 +122,9 @@ export function CreateInstanceForm({
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true);
-      onQRGenerationStart();
-      const response = await fetch('https://ct103n8nwebhook.wpp-app.com/webhook/qrDast', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) throw new Error('Falha ao criar instância');
-
-      const data = await response.json();
-      
-      if (data.qrcode) {
-        setQrCode(data.qrcode);
-        setInstanceName(data.instancia);
-        setSelectedChip(values.instanceName);
-        setShouldCheckStatus(true);
-        toast.success(`Instância ${data.instancia} criada com sucesso!`);
-      } else {
-        throw new Error('QR Code não recebido');
-      }
-    } catch (error) {
-      toast.error("Erro ao criar instância. Tente novamente.");
-      setQrCode(null);
-      setInstanceName(null);
-    } finally {
-      setIsLoading(false);
-      onQRGenerationEnd();
+    const result = await createInstance(values);
+    if (result) {
+      setSelectedChip(values.instanceName);
     }
   }
 
