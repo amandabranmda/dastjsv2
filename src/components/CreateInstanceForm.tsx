@@ -14,6 +14,8 @@ import { ChipSelect } from "./form/ChipSelect"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -45,6 +47,8 @@ export function CreateInstanceForm({
   onQRGenerationEnd: () => void;
 }) {
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
+  const { toast } = useToast();
+  const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null);
 
   const {
     qrCode,
@@ -54,7 +58,33 @@ export function CreateInstanceForm({
     createInstance
   } = useInstanceCreation({
     onQRGenerationStart,
-    onQRGenerationEnd
+    onQRGenerationEnd,
+    onConnectionSuccess: () => {
+      setConnectionStatus('success');
+      toast({
+        duration: 5000,
+        className: "bg-emerald-500 text-white border-emerald-600",
+        description: (
+          <div className="flex items-center gap-2">
+            <span className="text-lg">✓</span>
+            <span>Instância conectada com sucesso!</span>
+          </div>
+        ),
+      });
+    },
+    onConnectionError: () => {
+      setConnectionStatus('error');
+      toast({
+        duration: 5000,
+        className: "bg-red-500 text-white border-red-600",
+        description: (
+          <div className="flex items-center gap-2">
+            <span className="text-lg">✕</span>
+            <span>Erro ao conectar instância!</span>
+          </div>
+        ),
+      });
+    }
   });
 
   const { data: releasedChips } = useQuery({
@@ -101,6 +131,20 @@ export function CreateInstanceForm({
         onSubmit={form.handleSubmit(onSubmit)} 
         className="relative space-y-6 rounded-xl bg-[#0A1A2A] p-6 border border-[#1E3A5F]"
       >
+        {connectionStatus && (
+          <Alert className={`animate-fade-in ${
+            connectionStatus === 'success' 
+              ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30' 
+              : 'bg-red-500/20 text-red-500 border-red-500/30'
+          }`}>
+            <AlertDescription>
+              {connectionStatus === 'success' 
+                ? 'Instância conectada com sucesso!' 
+                : 'Erro ao conectar instância!'}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="absolute top-4 right-4">
           <Button
             type="button"
