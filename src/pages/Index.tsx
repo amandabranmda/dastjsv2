@@ -7,6 +7,9 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
 import { ChipRegistrationForm } from "@/components/ChipRegistrationForm";
+import { ChipsTable } from "@/components/ChipsTable";
+import { supabase } from "@/lib/supabase";
+import { useQuery } from "@tanstack/react-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +26,21 @@ const Index = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showCloseAlert, setShowCloseAlert] = useState(false);
   const [isGeneratingQR, setIsGeneratingQR] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
+  const { data: statusChips } = useQuery({
+    queryKey: ["status-chips", selectedStatus],
+    enabled: !!selectedStatus,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", selectedStatus);
+
+      if (error) throw error;
+      return data;
+    }
+  });
 
   const calculateOptinRate = () => {
     if (!instancesData?.totalClicks || !instancesData?.totalLeads) return "0";
@@ -42,6 +60,10 @@ const Index = () => {
     } else {
       setDialogOpen(false);
     }
+  };
+
+  const handleStatusCardClick = (status: string) => {
+    setSelectedStatus(status);
   };
 
   return (
@@ -94,6 +116,7 @@ const Index = () => {
               title="❌verificarDesconexao" 
               value={isLoading ? "..." : instancesData?.closedCount || 0} 
               type="closed" 
+              onClick={() => handleStatusCardClick("❌verificarDesconexao")}
             />
           </div>
         </div>
@@ -131,6 +154,7 @@ const Index = () => {
               title="Aguardando Desbloqueio" 
               value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
               type="closed" 
+              onClick={() => handleStatusCardClick("aguardando desbloqueio")}
             />
           </div>
           <div className="animate-fade-in [animation-delay:1600ms]">
@@ -138,12 +162,38 @@ const Index = () => {
               title="Chips Liberados" 
               value={isLoading ? "..." : instancesData?.releasedCount || 0}
               type="closed" 
+              onClick={() => handleStatusCardClick("liberado")}
             />
           </div>
           <div className="animate-fade-in [animation-delay:1800ms]">
             <ChipRegistrationForm />
           </div>
         </div>
+
+        {selectedStatus && statusChips && (
+          <div className="mt-6 bg-black/50 p-6 rounded-lg backdrop-blur-sm border border-white/10">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-white">
+                Chips com status: {selectedStatus}
+              </h2>
+              <Button 
+                variant="ghost" 
+                onClick={() => setSelectedStatus(null)}
+                className="text-white hover:bg-white/10"
+              >
+                Fechar
+              </Button>
+            </div>
+            <ChipsTable
+              chips={statusChips}
+              title={selectedStatus}
+              onCheckboxChange={() => {}}
+              onCopyChip={() => {}}
+              selectedChips={[]}
+              checkedChips={[]}
+            />
+          </div>
+        )}
       </div>
 
       <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>

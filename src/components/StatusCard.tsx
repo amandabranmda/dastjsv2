@@ -7,9 +7,10 @@ interface StatusCardProps {
   value: number | string;
   type: "online" | "closed" | "sending" | "created";
   icon?: "activity" | "clock" | "users" | "zap";
+  onClick?: () => void;
 }
 
-export function StatusCard({ title, value, type, icon }: StatusCardProps) {
+export function StatusCard({ title, value, type, icon, onClick }: StatusCardProps) {
   const getIcon = () => {
     switch (icon) {
       case "activity":
@@ -26,7 +27,13 @@ export function StatusCard({ title, value, type, icon }: StatusCardProps) {
   };
 
   return (
-    <Card className="metric-card">
+    <Card 
+      className={cn(
+        "metric-card",
+        onClick && "cursor-pointer hover:bg-white/5 transition-colors"
+      )}
+      onClick={onClick}
+    >
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <span className="metric-label">{title}</span>
