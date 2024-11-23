@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { UseFormReturn } from "react-hook-form"
+import { cn } from "@/lib/utils"
 
 const projects = [
   "ProjetHotGPT",
@@ -14,9 +15,10 @@ const projects = [
 
 interface ProjectSelectFieldProps {
   form: UseFormReturn<any>;
+  className?: string;
 }
 
-export function ProjectSelectField({ form }: ProjectSelectFieldProps) {
+export function ProjectSelectField({ form, className }: ProjectSelectFieldProps) {
   const [showCustomProject, setShowCustomProject] = useState(false);
 
   return (
@@ -39,7 +41,7 @@ export function ProjectSelectField({ form }: ProjectSelectFieldProps) {
                 }}
                 defaultValue={field.value}
               >
-                <SelectTrigger className="bg-white/5 border-sky-600/20 text-white hover:bg-sky-900/20 transition-colors">
+                <SelectTrigger className={cn("bg-white/5 border-sky-600/20 text-white hover:bg-sky-900/20 transition-colors", className)}>
                   <SelectValue placeholder="Selecione um projeto" />
                 </SelectTrigger>
                 <SelectContent className="glass-dropdown border-sky-600/20">
@@ -58,7 +60,7 @@ export function ProjectSelectField({ form }: ProjectSelectFieldProps) {
               <div className="space-y-2">
                 <Input
                   placeholder="Digite o nome do projeto"
-                  className="bg-white/5 border-sky-600/20 text-white"
+                  className={cn("bg-white/5 border-sky-600/20 text-white", className)}
                   {...field}
                 />
                 <Button
