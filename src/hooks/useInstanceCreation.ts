@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { instanceApi, CreateInstancePayload } from "@/services/instanceApi";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 interface UseInstanceCreationProps {
   onQRGenerationStart: () => void;
@@ -14,6 +15,26 @@ export const useInstanceCreation = ({
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [instanceName, setInstanceName] = useState<string | null>(null);
+
+  const checkInstanceStatus = async (numeroChip: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("statusInstancia")
+        .eq("numeroChip", numeroChip)
+        .single();
+
+      if (error) {
+        console.error("Erro ao verificar status:", error);
+        return false;
+      }
+
+      return data?.statusInstancia === "open";
+    } catch (error) {
+      console.error("Erro na consulta:", error);
+      return false;
+    }
+  };
 
   const createInstance = async (values: CreateInstancePayload) => {
     setIsLoading(true);
@@ -43,6 +64,7 @@ export const useInstanceCreation = ({
     qrCode,
     isLoading,
     instanceName,
-    createInstance
+    createInstance,
+    checkInstanceStatus
   };
 };
