@@ -1,41 +1,45 @@
 import { Card } from "@/components/ui/card";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, ShoppingCart, Target, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MetricCardProps {
   title: string;
   value: string | number;
-  change: string;
-  type: "preset" | "optin" | "sales";
+  change?: string;
+  type: "sales" | "orders" | "leads" | "ticket";
 }
 
 export function MetricCard({ title, value, change, type }: MetricCardProps) {
-  const getColor = () => {
+  const getIcon = () => {
     switch (type) {
-      case "preset":
-        return "text-[#9333EA]";
-      case "optin":
-        return "text-[#10B981]";
       case "sales":
-        return "text-[#0EA5E9]";
+        return <ShoppingCart className="w-5 h-5 text-emerald-500" />;
+      case "orders":
+        return <ShoppingCart className="w-5 h-5 text-emerald-500" />;
+      case "leads":
+        return <Target className="w-5 h-5 text-emerald-500" />;
+      case "ticket":
+        return <DollarSign className="w-5 h-5 text-emerald-500" />;
       default:
-        return "text-gray-400";
+        return null;
     }
   };
 
   return (
-    <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-6 animate-fade-in-scale">
-      <div className="flex flex-col gap-4">
+    <Card className="metric-card">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm text-gray-400 font-medium">{title}</h3>
-          <span className={cn("text-xs font-medium uppercase", getColor())}>{type}</span>
+          <span className="metric-label">{title}</span>
+          {getIcon()}
         </div>
-        <div className="flex items-end justify-between">
-          <p className="text-3xl font-semibold text-white">{value}</p>
-          <div className={cn("flex items-center gap-1", "text-[#10B981]")}>
-            <TrendingUp className="w-4 h-4" />
-            <span className="text-sm font-medium">{change}</span>
-          </div>
+        <div className="flex items-center justify-between">
+          <span className="metric-value">{value}</span>
+          {change && (
+            <div className="flex items-center gap-1 text-emerald-500">
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-sm font-medium">{change}</span>
+            </div>
+          )}
         </div>
       </div>
     </Card>
