@@ -1,15 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Contact2, MessageSquare } from "lucide-react";
-import { StatusCard } from "@/components/StatusCard";
-import { MetricCard } from "@/components/MetricCard";
 import { useInstances } from "@/hooks/useInstances";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
-import { ChipRegistrationForm } from "@/components/ChipRegistrationForm";
-import { ChipsTable } from "@/components/ChipsTable";
-import { supabase } from "@/lib/supabase";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +12,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { HeaderSection } from "@/components/dashboard/HeaderSection";
+import { StatusSection } from "@/components/dashboard/StatusSection";
+import { MetricsSection } from "@/components/dashboard/MetricsSection";
+import { ChipsSection } from "@/components/dashboard/ChipsSection";
+import { ChipsTableSection } from "@/components/dashboard/ChipsTableSection";
 
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
@@ -71,129 +68,38 @@ const Index = () => {
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       
       <div className="relative">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            Zaps Dashboard
-          </h1>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Button variant="secondary" className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-[#9b87f5] hover:bg-[#8b77e5] transition-colors">
-              <Contact2 className="w-4 h-4" />
-              Contatos
-            </Button>
-            <Dialog open={dialogOpen} onOpenChange={handleCloseAttempt}>
-              <Button variant="default" onClick={() => setDialogOpen(true)} className="gap-2 text-sm sm:text-base flex-1 sm:flex-none bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity">
-                <MessageSquare className="w-4 h-4" />
-                Criar Instância
-              </Button>
-              <DialogContent>
-                <CreateInstanceForm 
-                  onClose={() => setDialogOpen(false)} 
-                  onQRGenerationStart={() => setIsGeneratingQR(true)}
-                  onQRGenerationEnd={() => setIsGeneratingQR(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+        <HeaderSection 
+          dialogOpen={dialogOpen}
+          showCloseAlert={showCloseAlert}
+          isGeneratingQR={isGeneratingQR}
+          handleCloseAttempt={handleCloseAttempt}
+          setDialogOpen={setDialogOpen}
+        />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="animate-fade-in [animation-delay:400ms]">
-            <StatusCard 
-              title="Instâncias Enviando" 
-              value={isLoading ? "..." : instancesData?.sendingCount || 0} 
-              type="sending" 
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:600ms]">
-            <StatusCard 
-              title="Instâncias Online" 
-              value={isLoading ? "..." : instancesData?.onlineCount || 0} 
-              type="online" 
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:800ms]">
-            <StatusCard 
-              title="❌verificarDesconexao" 
-              value={isLoading ? "..." : instancesData?.closedCount || 0} 
-              type="closed" 
-              onClick={() => handleStatusCardClick("❌verificarDesconexao")}
-            />
-          </div>
-        </div>
+        <StatusSection 
+          instancesData={instancesData}
+          isLoading={isLoading}
+          onStatusCardClick={handleStatusCardClick}
+        />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:800ms]">
-            <MetricCard
-              title="Cliques"
-              value={isLoading ? "..." : instancesData?.totalClicks || 0}
-              change="+45"
-              type="sales"
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1000ms]">
-            <MetricCard
-              title="Leads"
-              value={isLoading ? "..." : instancesData?.totalLeads || 0}
-              change={`${calculateOptinRate()}% optin`}
-              type="leads"
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1200ms]">
-            <MetricCard
-              title="Limite de envios"
-              value={isLoading ? "..." : instancesData?.totalSendingLimit || 0}
-              change={calculateRemainingMessages()}
-              type="sales"
-            />
-          </div>
-        </div>
+        <MetricsSection 
+          instancesData={instancesData}
+          isLoading={isLoading}
+          calculateOptinRate={calculateOptinRate}
+          calculateRemainingMessages={calculateRemainingMessages}
+        />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-          <div className="animate-fade-in [animation-delay:1400ms]">
-            <StatusCard 
-              title="Aguardando Desbloqueio" 
-              value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
-              type="closed" 
-              onClick={() => handleStatusCardClick("aguardando desbloqueio")}
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1600ms]">
-            <StatusCard 
-              title="Chips Liberados" 
-              value={isLoading ? "..." : instancesData?.releasedCount || 0}
-              type="closed" 
-              onClick={() => handleStatusCardClick("liberado")}
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:1800ms]">
-            <ChipRegistrationForm />
-          </div>
-        </div>
+        <ChipsSection 
+          instancesData={instancesData}
+          isLoading={isLoading}
+          onStatusCardClick={handleStatusCardClick}
+        />
 
-        {selectedStatus && statusChips && (
-          <div className="mt-6 bg-black/50 p-6 rounded-lg backdrop-blur-sm border border-white/10">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-white">
-                Chips com status: {selectedStatus}
-              </h2>
-              <Button 
-                variant="ghost" 
-                onClick={() => setSelectedStatus(null)}
-                className="text-white hover:bg-white/10"
-              >
-                Fechar
-              </Button>
-            </div>
-            <ChipsTable
-              chips={statusChips}
-              title={selectedStatus}
-              onCheckboxChange={() => {}}
-              onCopyChip={() => {}}
-              selectedChips={[]}
-              checkedChips={[]}
-            />
-          </div>
-        )}
+        <ChipsTableSection 
+          selectedStatus={selectedStatus}
+          statusChips={statusChips}
+          onClose={() => setSelectedStatus(null)}
+        />
       </div>
 
       <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
