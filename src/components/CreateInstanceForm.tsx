@@ -49,6 +49,7 @@ export function CreateInstanceForm({
   const {
     qrCode,
     isLoading,
+    isChecking,
     instanceName,
     createInstance
   } = useInstanceCreation({
@@ -148,6 +149,7 @@ export function CreateInstanceForm({
             <QRCodeDisplay 
               base64Image={qrCode} 
               isLoading={isLoading}
+              isChecking={isChecking}
               instanceName={instanceName}
             />
           </div>

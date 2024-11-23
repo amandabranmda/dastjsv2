@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { instanceApi, CreateInstancePayload } from "@/services/instanceApi";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
@@ -15,6 +15,8 @@ export const useInstanceCreation = ({
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [instanceName, setInstanceName] = useState<string | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const checkInstanceStatus = async (numeroChip: string) => {
     try {
@@ -36,6 +38,46 @@ export const useInstanceCreation = ({
     }
   };
 
+  const startStatusCheck = (numeroChip: string) => {
+    // Aguarda 40 segundos antes de iniciar as verificações
+    const timeout = setTimeout(() => {
+      setIsChecking(true);
+      
+      const id = setInterval(async () => {
+        const isConnected = await checkInstanceStatus(numeroChip);
+        
+        if (isConnected) {
+          toast.success("Instância conectada com sucesso!");
+          clearInterval(id);
+          setIsChecking(false);
+          setIntervalId(null);
+        }
+      }, 5000); // Verifica a cada 5 segundos
+      
+      setIntervalId(id);
+
+      // Timeout de 2 minutos para parar as verificações
+      setTimeout(() => {
+        if (intervalId) {
+          clearInterval(intervalId);
+          setIntervalId(null);
+          setIsChecking(false);
+          toast.error("Tempo limite de verificação excedido");
+        }
+      }, 120000); // 2 minutos
+    }, 40000); // 40 segundos
+
+    // Retorna a função de cleanup
+    return () => {
+      clearTimeout(timeout);
+      if (intervalId) {
+        clearInterval(intervalId);
+        setIntervalId(null);
+      }
+      setIsChecking(false);
+    };
+  };
+
   const createInstance = async (values: CreateInstancePayload) => {
     setIsLoading(true);
     onQRGenerationStart();
@@ -46,6 +88,9 @@ export const useInstanceCreation = ({
       setQrCode(data.qrcode);
       setInstanceName(data.instancia);
       toast.success(`Instância ${data.instancia} criada com sucesso!`);
+      
+      // Inicia a verificação de status após criar a instância
+      startStatusCheck(values.instanceName);
       
       return data;
     } catch (error) {
@@ -60,9 +105,19 @@ export const useInstanceCreation = ({
     }
   };
 
+  // Cleanup quando o componente é desmontado
+  useEffect(() => {
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [intervalId]);
+
   return {
     qrCode,
     isLoading,
+    isChecking,
     instanceName,
     createInstance,
     checkInstanceStatus

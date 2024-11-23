@@ -6,12 +6,14 @@ import { useState, useEffect } from "react";
 interface QRCodeDisplayProps {
   base64Image: string | null;
   isLoading: boolean;
+  isChecking?: boolean;
   instanceName?: string | null;
 }
 
 export function QRCodeDisplay({ 
   base64Image, 
   isLoading, 
+  isChecking,
   instanceName
 }: QRCodeDisplayProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -88,7 +90,11 @@ export function QRCodeDisplay({
         />
       </div>
       
-      <p className="text-sm text-sky-400/80">Escaneie o QR Code para conectar</p>
+      <p className="text-sm text-sky-400/80">
+        {isChecking 
+          ? "Verificando conexão da instância..." 
+          : "Escaneie o QR Code para conectar"}
+      </p>
     </Card>
   );
 }
