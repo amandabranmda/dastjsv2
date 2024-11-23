@@ -16,6 +16,13 @@ interface CustomFormFieldProps {
   className?: string;
 }
 
+// Função auxiliar para gerar números sequenciais com padding
+const generateSequentialNumbers = (start: number, end: number) => {
+  return Array.from({ length: end - start + 1 }, (_, i) => {
+    return String(i + start).padStart(3, '0');
+  });
+};
+
 export function CustomFormField({ 
   form, 
   name, 
@@ -25,6 +32,7 @@ export function CustomFormField({
   className 
 }: CustomFormFieldProps) {
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const sequentialNumbers = generateSequentialNumbers(1, 10);
 
   return (
     <FormField
@@ -34,57 +42,51 @@ export function CustomFormField({
         <FormItem className="glass-card p-4 rounded-lg border border-emerald-600/20 hover:border-emerald-600/30 transition-colors">
           <FormLabel className="text-lg font-semibold text-white/90">{label}</FormLabel>
           <FormControl>
-            {releasedChips ? (
-              !showCustomInput ? (
-                <Select
-                  onValueChange={(value) => {
-                    if (value === "custom") {
-                      setShowCustomInput(true);
-                      field.onChange("");
-                    } else {
-                      field.onChange(value);
-                    }
-                  }}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className={cn("bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors", className)}>
-                    <SelectValue placeholder={placeholder} />
-                  </SelectTrigger>
-                  <SelectContent className="glass-dropdown">
-                    {releasedChips?.map((chip) => (
-                      <ChipSelectItem
-                        key={chip.numeroChip}
-                        numeroChip={chip.numeroChip}
-                        localChip={chip.localChip}
-                      />
-                    ))}
-                    <SelectItem value="custom">Digitar manualmente</SelectItem>
-                  </SelectContent>
-                </Select>
-              ) : (
-                <div className="space-y-2">
-                  <Input
-                    placeholder="Digite o nome da instância"
-                    className={cn("bg-white/5 border-emerald-600/20 text-white", className)}
-                    {...field}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowCustomInput(false)}
-                    className="w-full border-emerald-600/20 hover:bg-emerald-900/20"
-                  >
-                    Voltar para lista
-                  </Button>
-                </div>
-              )
+            {!showCustomInput ? (
+              <Select
+                onValueChange={(value) => {
+                  if (value === "custom") {
+                    setShowCustomInput(true);
+                    field.onChange("");
+                  } else {
+                    field.onChange(value);
+                  }
+                }}
+                defaultValue={field.value}
+              >
+                <SelectTrigger className={cn("bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors", className)}>
+                  <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+                <SelectContent className="glass-dropdown">
+                  {sequentialNumbers.map((number) => (
+                    <SelectItem 
+                      key={number} 
+                      value={number}
+                      className="hover:bg-emerald-900/20"
+                    >
+                      {number}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="custom" className="hover:bg-emerald-900/20">Digitar manualmente</SelectItem>
+                </SelectContent>
+              </Select>
             ) : (
-              <Input
-                placeholder={placeholder}
-                {...field}
-                className={cn("bg-white/5 border-emerald-600/20 text-white hover:bg-emerald-900/20 transition-colors", className)}
-              />
+              <div className="space-y-2">
+                <Input
+                  placeholder="Digite o nome da instância"
+                  className={cn("bg-white/5 border-emerald-600/20 text-white", className)}
+                  {...field}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomInput(false)}
+                  className="w-full border-emerald-600/20 hover:bg-emerald-900/20"
+                >
+                  Voltar para lista
+                </Button>
+              </div>
             )}
           </FormControl>
           <FormMessage className="text-red-400" />
