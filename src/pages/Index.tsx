@@ -104,7 +104,7 @@ const Index = () => {
               title="Cliques"
               value={isLoading ? "..." : instancesData?.totalClicks || 0}
               change="+45"
-              type="preset"
+              type="sales"
             />
           </div>
           <div className="animate-fade-in [animation-delay:1000ms]">
@@ -112,7 +112,7 @@ const Index = () => {
               title="Leads"
               value={isLoading ? "..." : instancesData?.totalLeads || 0}
               change={`${calculateOptinRate()}% optin`}
-              type="optin"
+              type="leads"
             />
           </div>
           <div className="animate-fade-in [animation-delay:1200ms]">
