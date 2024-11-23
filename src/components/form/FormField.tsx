@@ -16,11 +16,8 @@ interface CustomFormFieldProps {
   className?: string;
 }
 
-// Função auxiliar para gerar números sequenciais com padding
 const generateSequentialNumbers = (start: number, end: number) => {
-  return Array.from({ length: end - start + 1 }, (_, i) => {
-    return String(i + start).padStart(3, '0');
-  });
+  return Array.from({ length: end - start + 1 }, (_, i) => String(i + start));
 };
 
 export function CustomFormField({ 
