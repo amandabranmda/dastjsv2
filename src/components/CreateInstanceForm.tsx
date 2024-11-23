@@ -161,7 +161,7 @@ export function CreateInstanceForm({
           <CustomFormField
             form={form}
             name="instanceName"
-            label="Nome Instância"
+            label="Instância"
             placeholder="Selecione um número de chip"
             releasedChips={releasedChips}
             className="bg-[#0D2139] border-[#1E3A5F] text-white"
