@@ -124,7 +124,14 @@ export function CreateInstanceForm({
   })
 
   async function onSubmit(values: FormValues) {
-    const result = await createInstance(values);
+    const result = await createInstance({
+      instanceName: values.instanceName,
+      evolution: values.evolution,
+      user: values.user,
+      project: values.project,
+      device: values.device
+    });
+    
     if (result) {
       setSelectedChip(values.instanceName);
     }
