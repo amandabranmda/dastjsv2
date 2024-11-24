@@ -83,7 +83,7 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
               onClick={() => handleCopyChip(chip.numeroChip)}
               className={cn(
                 "cursor-pointer transition-colors",
-                selectedChips.includes(chip.numeroChip) ? "text-emerald-500" : "text-white hover:text-[#FFD700]",
+                selectedChips.includes(chip.numeroChip) ? "text-[#B8860B]" : "text-white hover:text-[#FFD700]",
                 title.includes("verificarDesconexao") && "hover:text-blue-400"
               )}
             >
