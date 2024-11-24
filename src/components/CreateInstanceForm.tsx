@@ -9,11 +9,10 @@ import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
 import { X } from "lucide-react"
 import { ChipSelect } from "./form/ChipSelect"
-import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/lib/supabase"
 import { useState } from "react"
 import { toast } from "sonner"
 import { WebhookResponseHandler } from "./webhook/WebhookResponseHandler"
+import { useInstanceStatusCheck } from "@/hooks/useInstanceStatusCheck"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -49,36 +48,15 @@ export function CreateInstanceForm({
   const [alertType, setAlertType] = useState<'success' | 'warning' | 'error' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const { data: releasedChips } = useQuery({
-    queryKey: ["released-chips"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("numeroChip, localChip")
-        .eq("statusChip", "liberado");
-
-      if (error) throw error;
-      return data;
-    }
+  const { isChecking } = useInstanceStatusCheck(selectedChip, () => {
+    setIsConnected(true);
+    setQrCode(null);
   });
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      instanceName: "",
-      evolution: "",
-      user: "",
-      project: "",
-      device: "",
-    },
-  })
 
-  // Função auxiliar para verificar se uma string é base64 ou data URL com base64
   const isBase64 = (str: string) => {
-    // Verifica se é uma data URL de imagem
     if (str.startsWith('data:image/')) {
-      // Extrai apenas a parte base64 após a vírgula
       const base64Data = str.split(',')[1];
       try {
         return btoa(atob(base64Data)) === base64Data;
@@ -86,7 +64,6 @@ export function CreateInstanceForm({
         return false;
       }
     }
-    // Verifica se é base64 puro
     try {
       return btoa(atob(str)) === str;
     } catch (err) {
@@ -96,6 +73,7 @@ export function CreateInstanceForm({
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
+    setIsConnected(false);
     onQRGenerationStart();
     setQrCode(null);
     
@@ -159,6 +137,8 @@ export function CreateInstanceForm({
           alertType={alertType}
           instanceName={selectedChip}
           isLoading={isLoading}
+          isChecking={isChecking}
+          isConnected={isConnected}
         />
 
         <div className="absolute top-4 right-4">

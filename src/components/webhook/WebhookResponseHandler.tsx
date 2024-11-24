@@ -7,6 +7,8 @@ interface WebhookResponseHandlerProps {
   alertType: 'success' | 'warning' | 'error' | null;
   instanceName: string | null;
   isLoading: boolean;
+  isChecking?: boolean;
+  isConnected?: boolean;
 }
 
 export function WebhookResponseHandler({
@@ -14,18 +16,26 @@ export function WebhookResponseHandler({
   alertMessage,
   alertType,
   instanceName,
-  isLoading
+  isLoading,
+  isChecking,
+  isConnected
 }: WebhookResponseHandlerProps) {
+  const finalAlertType = isConnected ? 'success' : alertType;
+  const finalMessage = isConnected ? "Instância Conectada com Sucesso!" : alertMessage;
+
   return (
     <>
-      <InstanceStatusAlert message={alertMessage} type={alertType} />
+      <InstanceStatusAlert 
+        message={finalMessage} 
+        type={finalAlertType} 
+      />
       
-      {qrCode && (
+      {!isConnected && qrCode && (
         <div className="mt-6">
           <QRCodeDisplay 
             base64Image={qrCode}
             isLoading={isLoading}
-            isChecking={false}
+            isChecking={isChecking}
             instanceName={instanceName}
           />
         </div>
