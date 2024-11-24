@@ -33,7 +33,7 @@ export const instanceApi = {
   async createInstance(payload: CreateInstancePayload): Promise<InstanceResponse> {
     try {
       const response = await Promise.race([
-        fetch(`${API_URL}/qrDast`, {
+        fetch(API_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
