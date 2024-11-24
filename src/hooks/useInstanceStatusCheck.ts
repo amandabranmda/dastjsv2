@@ -9,21 +9,35 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
 
     const checkStatus = async () => {
       setIsChecking(true);
+      console.log('Iniciando verificação para instância:', instanceNumber);
       
-      // Wait 30 seconds before checking
+      // Aguarda 30 segundos
       await new Promise(resolve => setTimeout(resolve, 30000));
+      console.log('30 segundos passados, verificando status...');
 
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("statusInstancia")
-        .eq("numeroChip", instanceNumber)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from("1-chipsInstancias")
+          .select("statusInstancia")
+          .eq("numeroChip", instanceNumber)
+          .single();
 
-      if (!error && data?.statusInstancia === "open") {
-        onSuccess();
+        console.log('Resultado da verificação:', data);
+
+        if (error) {
+          console.error('Erro ao verificar status:', error);
+          return;
+        }
+
+        if (data?.statusInstancia === "open") {
+          console.log('Status é open, chamando onSuccess');
+          onSuccess();
+        }
+      } catch (error) {
+        console.error('Erro na verificação:', error);
+      } finally {
+        setIsChecking(false);
       }
-      
-      setIsChecking(false);
     };
 
     checkStatus();
