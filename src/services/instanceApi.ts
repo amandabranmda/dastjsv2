@@ -13,7 +13,7 @@ export interface InstanceResponse {
   instancia: string;
 }
 
-const API_URL = 'https://ct103n8nwebhook.wpp-app.com/webhook';
+const API_URL = 'https://n8n-hot.wpp-app.com/webhook';
 const TIMEOUT_MS = 30000; // 30 seconds timeout
 
 class InstanceApiError extends Error {
