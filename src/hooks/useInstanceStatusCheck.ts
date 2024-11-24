@@ -29,9 +29,13 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
           return;
         }
 
-        if (data?.statusInstancia === "open") {
-          console.log('Status é open, chamando onSuccess');
+        // Verifica se o status não é um erro ou aviso
+        const status = data?.statusInstancia;
+        if (status && !status.includes('⚠') && !status.includes('❌')) {
+          console.log('Status válido encontrado:', status);
           onSuccess();
+        } else {
+          console.log('Status inválido ou com erro:', status);
         }
       } catch (error) {
         console.error('Erro na verificação:', error);
