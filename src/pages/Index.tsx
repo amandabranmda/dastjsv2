@@ -76,20 +76,18 @@ const Index = () => {
           setDialogOpen={setDialogOpen}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="space-y-4">
           <StatusSection 
             instancesData={instancesData}
             isLoading={isLoading}
             onStatusCardClick={handleStatusCardClick}
           />
           {selectedStatus === "❌verificarDesconexao" && (
-            <div className="sm:col-span-1">
-              <ChipsTableSection 
-                selectedStatus={selectedStatus}
-                statusChips={statusChips}
-                onClose={() => setSelectedStatus(null)}
-              />
-            </div>
+            <ChipsTableSection 
+              selectedStatus={selectedStatus}
+              statusChips={statusChips}
+              onClose={() => setSelectedStatus(null)}
+            />
           )}
         </div>
 
@@ -100,20 +98,18 @@ const Index = () => {
           calculateRemainingMessages={calculateRemainingMessages}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+        <div className="space-y-4">
           <ChipsSection 
             instancesData={instancesData}
             isLoading={isLoading}
             onStatusCardClick={handleStatusCardClick}
           />
           {(selectedStatus === "aguardando desbloqueio" || selectedStatus === "liberado") && (
-            <div className="sm:col-span-1">
-              <ChipsTableSection 
-                selectedStatus={selectedStatus}
-                statusChips={statusChips}
-                onClose={() => setSelectedStatus(null)}
-              />
-            </div>
+            <ChipsTableSection 
+              selectedStatus={selectedStatus}
+              statusChips={statusChips}
+              onClose={() => setSelectedStatus(null)}
+            />
           )}
         </div>
       </div>
