@@ -48,6 +48,7 @@ export function CreateInstanceForm({
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [qrCode, setQrCode] = useState<string | null>(null);
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
@@ -78,7 +79,31 @@ export function CreateInstanceForm({
     onQRGenerationStart();
     
     try {
-      // Here we simulate success for now, without making the actual webhook call
+      const response = await fetch('https://n8n-hot.wpp-app.com/webhook/qrDast', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          instanceName: values.instanceName,
+          evolution: values.evolution,
+          user: values.user,
+          project: values.project,
+          device: values.device
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha na requisição');
+      }
+
+      const data = await response.json();
+      
+      if (data.qrcode) {
+        setQrCode(data.qrcode);
+      }
+      
       setSelectedChip(values.instanceName);
       setConnectionStatus('success');
       toast.success("Instância criada com sucesso!", {
@@ -147,6 +172,17 @@ export function CreateInstanceForm({
             />
           </div>
         </div>
+
+        {qrCode && (
+          <div className="mt-6">
+            <QRCodeDisplay 
+              base64Image={qrCode}
+              isLoading={false}
+              isChecking={false}
+              instanceName={selectedChip}
+            />
+          </div>
+        )}
 
         <div className="flex justify-end space-x-4 pt-6">
           <Button 
