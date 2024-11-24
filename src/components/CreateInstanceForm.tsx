@@ -7,14 +7,13 @@ import { UserSelectField } from "./form/UserSelectField"
 import { DeviceSelectField } from "./form/DeviceSelectField"
 import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
-import { QRCodeDisplay } from "./QRCodeDisplay"
 import { X } from "lucide-react"
 import { ChipSelect } from "./form/ChipSelect"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { useState } from "react"
 import { toast } from "sonner"
-import { InstanceStatusAlert } from "./status/InstanceStatusAlert"
+import { WebhookResponseHandler } from "./webhook/WebhookResponseHandler"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -75,9 +74,19 @@ export function CreateInstanceForm({
     },
   })
 
+  // Função auxiliar para verificar se uma string é base64
+  const isBase64 = (str: string) => {
+    try {
+      return btoa(atob(str)) === str;
+    } catch (err) {
+      return false;
+    }
+  }
+
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
     onQRGenerationStart();
+    setQrCode(null); // Reset QR code state
     
     try {
       const response = await fetch('https://n8n-hot.wpp-app.com/webhook/qrDast', {
@@ -86,13 +95,7 @@ export function CreateInstanceForm({
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          instanceName: values.instanceName,
-          evolution: values.evolution,
-          user: values.user,
-          project: values.project,
-          device: values.device
-        })
+        body: JSON.stringify(values)
       });
 
       if (!response.ok) {
@@ -101,7 +104,6 @@ export function CreateInstanceForm({
 
       const data = await response.json();
       
-      // Verifica se a resposta contém um QR code em base64
       if (data.qrcode && isBase64(data.qrcode)) {
         setQrCode(data.qrcode);
         setSelectedChip(values.instanceName);
@@ -112,7 +114,6 @@ export function CreateInstanceForm({
           className: "bg-emerald-500 text-white border-emerald-600",
         });
       } else {
-        // Se não for um QR code, exibe a mensagem recebida
         setAlertMessage(data.message || "Erro desconhecido na resposta");
         setAlertType('error');
         toast.error(data.message || "Erro desconhecido na resposta", {
@@ -124,6 +125,7 @@ export function CreateInstanceForm({
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
       setAlertMessage(errorMessage);
       setAlertType('error');
+      setQrCode(null);
       toast.error(errorMessage, {
         duration: 5000,
         className: "bg-red-500 text-white border-red-600",
@@ -134,22 +136,19 @@ export function CreateInstanceForm({
     }
   }
 
-  // Função auxiliar para verificar se uma string é base64
-  const isBase64 = (str: string) => {
-    try {
-      return btoa(atob(str)) === str;
-    } catch (err) {
-      return false;
-    }
-  }
-
   return (
     <Form {...form}>
       <form 
         onSubmit={form.handleSubmit(onSubmit)} 
         className="relative space-y-6 rounded-xl bg-[#0A1A2A] p-6 border border-[#1E3A5F]"
       >
-        <InstanceStatusAlert message={alertMessage} type={alertType} />
+        <WebhookResponseHandler
+          qrCode={qrCode}
+          alertMessage={alertMessage}
+          alertType={alertType}
+          instanceName={selectedChip}
+          isLoading={isLoading}
+        />
 
         <div className="absolute top-4 right-4">
           <Button
@@ -193,17 +192,6 @@ export function CreateInstanceForm({
             />
           </div>
         </div>
-
-        {qrCode && (
-          <div className="mt-6">
-            <QRCodeDisplay 
-              base64Image={qrCode}
-              isLoading={false}
-              isChecking={false}
-              instanceName={selectedChip}
-            />
-          </div>
-        )}
 
         <div className="flex justify-end space-x-4 pt-6">
           <Button 
