@@ -38,9 +38,14 @@ export const instanceApi = {
       const response = await Promise.race([
         fetch(API_URL, {
           method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
           },
           body: JSON.stringify(payload),
         }),
