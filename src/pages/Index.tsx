@@ -16,12 +16,28 @@ import { MetricsSection } from "@/components/dashboard/MetricsSection";
 import { ChipsSection } from "@/components/dashboard/ChipsSection";
 import { ChipsTableSection } from "@/components/dashboard/ChipsTableSection";
 import { Card } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showCloseAlert, setShowCloseAlert] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
+  const { data: statusChips } = useQuery({
+    queryKey: ["status-chips", selectedStatus],
+    enabled: !!selectedStatus,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", selectedStatus);
+
+      if (error) throw error;
+      return data;
+    }
+  });
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#2D3748] p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden">
