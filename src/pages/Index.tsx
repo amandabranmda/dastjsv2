@@ -17,6 +17,7 @@ import { StatusSection } from "@/components/dashboard/StatusSection";
 import { MetricsSection } from "@/components/dashboard/MetricsSection";
 import { ChipsSection } from "@/components/dashboard/ChipsSection";
 import { ChipsTableSection } from "@/components/dashboard/ChipsTableSection";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
@@ -39,26 +40,6 @@ const Index = () => {
     }
   });
 
-  const calculateOptinRate = () => {
-    if (!instancesData?.totalClicks || !instancesData?.totalLeads) return "0";
-    const rate = (instancesData.totalLeads / instancesData.totalClicks) * 100;
-    return rate.toFixed(2);
-  };
-
-  const calculateRemainingMessages = () => {
-    if (!instancesData?.totalSendingLimit || !instancesData?.totalLeads) return "0";
-    const remaining = instancesData.totalSendingLimit - instancesData.totalLeads;
-    return `Você ainda tem ${remaining} envios disponíveis`;
-  };
-
-  const handleCloseAttempt = () => {
-    if (isGeneratingQR) {
-      setShowCloseAlert(true);
-    } else {
-      setDialogOpen(false);
-    }
-  };
-
   const handleStatusCardClick = (status: string) => {
     setSelectedStatus(status);
   };
@@ -72,21 +53,30 @@ const Index = () => {
           dialogOpen={dialogOpen}
           showCloseAlert={showCloseAlert}
           isGeneratingQR={isGeneratingQR}
-          handleCloseAttempt={handleCloseAttempt}
+          handleCloseAttempt={() => {
+            if (isGeneratingQR) {
+              setShowCloseAlert(true);
+            } else {
+              setDialogOpen(false);
+            }
+          }}
           setDialogOpen={setDialogOpen}
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          <StatusSection 
-            instancesData={instancesData}
-            isLoading={isLoading}
-            onStatusCardClick={handleStatusCardClick}
-          />
-          {selectedStatus === "❌verificarDesconexao" && (
-            <ChipsTableSection 
-              selectedStatus={selectedStatus}
-              statusChips={statusChips}
-              onClose={() => setSelectedStatus(null)}
+          {selectedStatus === "❌verificarDesconexao" ? (
+            <Card className="metric-card">
+              <ChipsTableSection 
+                selectedStatus={selectedStatus}
+                statusChips={statusChips}
+                onClose={() => setSelectedStatus(null)}
+              />
+            </Card>
+          ) : (
+            <StatusSection 
+              instancesData={instancesData}
+              isLoading={isLoading}
+              onStatusCardClick={handleStatusCardClick}
             />
           )}
         </div>
@@ -94,24 +84,20 @@ const Index = () => {
         <MetricsSection 
           instancesData={instancesData}
           isLoading={isLoading}
-          calculateOptinRate={calculateOptinRate}
-          calculateRemainingMessages={calculateRemainingMessages}
         />
 
-        <div className="space-y-4">
-          <ChipsSection 
-            instancesData={instancesData}
-            isLoading={isLoading}
-            onStatusCardClick={handleStatusCardClick}
+        <ChipsSection 
+          instancesData={instancesData}
+          isLoading={isLoading}
+          onStatusCardClick={handleStatusCardClick}
+        />
+        {(selectedStatus === "aguardando desbloqueio" || selectedStatus === "liberado") && (
+          <ChipsTableSection 
+            selectedStatus={selectedStatus}
+            statusChips={statusChips}
+            onClose={() => setSelectedStatus(null)}
           />
-          {(selectedStatus === "aguardando desbloqueio" || selectedStatus === "liberado") && (
-            <ChipsTableSection 
-              selectedStatus={selectedStatus}
-              statusChips={statusChips}
-              onClose={() => setSelectedStatus(null)}
-            />
-          )}
-        </div>
+        )}
       </div>
 
       <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>

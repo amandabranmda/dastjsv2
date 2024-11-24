@@ -1,5 +1,4 @@
 import { ChipsTable } from "@/components/ChipsTable";
-import { Card } from "@/components/ui/card";
 import { X } from "lucide-react";
 
 interface ChipsTableSectionProps {
@@ -12,7 +11,7 @@ export function ChipsTableSection({ selectedStatus, statusChips, onClose }: Chip
   if (!statusChips) return null;
 
   return (
-    <Card className="metric-card relative">
+    <div className="relative">
       <button
         onClick={onClose}
         className="absolute top-2 right-2 p-1 hover:bg-white/10 rounded-full transition-colors"
@@ -21,8 +20,15 @@ export function ChipsTableSection({ selectedStatus, statusChips, onClose }: Chip
       </button>
       
       <div className="mt-4">
-        <ChipsTable chips={statusChips} />
+        <ChipsTable 
+          chips={statusChips} 
+          title={selectedStatus}
+          onCheckboxChange={() => {}}
+          onCopyChip={() => {}}
+          selectedChips={[]}
+          checkedChips={[]}
+        />
       </div>
-    </Card>
+    </div>
   );
 }
