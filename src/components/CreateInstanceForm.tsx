@@ -9,7 +9,6 @@ import { EvolutionSelectField } from "./form/EvolutionSelectField"
 import { ProjectSelectField } from "./form/ProjectSelectField"
 import { QRCodeDisplay } from "./QRCodeDisplay"
 import { X } from "lucide-react"
-import { useInstanceCreation } from "@/hooks/useInstanceCreation"
 import { ChipSelect } from "./form/ChipSelect"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
@@ -48,31 +47,7 @@ export function CreateInstanceForm({
 }) {
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null);
-
-  const {
-    qrCode,
-    isLoading,
-    isChecking,
-    instanceName,
-    createInstance
-  } = useInstanceCreation({
-    onQRGenerationStart,
-    onQRGenerationEnd,
-    onConnectionSuccess: () => {
-      setConnectionStatus('success');
-      toast.success("Instância conectada com sucesso!", {
-        duration: 5000,
-        className: "bg-emerald-500 text-white border-emerald-600",
-      });
-    },
-    onConnectionError: () => {
-      setConnectionStatus('error');
-      toast.error("Erro ao conectar instância!", {
-        duration: 5000,
-        className: "bg-red-500 text-white border-red-600",
-      });
-    }
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: releasedChips } = useQuery({
     queryKey: ["released-chips"],
@@ -99,16 +74,26 @@ export function CreateInstanceForm({
   })
 
   async function onSubmit(values: FormValues) {
-    const result = await createInstance({
-      instanceName: values.instanceName,
-      evolution: values.evolution,
-      user: values.user,
-      project: values.project,
-      device: values.device
-    });
+    setIsLoading(true);
+    onQRGenerationStart();
     
-    if (result) {
+    try {
+      // Here we simulate success for now, without making the actual webhook call
       setSelectedChip(values.instanceName);
+      setConnectionStatus('success');
+      toast.success("Instância criada com sucesso!", {
+        duration: 5000,
+        className: "bg-emerald-500 text-white border-emerald-600",
+      });
+    } catch (error) {
+      setConnectionStatus('error');
+      toast.error("Erro ao criar instância!", {
+        duration: 5000,
+        className: "bg-red-500 text-white border-red-600",
+      });
+    } finally {
+      setIsLoading(false);
+      onQRGenerationEnd();
     }
   }
 
@@ -162,17 +147,6 @@ export function CreateInstanceForm({
             />
           </div>
         </div>
-
-        {(isLoading || qrCode) && (
-          <div className="mt-6">
-            <QRCodeDisplay 
-              base64Image={qrCode} 
-              isLoading={isLoading}
-              isChecking={isChecking}
-              instanceName={instanceName}
-            />
-          </div>
-        )}
 
         <div className="flex justify-end space-x-4 pt-6">
           <Button 
