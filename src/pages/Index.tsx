@@ -1,27 +1,56 @@
-import { useInstances } from "@/hooks/useInstances";
 import { useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { HeaderSection } from "@/components/dashboard/HeaderSection";
 import { StatusSection } from "@/components/dashboard/StatusSection";
 import { MetricsSection } from "@/components/dashboard/MetricsSection";
 import { ChipsSection } from "@/components/dashboard/ChipsSection";
 import { ChipsTableSection } from "@/components/dashboard/ChipsTableSection";
 import { Card } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 const Index = () => {
-  const { data: instancesData, isLoading } = useInstances();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showCloseAlert, setShowCloseAlert] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
+  const { data: instancesData, isLoading } = useQuery({
+    queryKey: ["instances"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("*");
+
+      if (error) throw error;
+
+      const onlineCount = data.filter((instance) => instance.status === "online").length;
+      const closedCount = data.filter((instance) => instance.status === "closed").length;
+      const sendingCount = data.filter((instance) => instance.status === "sending").length;
+      const waitingUnlockCount = data.filter((instance) => instance.statusChip === "aguardando desbloqueio").length;
+      const releasedCount = data.filter((instance) => instance.statusChip === "liberado").length;
+      const totalLeads = data.reduce((acc, curr) => acc + (curr.totalLeads || 0), 0);
+      const totalClicks = data.reduce((acc, curr) => acc + (curr.totalClicks || 0), 0);
+      const totalSendingLimit = data.reduce((acc, curr) => acc + (curr.sendingLimit || 0), 0);
+
+      return {
+        onlineCount,
+        closedCount,
+        sendingCount,
+        waitingUnlockCount,
+        releasedCount,
+        totalLeads,
+        totalClicks,
+        totalSendingLimit,
+      };
+    },
+  });
+
+  const handleCloseAttempt = () => {
+    setShowCloseAlert(true);
+  };
+
+  const handleStatusCardClick = (status: string) => {
+    setSelectedStatus(status);
+  };
 
   const { data: statusChips } = useQuery({
     queryKey: ["status-chips", selectedStatus],
@@ -45,9 +74,7 @@ const Index = () => {
         <HeaderSection 
           dialogOpen={dialogOpen}
           showCloseAlert={showCloseAlert}
-          handleCloseAttempt={() => {
-            setShowCloseAlert(true);
-          }}
+          handleCloseAttempt={handleCloseAttempt}
           setDialogOpen={setDialogOpen}
         />
 
@@ -64,7 +91,7 @@ const Index = () => {
             <StatusSection 
               instancesData={instancesData}
               isLoading={isLoading}
-              onStatusCardClick={setSelectedStatus}
+              onStatusCardClick={handleStatusCardClick}
             />
           )}
         </div>
@@ -77,7 +104,7 @@ const Index = () => {
         <ChipsSection 
           instancesData={instancesData}
           isLoading={isLoading}
-          onStatusCardClick={setSelectedStatus}
+          onStatusCardClick={handleStatusCardClick}
         />
         
         {(selectedStatus === "aguardando desbloqueio" || selectedStatus === "liberado") && (
@@ -88,28 +115,6 @@ const Index = () => {
           />
         )}
       </div>
-
-      <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
-            <AlertDialogDescription>
-              A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                setShowCloseAlert(false);
-                setDialogOpen(false);
-              }}
-            >
-              Sim, fechar
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
