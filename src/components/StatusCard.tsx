@@ -3,7 +3,7 @@ import { Copy, MessageSquare, X, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { ChipsTable } from "./ChipsTable";
@@ -182,6 +182,9 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         )}>
           <DialogHeader>
             <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogDescription>
+              Lista de chips com status {dialogTitle.toLowerCase()}
+            </DialogDescription>
           </DialogHeader>
           <div className={cn(
             "overflow-y-auto",
