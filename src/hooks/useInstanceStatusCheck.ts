@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { toast } from "sonner";
 
 export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess: () => void) => {
   const [isChecking, setIsChecking] = useState(false);
+  const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (!instanceNumber) return;
@@ -29,14 +31,18 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
           return;
         }
 
-        // Verifica se o status não é um erro ou aviso
-        const status = data?.statusInstancia;
-        if (status && !status.includes('⚠') && !status.includes('❌')) {
-          console.log('Status válido encontrado:', status);
+        const currentStatus = data?.statusInstancia;
+        setStatus(currentStatus);
+        
+        if (currentStatus === "open") {
           onSuccess();
-        } else {
-          console.log('Status inválido ou com erro:', status);
         }
+
+        toast.success(currentStatus, {
+          className: currentStatus === "open" ? "bg-blue-500" : "bg-orange-500",
+          duration: 5000,
+        });
+
       } catch (error) {
         console.error('Erro na verificação:', error);
       } finally {
@@ -47,5 +53,5 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
     checkStatus();
   }, [instanceNumber, onSuccess]);
 
-  return { isChecking };
+  return { isChecking, status };
 };
