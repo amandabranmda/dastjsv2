@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { toast } from "sonner";
 
 export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess: (status: string) => void) => {
   const [isChecking, setIsChecking] = useState(false);
@@ -37,9 +36,8 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
         const currentStatus = data.statusInstancia;
         setStatus(currentStatus);
         
-        if (currentStatus === "open") {
-          onSuccess(currentStatus);
-        }
+        // Chama onSuccess para qualquer status, não apenas para "open"
+        onSuccess(currentStatus);
 
       } catch (error) {
         console.error('Erro na verificação:', error);

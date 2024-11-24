@@ -22,14 +22,13 @@ export function WebhookResponseHandler({
   isConnected,
   status
 }: WebhookResponseHandlerProps) {
-  const finalAlertType = isConnected ? 'success' : alertType;
-  const finalMessage = alertMessage || status || (isConnected ? "Instância Conectada com Sucesso!" : null);
+  const finalMessage = alertMessage || status;
 
   return (
     <>
       <InstanceStatusAlert 
         message={finalMessage} 
-        type={finalAlertType} 
+        type={alertType} 
       />
       
       {!isConnected && qrCode && (

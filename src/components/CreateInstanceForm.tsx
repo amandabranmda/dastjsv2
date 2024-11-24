@@ -63,11 +63,16 @@ export function CreateInstanceForm({
   });
 
   const { isChecking, status: instanceStatus } = useInstanceStatusCheck(selectedChip, (currentStatus) => {
-    setIsConnected(true);
+    if (currentStatus === "open") {
+      setIsConnected(true);
+      setAlertType('success');
+    } else {
+      setIsConnected(false);
+      setAlertType('warning');
+    }
     setQrCode(null);
     setStatus(currentStatus);
     setAlertMessage(currentStatus);
-    setAlertType('warning');
   });
 
   const isBase64 = (str: string) => {
