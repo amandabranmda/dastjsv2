@@ -49,6 +49,7 @@ export function CreateInstanceForm({
   const [isLoading, setIsLoading] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [status, setStatus] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -61,9 +62,10 @@ export function CreateInstanceForm({
     },
   });
 
-  const { isChecking } = useInstanceStatusCheck(selectedChip, () => {
+  const { isChecking, status: instanceStatus } = useInstanceStatusCheck(selectedChip, () => {
     setIsConnected(true);
     setQrCode(null);
+    setStatus(instanceStatus);
   });
 
   const isBase64 = (str: string) => {
@@ -150,6 +152,7 @@ export function CreateInstanceForm({
           isLoading={isLoading}
           isChecking={isChecking}
           isConnected={isConnected}
+          status={status}
         />
 
         <div className="absolute top-4 right-4">

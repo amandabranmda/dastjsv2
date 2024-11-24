@@ -9,6 +9,7 @@ interface WebhookResponseHandlerProps {
   isLoading: boolean;
   isChecking?: boolean;
   isConnected?: boolean;
+  status?: string | null;
 }
 
 export function WebhookResponseHandler({
@@ -18,10 +19,11 @@ export function WebhookResponseHandler({
   instanceName,
   isLoading,
   isChecking,
-  isConnected
+  isConnected,
+  status
 }: WebhookResponseHandlerProps) {
   const finalAlertType = isConnected ? 'success' : alertType;
-  const finalMessage = isConnected ? "Instância Conectada com Sucesso!" : alertMessage;
+  const finalMessage = status || (isConnected ? "Instância Conectada com Sucesso!" : alertMessage);
 
   return (
     <>
