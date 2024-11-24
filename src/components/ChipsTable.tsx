@@ -2,9 +2,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ArrowUpDown, Copy } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Button } from "./ui/button";
-import { toast } from "./ui/use-toast";
 
 interface ChipsTableProps {
   chips: any[];
@@ -33,26 +32,6 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
     setSortOrder(current => current === 'asc' ? 'desc' : 'asc');
   };
 
-  const handleCopyChip = (chipNumber: string) => {
-    if (title.includes("verificarDesconexao")) {
-      navigator.clipboard.writeText(chipNumber);
-      toast({
-        description: "Número do chip copiado!",
-        duration: 2000,
-      });
-      onCopyChip(chipNumber);
-    }
-  };
-
-  const handleCopyProfile = (chip: any) => {
-    const profileInfo = `Número do Chip: ${chip.numeroChip}\nLocal: ${chip.localChip || 'Não definido'}`;
-    navigator.clipboard.writeText(profileInfo);
-    toast({
-      description: "Perfil copiado!",
-      duration: 2000,
-    });
-  };
-
   return (
     <Table>
       <TableHeader>
@@ -71,7 +50,6 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
               <ArrowUpDown className="h-4 w-4" />
             </Button>
           </TableHead>
-          <TableHead className="w-[100px]">Ações</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -90,26 +68,15 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
               />
             </TableCell>
             <TableCell 
-              onClick={() => handleCopyChip(chip.numeroChip)}
+              onClick={() => onCopyChip(chip.numeroChip)}
               className={cn(
-                "cursor-pointer transition-colors",
-                selectedChips.includes(chip.numeroChip) ? "text-[#B8860B]" : "text-white hover:text-[#FFD700]",
-                title.includes("verificarDesconexao") && "hover:text-blue-400"
+                "cursor-pointer hover:text-[#FFD700] transition-colors",
+                selectedChips.includes(chip.numeroChip) ? "text-[#FFD700]" : ""
               )}
             >
               {chip.numeroChip}
             </TableCell>
             <TableCell>{chip.localChip || '-'}</TableCell>
-            <TableCell>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleCopyProfile(chip)}
-                className="hover:bg-white/10"
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
-            </TableCell>
           </TableRow>
         ))}
       </TableBody>

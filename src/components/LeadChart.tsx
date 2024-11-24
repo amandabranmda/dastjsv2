@@ -6,8 +6,8 @@ export function LeadChart() {
   const { data: instancesData } = useInstances();
   
   const getLeadLimit = () => {
-    if (!instancesData?.totalSendingLimit) return 300;
-    return Math.round(instancesData.totalSendingLimit * 0.3);
+    if (!instancesData?.totalSendingLimit) return 300; // fallback to default
+    return Math.round(instancesData.totalSendingLimit * 0.3); // 30% of total limit
   };
 
   const data = [
@@ -53,8 +53,8 @@ export function LeadChart() {
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
-                      <div className="bg-[#111827] border border-white/10 p-2 rounded-lg shadow-lg">
-                        <p className="text-sm font-medium text-white">
+                      <div className="bg-background/95 border border-border p-2 rounded-lg shadow-lg">
+                        <p className="text-sm font-medium">
                           {payload[0].value} leads
                         </p>
                         <p className="text-xs text-gray-400">
