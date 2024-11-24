@@ -74,8 +74,19 @@ export function CreateInstanceForm({
     },
   })
 
-  // Função auxiliar para verificar se uma string é base64
+  // Função auxiliar para verificar se uma string é base64 ou data URL com base64
   const isBase64 = (str: string) => {
+    // Verifica se é uma data URL de imagem
+    if (str.startsWith('data:image/')) {
+      // Extrai apenas a parte base64 após a vírgula
+      const base64Data = str.split(',')[1];
+      try {
+        return btoa(atob(base64Data)) === base64Data;
+      } catch (err) {
+        return false;
+      }
+    }
+    // Verifica se é base64 puro
     try {
       return btoa(atob(str)) === str;
     } catch (err) {
@@ -86,7 +97,7 @@ export function CreateInstanceForm({
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
     onQRGenerationStart();
-    setQrCode(null); // Reset QR code state
+    setQrCode(null);
     
     try {
       const response = await fetch('https://n8n-hot.wpp-app.com/webhook/qrDast', {
@@ -106,7 +117,7 @@ export function CreateInstanceForm({
       
       if (data.qrcode && isBase64(data.qrcode)) {
         setQrCode(data.qrcode);
-        setSelectedChip(values.instanceName);
+        setSelectedChip(data.instancia || values.instanceName);
         setAlertMessage("Instância Criada com sucesso!");
         setAlertType('warning');
         toast.success("Instância criada com sucesso!", {
