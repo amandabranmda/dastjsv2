@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import { useState } from "react"
 import { toast } from "sonner"
-import { ConnectionStatusAlert } from "./status/ConnectionStatusAlert"
+import { InstanceStatusAlert } from "./status/InstanceStatusAlert"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -46,7 +46,8 @@ export function CreateInstanceForm({
   onQRGenerationEnd: () => void;
 }) {
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<'success' | 'warning' | 'error' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
 
@@ -100,19 +101,30 @@ export function CreateInstanceForm({
 
       const data = await response.json();
       
-      if (data.qrcode) {
+      // Verifica se a resposta contém um QR code em base64
+      if (data.qrcode && isBase64(data.qrcode)) {
         setQrCode(data.qrcode);
+        setSelectedChip(values.instanceName);
+        setAlertMessage("Instância Criada com sucesso!");
+        setAlertType('warning');
+        toast.success("Instância criada com sucesso!", {
+          duration: 5000,
+          className: "bg-emerald-500 text-white border-emerald-600",
+        });
+      } else {
+        // Se não for um QR code, exibe a mensagem recebida
+        setAlertMessage(data.message || "Erro desconhecido na resposta");
+        setAlertType('error');
+        toast.error(data.message || "Erro desconhecido na resposta", {
+          duration: 5000,
+          className: "bg-red-500 text-white border-red-600",
+        });
       }
-      
-      setSelectedChip(values.instanceName);
-      setConnectionStatus('success');
-      toast.success("Instância criada com sucesso!", {
-        duration: 5000,
-        className: "bg-emerald-500 text-white border-emerald-600",
-      });
     } catch (error) {
-      setConnectionStatus('error');
-      toast.error("Erro ao criar instância!", {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      setAlertMessage(errorMessage);
+      setAlertType('error');
+      toast.error(errorMessage, {
         duration: 5000,
         className: "bg-red-500 text-white border-red-600",
       });
@@ -122,13 +134,22 @@ export function CreateInstanceForm({
     }
   }
 
+  // Função auxiliar para verificar se uma string é base64
+  const isBase64 = (str: string) => {
+    try {
+      return btoa(atob(str)) === str;
+    } catch (err) {
+      return false;
+    }
+  }
+
   return (
     <Form {...form}>
       <form 
         onSubmit={form.handleSubmit(onSubmit)} 
         className="relative space-y-6 rounded-xl bg-[#0A1A2A] p-6 border border-[#1E3A5F]"
       >
-        <ConnectionStatusAlert status={connectionStatus} />
+        <InstanceStatusAlert message={alertMessage} type={alertType} />
 
         <div className="absolute top-4 right-4">
           <Button
