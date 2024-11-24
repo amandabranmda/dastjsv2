@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Contact2, MessageSquare } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateInstanceForm } from "@/components/CreateInstanceForm";
+import { useState } from "react";
 
 interface HeaderSectionProps {
   dialogOpen: boolean;
   showCloseAlert: boolean;
-  isGeneratingQR: boolean;
   handleCloseAttempt: () => void;
   setDialogOpen: (open: boolean) => void;
 }
@@ -14,10 +14,11 @@ interface HeaderSectionProps {
 export function HeaderSection({ 
   dialogOpen, 
   showCloseAlert, 
-  isGeneratingQR, 
   handleCloseAttempt, 
   setDialogOpen 
 }: HeaderSectionProps) {
+  const [isGeneratingQR, setIsGeneratingQR] = useState(false);
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 mb-8">
       <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">

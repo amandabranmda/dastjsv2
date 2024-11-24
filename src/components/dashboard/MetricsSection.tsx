@@ -3,16 +3,20 @@ import { MetricCard } from "@/components/MetricCard";
 interface MetricsSectionProps {
   instancesData: any;
   isLoading: boolean;
-  calculateOptinRate: () => string;
-  calculateRemainingMessages: () => string;
 }
 
-export function MetricsSection({ 
-  instancesData, 
-  isLoading, 
-  calculateOptinRate, 
-  calculateRemainingMessages 
-}: MetricsSectionProps) {
+export function MetricsSection({ instancesData, isLoading }: MetricsSectionProps) {
+  const calculateOptinRate = () => {
+    if (!instancesData?.totalLeads || !instancesData?.totalClicks) return "0";
+    const rate = (instancesData.totalLeads / instancesData.totalClicks) * 100;
+    return rate.toFixed(1);
+  };
+
+  const calculateRemainingMessages = () => {
+    if (!instancesData?.totalSendingLimit) return "0";
+    return `${instancesData.totalSendingLimit} restantes`;
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
       <div className="animate-fade-in [animation-delay:800ms]">

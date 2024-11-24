@@ -1,7 +1,5 @@
 import { useInstances } from "@/hooks/useInstances";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +21,6 @@ const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showCloseAlert, setShowCloseAlert] = useState(false);
-  const [isGeneratingQR, setIsGeneratingQR] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   const { data: statusChips } = useQuery({
@@ -40,10 +37,6 @@ const Index = () => {
     }
   });
 
-  const handleStatusCardClick = (status: string) => {
-    setSelectedStatus(status);
-  };
-
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#2D3748] p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
@@ -52,13 +45,8 @@ const Index = () => {
         <HeaderSection 
           dialogOpen={dialogOpen}
           showCloseAlert={showCloseAlert}
-          isGeneratingQR={isGeneratingQR}
           handleCloseAttempt={() => {
-            if (isGeneratingQR) {
-              setShowCloseAlert(true);
-            } else {
-              setDialogOpen(false);
-            }
+            setShowCloseAlert(true);
           }}
           setDialogOpen={setDialogOpen}
         />
@@ -76,7 +64,7 @@ const Index = () => {
             <StatusSection 
               instancesData={instancesData}
               isLoading={isLoading}
-              onStatusCardClick={handleStatusCardClick}
+              onStatusCardClick={setSelectedStatus}
             />
           )}
         </div>
@@ -89,8 +77,9 @@ const Index = () => {
         <ChipsSection 
           instancesData={instancesData}
           isLoading={isLoading}
-          onStatusCardClick={handleStatusCardClick}
+          onStatusCardClick={setSelectedStatus}
         />
+        
         {(selectedStatus === "aguardando desbloqueio" || selectedStatus === "liberado") && (
           <ChipsTableSection 
             selectedStatus={selectedStatus}
@@ -105,9 +94,7 @@ const Index = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
             <AlertDialogDescription>
-              {isGeneratingQR 
-                ? "Você está gerando um QR Code. Se fechar agora, perderá o progresso."
-                : "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."}
+              A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -116,7 +103,6 @@ const Index = () => {
               onClick={() => {
                 setShowCloseAlert(false);
                 setDialogOpen(false);
-                setIsGeneratingQR(false);
               }}
             >
               Sim, fechar
