@@ -13,7 +13,7 @@ export interface InstanceResponse {
   instancia: string;
 }
 
-const API_URL = 'https://n8n-hot.wpp-app.com/webhook/qrcodedast';
+const API_URL = 'https://ct103n8nwebhook.wpp-app.com/webhook';
 const TIMEOUT_MS = 30000; // 30 seconds timeout
 
 class InstanceApiError extends Error {
@@ -32,20 +32,11 @@ const timeoutPromise = (ms: number) => {
 export const instanceApi = {
   async createInstance(payload: CreateInstancePayload): Promise<InstanceResponse> {
     try {
-      console.log('Sending request to:', API_URL);
-      console.log('Request payload:', payload);
-
       const response = await Promise.race([
-        fetch(API_URL, {
+        fetch(`${API_URL}/qrDast`, {
           method: 'POST',
-          mode: 'cors',
-          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
           },
           body: JSON.stringify(payload),
         }),
@@ -53,28 +44,20 @@ export const instanceApi = {
       ]);
 
       if (response instanceof Response) {
-        console.log('Response status:', response.status);
-        const responseText = await response.text();
-        console.log('Response body:', responseText);
-
         if (!response.ok) {
           throw new InstanceApiError(`HTTP error! status: ${response.status}`);
         }
-
-        try {
-          const data = JSON.parse(responseText);
-          if (!data.qrcode || !data.instancia) {
-            throw new InstanceApiError('Invalid response format');
-          }
-          return data;
-        } catch (e) {
-          throw new InstanceApiError('Invalid JSON response');
+        const data = await response.json();
+        
+        if (!data.qrcode || !data.instancia) {
+          throw new InstanceApiError('Invalid response format');
         }
+        
+        return data;
       } else {
         throw new InstanceApiError('Request timeout');
       }
     } catch (error) {
-      console.error('Error details:', error);
       if (error instanceof InstanceApiError) {
         throw error;
       }
