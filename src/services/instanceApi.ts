@@ -37,7 +37,11 @@ export const instanceApi = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Origin': window.location.origin,
           },
+          mode: 'cors',
+          credentials: 'include',
           body: JSON.stringify(payload),
         }),
         timeoutPromise(TIMEOUT_MS)
@@ -58,6 +62,7 @@ export const instanceApi = {
         throw new InstanceApiError('Request timeout');
       }
     } catch (error) {
+      console.error('Error creating instance:', error);
       if (error instanceof InstanceApiError) {
         throw error;
       }
