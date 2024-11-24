@@ -23,7 +23,7 @@ export function WebhookResponseHandler({
   status
 }: WebhookResponseHandlerProps) {
   const finalAlertType = isConnected ? 'success' : alertType;
-  const finalMessage = status || (isConnected ? "Instância Conectada com Sucesso!" : alertMessage);
+  const finalMessage = alertMessage || status || (isConnected ? "Instância Conectada com Sucesso!" : null);
 
   return (
     <>

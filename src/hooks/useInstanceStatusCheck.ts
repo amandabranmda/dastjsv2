@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { toast } from "sonner";
 
-export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess: () => void) => {
+export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess: (status: string) => void) => {
   const [isChecking, setIsChecking] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
 
@@ -26,17 +26,11 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
 
         if (error) {
           console.error('Erro ao verificar status:', error);
-          toast.error('Erro ao verificar status da instância', {
-            duration: 5000,
-          });
           return;
         }
 
         if (!data) {
           console.error('Nenhum dado encontrado para a instância');
-          toast.error('Instância não encontrada', {
-            duration: 5000,
-          });
           return;
         }
 
@@ -44,23 +38,11 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
         setStatus(currentStatus);
         
         if (currentStatus === "open") {
-          onSuccess();
-          toast.success(currentStatus, {
-            className: "bg-blue-500 text-white",
-            duration: 5000,
-          });
-        } else {
-          toast.success(currentStatus, {
-            className: "bg-orange-500 text-white",
-            duration: 5000,
-          });
+          onSuccess(currentStatus);
         }
 
       } catch (error) {
         console.error('Erro na verificação:', error);
-        toast.error('Erro ao verificar status da instância', {
-          duration: 5000,
-        });
       } finally {
         setIsChecking(false);
       }
