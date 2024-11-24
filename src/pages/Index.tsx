@@ -76,11 +76,20 @@ const Index = () => {
           setDialogOpen={setDialogOpen}
         />
 
-        <StatusSection 
-          instancesData={instancesData}
-          isLoading={isLoading}
-          onStatusCardClick={handleStatusCardClick}
-        />
+        <div className="space-y-4">
+          <StatusSection 
+            instancesData={instancesData}
+            isLoading={isLoading}
+            onStatusCardClick={handleStatusCardClick}
+          />
+          {selectedStatus === "❌verificarDesconexao" && (
+            <ChipsTableSection 
+              selectedStatus={selectedStatus}
+              statusChips={statusChips}
+              onClose={() => setSelectedStatus(null)}
+            />
+          )}
+        </div>
 
         <MetricsSection 
           instancesData={instancesData}
@@ -89,17 +98,20 @@ const Index = () => {
           calculateRemainingMessages={calculateRemainingMessages}
         />
 
-        <ChipsSection 
-          instancesData={instancesData}
-          isLoading={isLoading}
-          onStatusCardClick={handleStatusCardClick}
-        />
-
-        <ChipsTableSection 
-          selectedStatus={selectedStatus}
-          statusChips={statusChips}
-          onClose={() => setSelectedStatus(null)}
-        />
+        <div className="space-y-4">
+          <ChipsSection 
+            instancesData={instancesData}
+            isLoading={isLoading}
+            onStatusCardClick={handleStatusCardClick}
+          />
+          {(selectedStatus === "aguardando desbloqueio" || selectedStatus === "liberado") && (
+            <ChipsTableSection 
+              selectedStatus={selectedStatus}
+              statusChips={statusChips}
+              onClose={() => setSelectedStatus(null)}
+            />
+          )}
+        </div>
       </div>
 
       <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
