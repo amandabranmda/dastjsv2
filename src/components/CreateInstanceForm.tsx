@@ -50,6 +50,17 @@ export function CreateInstanceForm({
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      instanceName: "",
+      evolution: "",
+      user: "",
+      project: "",
+      device: "",
+    },
+  });
+
   const { isChecking } = useInstanceStatusCheck(selectedChip, () => {
     setIsConnected(true);
     setQrCode(null);
