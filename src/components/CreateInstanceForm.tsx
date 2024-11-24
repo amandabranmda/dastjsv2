@@ -44,7 +44,7 @@ export function CreateInstanceForm({
   onQRGenerationEnd: () => void;
 }) {
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>("Aguardando dados");
   const [alertType, setAlertType] = useState<'success' | 'warning' | 'error' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -97,8 +97,8 @@ export function CreateInstanceForm({
     onQRGenerationStart();
     setQrCode(null);
     setStatus(null);
-    setAlertMessage(null);
-    setAlertType(null);
+    setAlertMessage("Aguardando QR Code");
+    setAlertType('warning');
     
     try {
       const response = await fetch('https://n8n-hot.wpp-app.com/webhook/qrDast', {
@@ -119,7 +119,7 @@ export function CreateInstanceForm({
       if (data.qrcode && isBase64(data.qrcode)) {
         setQrCode(data.qrcode);
         setSelectedChip(data.instancia || values.instanceName);
-        setAlertMessage("escaneie novamente perdeu tempo QR");
+        setAlertMessage("Leia o QR Code");
         setAlertType('warning');
         toast.success("Instância criada com sucesso!", {
           duration: 5000,
