@@ -32,11 +32,15 @@ const timeoutPromise = (ms: number) => {
 export const instanceApi = {
   async createInstance(payload: CreateInstancePayload): Promise<InstanceResponse> {
     try {
+      console.log('Sending request to:', API_URL);
+      console.log('Request payload:', payload);
+
       const response = await Promise.race([
         fetch(API_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
           body: JSON.stringify(payload),
         }),
@@ -44,20 +48,28 @@ export const instanceApi = {
       ]);
 
       if (response instanceof Response) {
+        console.log('Response status:', response.status);
+        const responseText = await response.text();
+        console.log('Response body:', responseText);
+
         if (!response.ok) {
           throw new InstanceApiError(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        
-        if (!data.qrcode || !data.instancia) {
-          throw new InstanceApiError('Invalid response format');
+
+        try {
+          const data = JSON.parse(responseText);
+          if (!data.qrcode || !data.instancia) {
+            throw new InstanceApiError('Invalid response format');
+          }
+          return data;
+        } catch (e) {
+          throw new InstanceApiError('Invalid JSON response');
         }
-        
-        return data;
       } else {
         throw new InstanceApiError('Request timeout');
       }
     } catch (error) {
+      console.error('Error details:', error);
       if (error instanceof InstanceApiError) {
         throw error;
       }
