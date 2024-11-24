@@ -24,27 +24,43 @@ export const useInstanceStatusCheck = (instanceNumber: string | null, onSuccess:
           .eq("numeroChip", instanceNumber)
           .single();
 
-        console.log('Resultado da verificação:', data);
-
         if (error) {
           console.error('Erro ao verificar status:', error);
+          toast.error('Erro ao verificar status da instância', {
+            duration: 5000,
+          });
           return;
         }
 
-        const currentStatus = data?.statusInstancia;
+        if (!data) {
+          console.error('Nenhum dado encontrado para a instância');
+          toast.error('Instância não encontrada', {
+            duration: 5000,
+          });
+          return;
+        }
+
+        const currentStatus = data.statusInstancia;
         setStatus(currentStatus);
         
         if (currentStatus === "open") {
           onSuccess();
+          toast.success(currentStatus, {
+            className: "bg-blue-500 text-white",
+            duration: 5000,
+          });
+        } else {
+          toast.success(currentStatus, {
+            className: "bg-orange-500 text-white",
+            duration: 5000,
+          });
         }
-
-        toast.success(currentStatus, {
-          className: currentStatus === "open" ? "bg-blue-500" : "bg-orange-500",
-          duration: 5000,
-        });
 
       } catch (error) {
         console.error('Erro na verificação:', error);
+        toast.error('Erro ao verificar status da instância', {
+          duration: 5000,
+        });
       } finally {
         setIsChecking(false);
       }
