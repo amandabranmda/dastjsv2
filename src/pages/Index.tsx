@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Contact2, MessageSquare } from "lucide-react";
+import { Contact2, MessageSquare, Clock } from "lucide-react";
 import { StatusCard } from "@/components/StatusCard";
 import { MetricCard } from "@/components/MetricCard";
 import { useInstances } from "@/hooks/useInstances";
@@ -148,7 +148,7 @@ const Index = () => {
             <MetricCard
               title="Instâncias Aguardando"
               value={isLoading ? "..." : calculateIdleInstances()}
-              change="Diferença entre online e enviando"
+              change={<Clock className="w-4 h-4" />}
               type="preset"
             />
           </div>
