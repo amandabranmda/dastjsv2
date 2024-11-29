@@ -5,14 +5,14 @@ import { cn } from "@/lib/utils";
 interface MetricCardProps {
   title: string;
   value: string | number;
-  change: string;
-  type: "preset" | "optin" | "sales";
+  change: React.ReactNode;
+  type: "padrao" | "optin" | "sales";
 }
 
 export function MetricCard({ title, value, change, type }: MetricCardProps) {
   const getColor = () => {
     switch (type) {
-      case "preset":
+      case "padrao":
         return "text-[#9333EA]";
       case "optin":
         return "text-[#10B981]";
@@ -34,7 +34,7 @@ export function MetricCard({ title, value, change, type }: MetricCardProps) {
           <p className="text-3xl font-semibold text-white">{value}</p>
           <div className={cn("flex items-center gap-1", "text-[#10B981]")}>
             <TrendingUp className="w-4 h-4" />
-            <span className="text-sm font-medium">{change}</span>
+            {typeof change === 'string' ? <span className="text-sm font-medium">{change}</span> : change}
           </div>
         </div>
       </div>

@@ -107,7 +107,7 @@ const Index = () => {
               title="Cliques"
               value={isLoading ? "..." : instancesData?.totalClicks || 0}
               change="+45"
-              type="preset"
+              type="padrao"
             />
           </div>
           <div className="animate-fade-in [animation-delay:1000ms]">
@@ -149,7 +149,7 @@ const Index = () => {
               title="Instâncias Aguardando"
               value={isLoading ? "..." : calculateIdleInstances()}
               change={<Clock className="w-4 h-4" />}
-              type="preset"
+              type="padrao"
             />
           </div>
         </div>
