@@ -143,9 +143,10 @@ const Index = () => {
           <div className="animate-fade-in [animation-delay:1800ms]">
             <ChipRegistrationForm />
           </div>
+          
           <div className="animate-fade-in [animation-delay:2000ms]">
             <MetricCard
-              title="Instâncias Ociosas"
+              title="Instâncias Aguardando"
               value={isLoading ? "..." : calculateIdleInstances()}
               change="Diferença entre online e enviando"
               type="preset"
