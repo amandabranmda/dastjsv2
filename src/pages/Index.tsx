@@ -95,6 +95,14 @@ const Index = () => {
               type="online" 
             />
           </div>
+          <div className="animate-fade-in [animation-delay:2000ms]">
+            <MetricCard
+              title="Instâncias Aguardando"
+              value={isLoading ? "..." : calculateIdleInstances()}
+              change={<Clock className="w-4 h-4" />}
+              type="padrao"
+            />
+          </div>
           <div className="animate-fade-in [animation-delay:800ms]">
             <StatusCard 
               title="❌verificarDesconexao" 
@@ -142,15 +150,6 @@ const Index = () => {
           </div>
           <div className="animate-fade-in [animation-delay:1800ms]">
             <ChipRegistrationForm />
-          </div>
-          
-          <div className="animate-fade-in [animation-delay:2000ms]">
-            <MetricCard
-              title="Instâncias Aguardando"
-              value={isLoading ? "..." : calculateIdleInstances()}
-              change={<Clock className="w-4 h-4" />}
-              type="padrao"
-            />
           </div>
         </div>
       </div>
