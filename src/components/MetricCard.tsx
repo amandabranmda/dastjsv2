@@ -27,7 +27,6 @@ export function MetricCard({ title, value, change, type }: MetricCardProps) {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm text-gray-400 font-medium">{title}</h3>
-          <span className={cn("text-xs font-medium uppercase", getColor())}>{type}</span>
         </div>
         <div className="flex items-end justify-between">
           <p className="text-3xl font-semibold text-white">{value}</p>
