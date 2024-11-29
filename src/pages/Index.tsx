@@ -36,6 +36,12 @@ const Index = () => {
     return `Você ainda tem ${remaining} envios disponíveis`;
   };
 
+  const calculateIdleInstances = () => {
+    if (!instancesData?.onlineCount || !instancesData?.sendingCount) return "0";
+    const idle = instancesData.onlineCount - instancesData.sendingCount;
+    return idle;
+  };
+
   const handleCloseAttempt = () => {
     if (isGeneratingQR) {
       setShowCloseAlert(true);
@@ -120,9 +126,6 @@ const Index = () => {
               type="sales"
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
           <div className="animate-fade-in [animation-delay:1400ms]">
             <StatusCard 
               title="Aguardando Desbloqueio" 
@@ -139,6 +142,14 @@ const Index = () => {
           </div>
           <div className="animate-fade-in [animation-delay:1800ms]">
             <ChipRegistrationForm />
+          </div>
+          <div className="animate-fade-in [animation-delay:2000ms]">
+            <MetricCard
+              title="Instâncias Ociosas"
+              value={isLoading ? "..." : calculateIdleInstances()}
+              change="Diferença entre online e enviando"
+              type="preset"
+            />
           </div>
         </div>
       </div>
