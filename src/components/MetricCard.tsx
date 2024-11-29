@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MetricCardProps {
@@ -33,7 +32,6 @@ export function MetricCard({ title, value, change, type }: MetricCardProps) {
         <div className="flex items-end justify-between">
           <p className="text-3xl font-semibold text-white">{value}</p>
           <div className={cn("flex items-center gap-1", "text-[#10B981]")}>
-            <TrendingUp className="w-4 h-4" />
             {typeof change === 'string' ? <span className="text-sm font-medium">{change}</span> : change}
           </div>
         </div>
