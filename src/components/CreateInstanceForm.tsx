@@ -13,6 +13,16 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { WebhookResponseHandler } from "./webhook/WebhookResponseHandler"
 import { useInstanceStatusCheck } from "@/hooks/useInstanceStatusCheck"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -50,6 +60,7 @@ export function CreateInstanceForm({
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [showCloseAlert, setShowCloseAlert] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -74,6 +85,14 @@ export function CreateInstanceForm({
     setStatus(currentStatus);
     setAlertMessage(currentStatus);
   });
+
+  const handleCloseAttempt = () => {
+    if (isLoading || qrCode) {
+      setShowCloseAlert(true);
+    } else {
+      onClose();
+    }
+  };
 
   const isBase64 = (str: string) => {
     if (str.startsWith('data:image/')) {
@@ -170,7 +189,7 @@ export function CreateInstanceForm({
             type="button"
             variant="ghost"
             size="icon"
-            onClick={onClose}
+            onClick={handleCloseAttempt}
             className="text-gray-400 hover:text-white hover:bg-white/10"
           >
             <X className="h-4 w-4" />
@@ -225,6 +244,36 @@ export function CreateInstanceForm({
             {isLoading ? "Criando..." : "Criar Instância"}
           </Button>
         </div>
+
+        <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
+          <AlertDialogContent className="bg-[#0A1A2A] border border-[#1E3A5F] text-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-400">
+                {isLoading 
+                  ? "Você está gerando um QR Code. Se fechar agora, perderá o progresso."
+                  : "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel 
+                onClick={() => setShowCloseAlert(false)}
+                className="bg-gray-700 hover:bg-gray-600 text-white border-none"
+              >
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  setShowCloseAlert(false);
+                  onClose();
+                }}
+                className="bg-red-500 hover:bg-red-600 text-white border-none"
+              >
+                Sim, fechar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
     </Form>
   );
