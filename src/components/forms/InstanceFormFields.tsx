@@ -18,7 +18,11 @@ export function InstanceFormFields({ form, onClose, isLoading }: InstanceFormFie
   return (
     <Form {...form}>
       <form 
-        onSubmit={form.handleSubmit}
+        onSubmit={form.handleSubmit((data) => {
+          if (form.handleSubmit) {
+            form.handleSubmit(data);
+          }
+        })}
         className="relative space-y-6 rounded-xl bg-[#0A1A2A] p-6 border border-[#1E3A5F]"
       >
         <div className="absolute top-4 right-4">
