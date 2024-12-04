@@ -44,6 +44,14 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
 
       if (error) throw error;
 
+      // Atualiza a interface removendo o chip da lista
+      if (checked) {
+        const chipIndex = chips.findIndex(chip => chip.numeroChip === chipNumber);
+        if (chipIndex !== -1) {
+          chips.splice(chipIndex, 1);
+        }
+      }
+
       toast({
         description: `Chip ${chipNumber} ${checked ? 'liberado' : 'marcado como desconectado'}!`,
         duration: 2000,
