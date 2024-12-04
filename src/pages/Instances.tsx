@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
-import { MessageSquare, Clock, Plus } from "lucide-react";
+import { Clock, Plus } from "lucide-react";
 import { ChipRegistrationForm } from "@/components/ChipRegistrationForm";
-import { MetricCard } from "@/components/MetricCard";
 
 const Instances = () => {
   const { data: instancesData, isLoading } = useInstances();
@@ -86,11 +85,10 @@ const Instances = () => {
           />
         </div>
         <div className="animate-fade-in [animation-delay:2000ms] hover:scale-105 transition-transform duration-200">
-          <MetricCard
+          <StatusCard
             title="Instâncias Aguardando"
             value={isLoading ? "..." : calculateIdleInstances()}
-            change={<Clock className="w-4 h-4" />}
-            type="padrao"
+            type="online"
           />
         </div>
       </div>
