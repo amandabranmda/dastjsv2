@@ -118,7 +118,7 @@ export function ChipRegistrationForm() {
       <Card className={`p-6 ${showRegistrationForm ? 'bg-gradient-to-br from-emerald-900/20 to-emerald-800/10' : 'bg-gradient-to-br from-sky-900/20 to-sky-800/10'} backdrop-blur-sm transition-colors duration-300`}>
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <Label htmlFor="chipNumber">Cadastro de Chip</Label>
+            <Label htmlFor="chipNumber">Consulta/Cadastro Chip</Label>
             <Button 
               variant="ghost" 
               onClick={clearForm}
