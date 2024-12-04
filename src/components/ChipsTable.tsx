@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "./ui/button";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "./ui/use-toast";
 
 interface ChipsTableProps {
   chips: any[];
@@ -16,6 +18,7 @@ interface ChipsTableProps {
 
 export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selectedChips, checkedChips }: ChipsTableProps) {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const { toast } = useToast();
 
   const sortedChips = [...chips].sort((a, b) => {
     const locationA = (a.localChip || '').toLowerCase();
@@ -32,6 +35,28 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
     setSortOrder(current => current === 'asc' ? 'desc' : 'asc');
   };
 
+  const handleLiberadoChange = async (chipNumber: string, checked: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("1-chipsInstancias")
+        .update({ statusChip: checked ? "liberado" : "❌verificarDesconexao" })
+        .eq("numeroChip", chipNumber);
+
+      if (error) throw error;
+
+      toast({
+        description: `Chip ${chipNumber} ${checked ? 'liberado' : 'marcado como desconectado'}!`,
+        duration: 2000,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Erro ao atualizar status do chip",
+        duration: 2000,
+      });
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -39,6 +64,7 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
           <TableHead className="w-[50px]">
             {title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Liberado"}
           </TableHead>
+          <TableHead className="w-[50px]">Liberado</TableHead>
           <TableHead>Número do Chip</TableHead>
           <TableHead>
             <Button 
@@ -65,6 +91,11 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
                     title.includes("verificarDesconexao")
                   )
                 }
+              />
+            </TableCell>
+            <TableCell>
+              <Checkbox 
+                onCheckedChange={(checked) => handleLiberadoChange(chip.numeroChip, checked as boolean)}
               />
             </TableCell>
             <TableCell 
