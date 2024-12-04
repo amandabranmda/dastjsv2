@@ -49,6 +49,7 @@ const Instances = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Instâncias Online */}
         <div className="animate-fade-in [animation-delay:400ms] hover:scale-105 transition-transform duration-200">
           <StatusCard 
             title="Instâncias Online" 
@@ -56,6 +57,8 @@ const Instances = () => {
             type="online" 
           />
         </div>
+
+        {/* Instâncias Enviando */}
         <div className="animate-fade-in [animation-delay:600ms] hover:scale-105 transition-transform duration-200">
           <StatusCard 
             title="Instâncias Enviando" 
@@ -63,6 +66,8 @@ const Instances = () => {
             type="sending" 
           />
         </div>
+
+        {/* Instâncias Aguardando */}
         <div className="animate-fade-in [animation-delay:800ms] hover:scale-105 transition-transform duration-200">
           <StatusCard
             title="Instâncias Aguardando"
@@ -70,6 +75,8 @@ const Instances = () => {
             type="online"
           />
         </div>
+
+        {/* Verificar Desconexão */}
         <div className="animate-fade-in [animation-delay:1000ms] hover:scale-105 transition-transform duration-200">
           <StatusCard 
             title="❌verificarDesconexao" 
@@ -77,6 +84,8 @@ const Instances = () => {
             type="closed" 
           />
         </div>
+
+        {/* Aguardando Desbloqueio */}
         <div className="animate-fade-in [animation-delay:1200ms] hover:scale-105 transition-transform duration-200">
           <StatusCard 
             title="Aguardando Desbloqueio" 
@@ -84,6 +93,8 @@ const Instances = () => {
             type="closed" 
           />
         </div>
+
+        {/* Chips Liberados */}
         <div className="animate-fade-in [animation-delay:1400ms] hover:scale-105 transition-transform duration-200">
           <StatusCard 
             title="Chips Liberados" 
@@ -93,6 +104,7 @@ const Instances = () => {
         </div>
       </div>
 
+      {/* Cadastro de Chips */}
       <div className="animate-fade-in [animation-delay:1600ms]">
         <ChipRegistrationForm />
       </div>
