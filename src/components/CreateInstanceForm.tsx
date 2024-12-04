@@ -1,28 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
-import { UserSelectField } from "./form/UserSelectField"
-import { DeviceSelectField } from "./form/DeviceSelectField"
-import { EvolutionSelectField } from "./form/EvolutionSelectField"
-import { ProjectSelectField } from "./form/ProjectSelectField"
-import { X } from "lucide-react"
-import { ChipSelect } from "./form/ChipSelect"
 import { useState } from "react"
 import { toast } from "sonner"
 import { WebhookResponseHandler } from "./webhook/WebhookResponseHandler"
 import { useInstanceStatusCheck } from "@/hooks/useInstanceStatusCheck"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+import { CloseConfirmationDialog } from "./dialogs/CloseConfirmationDialog"
+import { InstanceFormFields } from "./forms/InstanceFormFields"
 
 const formSchema = z.object({
   instanceName: z.string().min(2, {
@@ -164,115 +148,34 @@ export function CreateInstanceForm({
   }
 
   return (
-    <Form {...form}>
-      <form 
-        onSubmit={form.handleSubmit(onSubmit)} 
-        className="relative space-y-6 rounded-xl bg-[#0A1A2A] p-6 border border-[#1E3A5F]"
-      >
-        <WebhookResponseHandler
-          qrCode={qrCode}
-          alertMessage={alertMessage}
-          alertType={alertType}
-          instanceName={selectedChip}
-          isLoading={isLoading}
-          isChecking={isChecking}
-          isConnected={isConnected}
-          status={status}
-        />
+    <>
+      <WebhookResponseHandler
+        qrCode={qrCode}
+        alertMessage={alertMessage}
+        alertType={alertType}
+        instanceName={selectedChip}
+        isLoading={isLoading}
+        isChecking={isChecking}
+        isConnected={isConnected}
+        status={status}
+      />
 
-        <div className="absolute top-4 right-4">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={handleCloseAttempt}
-            className="text-gray-400 hover:text-white hover:bg-white/10"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+      <InstanceFormFields
+        form={form}
+        onClose={handleCloseAttempt}
+        isLoading={isLoading}
+      />
 
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-white mb-6">Criar Nova Instância</h2>
-          
-          <ChipSelect
-            form={form}
-            name="instanceName"
-            label="Instância"
-            placeholder="Selecione um número de chip"
-            className="bg-[#0D2139] border-[#1E3A5F] text-white"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <EvolutionSelectField 
-              form={form} 
-              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
-            />
-            <ProjectSelectField 
-              form={form} 
-              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
-            />
-            <UserSelectField 
-              form={form} 
-              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
-            />
-            <DeviceSelectField 
-              form={form} 
-              className="bg-[#0D2139] border-[#1E3A5F] text-white" 
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end space-x-4 pt-6">
-          <Button 
-            type="button" 
-            onClick={handleCloseAttempt}
-            variant="ghost"
-            className="text-gray-400 hover:text-white hover:bg-white/10"
-          >
-            Cancelar
-          </Button>
-          <Button 
-            type="submit"
-            disabled={isLoading}
-            className="bg-[#0EA5E9] hover:bg-[#0284C7] text-white"
-          >
-            {isLoading ? "Criando..." : "Criar Instância"}
-          </Button>
-        </div>
-
-        <AlertDialog open={showCloseAlert} onOpenChange={setShowCloseAlert}>
-          <AlertDialogContent className="bg-[#0A1A2A] border border-[#1E3A5F] text-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Deseja realmente fechar?</AlertDialogTitle>
-              <AlertDialogDescription className="text-gray-400">
-                {isLoading 
-                  ? "Você está gerando um QR Code. Se fechar agora, perderá o progresso."
-                  : qrCode 
-                    ? "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."
-                    : "Tem certeza que deseja fechar este formulário?"}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel 
-                onClick={() => setShowCloseAlert(false)}
-                className="bg-gray-700 hover:bg-gray-600 text-white border-none"
-              >
-                Cancelar
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  setShowCloseAlert(false);
-                  onClose();
-                }}
-                className="bg-red-500 hover:bg-red-600 text-white border-none"
-              >
-                Sim, fechar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </form>
-    </Form>
+      <CloseConfirmationDialog
+        isOpen={showCloseAlert}
+        onOpenChange={setShowCloseAlert}
+        onConfirm={() => {
+          setShowCloseAlert(false);
+          onClose();
+        }}
+        isLoading={isLoading}
+        hasQRCode={!!qrCode}
+      />
+    </>
   );
 }
