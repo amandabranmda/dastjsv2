@@ -1,5 +1,5 @@
 import { MetricCard } from "@/components/MetricCard";
-import { Activity, Users, Target, Calendar, Cursor, CircleDot } from "lucide-react";
+import { Activity, Users, Target, Calendar, MousePointer, CircleDot } from "lucide-react";
 import { useInstances } from "@/hooks/useInstances";
 
 const Metrics = () => {
@@ -93,7 +93,7 @@ const Metrics = () => {
                   {isLoading ? "..." : instancesData?.totalClicks || 0}
                 </p>
               </div>
-              <Cursor className="text-green-500 w-5 h-5" />
+              <MousePointer className="text-green-500 w-5 h-5" />
             </div>
           </div>
         </div>
