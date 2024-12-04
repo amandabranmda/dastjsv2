@@ -51,49 +51,49 @@ const Instances = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="animate-fade-in [animation-delay:400ms] hover:scale-105 transition-transform duration-200">
           <StatusCard 
-            title="Instâncias Enviando" 
-            value={isLoading ? "..." : instancesData?.sendingCount || 0} 
-            type="sending" 
-          />
-        </div>
-        <div className="animate-fade-in [animation-delay:600ms] hover:scale-105 transition-transform duration-200">
-          <StatusCard 
             title="Instâncias Online" 
             value={isLoading ? "..." : instancesData?.onlineCount || 0} 
             type="online" 
           />
         </div>
+        <div className="animate-fade-in [animation-delay:600ms] hover:scale-105 transition-transform duration-200">
+          <StatusCard 
+            title="Instâncias Enviando" 
+            value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+            type="sending" 
+          />
+        </div>
         <div className="animate-fade-in [animation-delay:800ms] hover:scale-105 transition-transform duration-200">
-          <StatusCard 
-            title="❌verificarDesconexao" 
-            value={isLoading ? "..." : instancesData?.closedCount || 0} 
-            type="closed" 
-          />
-        </div>
-        <div className="animate-fade-in [animation-delay:1400ms] hover:scale-105 transition-transform duration-200">
-          <StatusCard 
-            title="Aguardando Desbloqueio" 
-            value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
-            type="closed" 
-          />
-        </div>
-        <div className="animate-fade-in [animation-delay:1600ms] hover:scale-105 transition-transform duration-200">
-          <StatusCard 
-            title="Chips Liberados" 
-            value={isLoading ? "..." : instancesData?.releasedCount || 0}
-            type="closed" 
-          />
-        </div>
-        <div className="animate-fade-in [animation-delay:2000ms] hover:scale-105 transition-transform duration-200">
           <StatusCard
             title="Instâncias Aguardando"
             value={isLoading ? "..." : calculateIdleInstances()}
             type="online"
           />
         </div>
+        <div className="animate-fade-in [animation-delay:1000ms] hover:scale-105 transition-transform duration-200">
+          <StatusCard 
+            title="❌verificarDesconexao" 
+            value={isLoading ? "..." : instancesData?.closedCount || 0} 
+            type="closed" 
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:1200ms] hover:scale-105 transition-transform duration-200">
+          <StatusCard 
+            title="Aguardando Desbloqueio" 
+            value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+            type="closed" 
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:1400ms] hover:scale-105 transition-transform duration-200">
+          <StatusCard 
+            title="Chips Liberados" 
+            value={isLoading ? "..." : instancesData?.releasedCount || 0}
+            type="closed" 
+          />
+        </div>
       </div>
 
-      <div className="animate-fade-in [animation-delay:1800ms]">
+      <div className="animate-fade-in [animation-delay:1600ms]">
         <ChipRegistrationForm />
       </div>
     </div>
