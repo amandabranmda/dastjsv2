@@ -17,24 +17,10 @@ const Metrics = () => {
     return `Você ainda tem ${remaining} envios disponíveis`;
   };
 
-  const calculateIdleInstances = () => {
-    if (!instancesData?.onlineCount || !instancesData?.sendingCount) return "0";
-    const idle = instancesData.onlineCount - instancesData.sendingCount;
-    return idle;
-  };
-
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Métricas</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="animate-fade-in [animation-delay:2000ms]">
-          <MetricCard
-            title="Instâncias Aguardando"
-            value={isLoading ? "..." : calculateIdleInstances()}
-            change={<Clock className="w-4 h-4" />}
-            type="padrao"
-          />
-        </div>
         <div className="animate-fade-in [animation-delay:800ms]">
           <MetricCard
             title="Cliques"

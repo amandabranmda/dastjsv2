@@ -4,13 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Clock } from "lucide-react";
 import { ChipRegistrationForm } from "@/components/ChipRegistrationForm";
+import { MetricCard } from "@/components/MetricCard";
 
 const Instances = () => {
   const { data: instancesData, isLoading } = useInstances();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isGeneratingQR, setIsGeneratingQR] = useState(false);
+
+  const calculateIdleInstances = () => {
+    if (!instancesData?.onlineCount || !instancesData?.sendingCount) return "0";
+    const idle = instancesData.onlineCount - instancesData.sendingCount;
+    return idle;
+  };
 
   return (
     <div className="space-y-6">
@@ -69,6 +76,14 @@ const Instances = () => {
             title="Chips Liberados" 
             value={isLoading ? "..." : instancesData?.releasedCount || 0}
             type="closed" 
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:2000ms]">
+          <MetricCard
+            title="Instâncias Aguardando"
+            value={isLoading ? "..." : calculateIdleInstances()}
+            change={<Clock className="w-4 h-4" />}
+            type="padrao"
           />
         </div>
         <div className="animate-fade-in [animation-delay:1800ms]">
