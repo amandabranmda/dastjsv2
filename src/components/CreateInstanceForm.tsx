@@ -87,11 +87,7 @@ export function CreateInstanceForm({
   });
 
   const handleCloseAttempt = () => {
-    if (isLoading || qrCode) {
-      setShowCloseAlert(true);
-    } else {
-      onClose();
-    }
+    setShowCloseAlert(true);
   };
 
   const isBase64 = (str: string) => {
@@ -230,7 +226,7 @@ export function CreateInstanceForm({
         <div className="flex justify-end space-x-4 pt-6">
           <Button 
             type="button" 
-            onClick={onClose}
+            onClick={handleCloseAttempt}
             variant="ghost"
             className="text-gray-400 hover:text-white hover:bg-white/10"
           >
@@ -252,7 +248,9 @@ export function CreateInstanceForm({
               <AlertDialogDescription className="text-gray-400">
                 {isLoading 
                   ? "Você está gerando um QR Code. Se fechar agora, perderá o progresso."
-                  : "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."}
+                  : qrCode 
+                    ? "A verificação do status da instância está em andamento. Se fechar agora, não poderá ver o resultado."
+                    : "Tem certeza que deseja fechar este formulário?"}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
