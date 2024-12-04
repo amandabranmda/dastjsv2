@@ -33,7 +33,7 @@
   }
 
   body {
-    @apply bg-[#1A1F2C] text-foreground font-['Inter'];
+    @apply bg-[#0A0A0A] text-foreground font-['Inter'];
   }
 
   .glass-card {
