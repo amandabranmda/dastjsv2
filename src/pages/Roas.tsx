@@ -17,7 +17,7 @@ const Roas = () => {
     queryKey: ["metricas-hot"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("metricas hot")
+        .from("metricas_hot")  // Alterado de "metricas hot" para "metricas_hot"
         .select("*")
         .order("created_at", { ascending: false });
 
