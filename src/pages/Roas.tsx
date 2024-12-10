@@ -63,22 +63,22 @@ const Roas = () => {
             {metrics?.map((metric) => (
               <TableRow key={metric.id}>
                 <TableCell>
-                  {new Date(metric.data).toLocaleDateString('pt-BR')}
+                  {metric.data}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.cliques?.toLocaleString('pt-BR') || '0'}
+                  {metric.cliques ?? '0'}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.envios?.toLocaleString('pt-BR') || '0'}
+                  {metric.envios ?? '0'}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.percentualCliques?.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: 2 }) || '0%'}
+                  {metric.percentualCliques ?? '0'}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.vendas?.toLocaleString('pt-BR') || '0'}
+                  {metric.vendas ?? '0'}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.valorAds?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || 'R$ 0,00'}
+                  {metric.valorAds ?? '0'}
                 </TableCell>
               </TableRow>
             ))}
