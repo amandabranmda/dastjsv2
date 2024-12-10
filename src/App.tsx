@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Metrics from "./pages/Metrics";
 import Instances from "./pages/Instances";
+import Roas from "./pages/Roas";
 import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient({
@@ -46,7 +47,7 @@ const App = () => {
                 <Route path="/reports" element={<div>Página de Relatórios em Construção</div>} />
                 <Route path="/settings" element={<div>Página de Configurações em Construção</div>} />
                 <Route path="/help" element={<div>Página de Ajuda em Construção</div>} />
-                <Route path="/roas" element={<div>Página de Métricas ROAS em Construção</div>} />
+                <Route path="/roas" element={<Roas />} />
               </Routes>
             </main>
           </div>
