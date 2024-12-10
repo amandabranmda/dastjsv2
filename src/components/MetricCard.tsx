@@ -23,13 +23,13 @@ export function MetricCard({ title, value, change, type }: MetricCardProps) {
   };
 
   return (
-    <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-6 animate-fade-in-scale">
-      <div className="flex flex-col gap-4">
+    <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-4 sm:p-6 animate-fade-in-scale">
+      <div className="flex flex-col gap-3 sm:gap-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm text-gray-400 font-medium">{title}</h3>
         </div>
         <div className="flex items-end justify-between">
-          <p className="text-3xl font-semibold text-white">{value}</p>
+          <p className="text-2xl sm:text-3xl font-semibold text-white break-all">{value}</p>
           <div className={cn("flex items-center gap-1", "text-[#10B981]")}>
             {typeof change === 'string' ? <span className="text-sm font-medium">{change}</span> : change}
           </div>

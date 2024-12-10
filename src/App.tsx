@@ -37,7 +37,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="flex min-h-screen">
-            <main className="flex-1 p-8">
+            <main className="flex-1 p-4 sm:p-8">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/metrics" element={<Metrics />} />
