@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useEffect } from "react";
 
 interface MetricasHot {
   id: number;
@@ -8,22 +9,33 @@ interface MetricasHot {
   percentualCliques: number | null;
   vendas: number | null;
   valorAds: number | null;
+  roas: number | null;
 }
 
 interface RoasTableProps {
   metrics: MetricasHot[] | undefined;
   isLoading: boolean;
+  onRoasUpdate: (id: number, roas: number) => void;
 }
 
-export function RoasTable({ metrics, isLoading }: RoasTableProps) {
+export function RoasTable({ metrics, isLoading, onRoasUpdate }: RoasTableProps) {
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Carregando métricas...</div>;
   }
 
-  const calculateRoas = (vendas: number | null, valorAds: number | null): string => {
-    if (!vendas || !valorAds || valorAds === 0) return '0.00';
-    return (vendas / valorAds).toFixed(2);
+  const calculateRoas = (vendas: number | null, valorAds: number | null): number => {
+    if (!vendas || !valorAds || valorAds === 0) return 0;
+    return Number((vendas / valorAds).toFixed(2));
   };
+
+  useEffect(() => {
+    metrics?.forEach((metric) => {
+      const calculatedRoas = calculateRoas(metric.vendas, metric.valorAds);
+      if (calculatedRoas !== metric.roas) {
+        onRoasUpdate(metric.id, calculatedRoas);
+      }
+    });
+  }, [metrics, onRoasUpdate]);
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -50,7 +62,7 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
               </TableCell>
               <TableCell className="text-right">{metric.vendas ?? '0'}</TableCell>
               <TableCell className="text-right">{metric.valorAds ?? '0'}</TableCell>
-              <TableCell className="text-right">{calculateRoas(metric.vendas, metric.valorAds)}</TableCell>
+              <TableCell className="text-right">{metric.roas?.toFixed(2) ?? '0.00'}</TableCell>
             </TableRow>
           ))}
         </TableBody>
