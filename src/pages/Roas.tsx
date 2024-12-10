@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { format } from "date-fns";
+import { format, eachDayOfInterval, startOfToday, subDays } from "date-fns";
 import { useState, useEffect } from "react";
 import { RoasHeader } from "@/components/RoasHeader";
 import { RoasTable } from "@/components/RoasTable";
@@ -18,20 +18,34 @@ interface MetricasHot {
 
 const Roas = () => {
   const [date, setDate] = useState<Date>();
+  const [dateRange, setDateRange] = useState<Date[]>([]);
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    if (date) {
+      const today = startOfToday();
+      const range = eachDayOfInterval({
+        start: date,
+        end: today,
+      });
+      setDateRange(range);
+    } else {
+      setDateRange([]);
+    }
+  }, [date]);
+
   const { data: metrics, isLoading } = useQuery({
-    queryKey: ["metricas-hot", date],
+    queryKey: ["metricas-hot", dateRange],
     queryFn: async () => {
       let query = supabase
         .from("9-metricasHot")
         .select("id,data,cliques,envios,percentualCliques,vendas,valorAds")
         .order("data", { ascending: false });
 
-      if (date) {
-        const formattedDate = format(date, "yyyy-MM-dd");
-        console.log("Data formatada para busca:", formattedDate);
-        query = query.eq("data", formattedDate);
+      if (dateRange.length > 0) {
+        const formattedDates = dateRange.map(d => format(d, "yyyy-MM-dd"));
+        console.log("Datas formatadas para busca:", formattedDates);
+        query = query.in("data", formattedDates);
       }
 
       const { data: queryData, error: queryError } = await query;
