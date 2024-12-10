@@ -115,7 +115,7 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
                         handleEditComplete(metric);
                       }
                     }}
-                    className="w-24 text-right"
+                    className="w-20 h-7 px-1 text-right bg-transparent border-none focus:outline-none focus:ring-0"
                     autoFocus
                   />
                 ) : (
