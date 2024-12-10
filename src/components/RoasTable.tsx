@@ -49,6 +49,29 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
     }
   };
 
+  const handleUpdateValorAds = async (metric: MetricasHot, newValue: number) => {
+    try {
+      const { error } = await supabase
+        .from('9-metricasHot')
+        .update({ valorAds: newValue })
+        .eq('data', metric.data);
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso",
+        description: "Valor atualizado com sucesso",
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar valor:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao atualizar o valor",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <Table>
@@ -59,6 +82,7 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
               key={metric.id}
               metric={metric}
               onUpdateVendas={handleUpdateVendas}
+              onUpdateValorAds={handleUpdateValorAds}
             />
           ))}
         </TableBody>
