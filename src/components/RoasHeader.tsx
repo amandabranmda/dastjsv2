@@ -6,26 +6,27 @@ import { CalendarIcon, XCircle } from "lucide-react";
 import { format, subDays, startOfMonth, endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ptBR } from "date-fns/locale";
+import { DateRange } from "react-day-picker";
 
 interface RoasHeaderProps {
-  date: Date | undefined;
-  onDateSelect: (date: Date | undefined) => void;
+  dateRange: DateRange | undefined;
+  onDateRangeSelect: (dateRange: DateRange | undefined) => void;
 }
 
-export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
+export function RoasHeader({ dateRange, onDateRangeSelect }: RoasHeaderProps) {
   const handlePresetFilter = (preset: 'today' | '7days' | '30days') => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     switch (preset) {
       case 'today':
-        onDateSelect(today);
+        onDateRangeSelect({ from: today, to: today });
         break;
       case '7days':
-        onDateSelect(subDays(today, 7));
+        onDateRangeSelect({ from: subDays(today, 7), to: today });
         break;
       case '30days':
-        onDateSelect(subDays(today, 30));
+        onDateRangeSelect({ from: subDays(today, 30), to: today });
         break;
     }
   };
@@ -33,7 +34,8 @@ export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
   const handleMonthSelect = (month: string) => {
     const [year, monthNumber] = month.split('-').map(Number);
     const startDate = startOfMonth(new Date(year, monthNumber - 1));
-    onDateSelect(startDate);
+    const endDate = endOfMonth(new Date(year, monthNumber - 1));
+    onDateRangeSelect({ from: startDate, to: endDate });
   };
 
   const months = Array.from({ length: 12 }, (_, i) => {
@@ -97,30 +99,43 @@ export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[240px] justify-start text-left font-normal transition-all hover:border-primary/50 hover:bg-primary/5",
-                  !date && "text-muted-foreground"
+                  "w-[280px] justify-start text-left font-normal transition-all hover:border-primary/50 hover:bg-primary/5",
+                  !dateRange && "text-muted-foreground"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "dd/MM/yyyy") : <span>Selecione uma data</span>}
+                {dateRange?.from ? (
+                  dateRange.to ? (
+                    <>
+                      {format(dateRange.from, "dd/MM/yyyy")} -{" "}
+                      {format(dateRange.to, "dd/MM/yyyy")}
+                    </>
+                  ) : (
+                    format(dateRange.from, "dd/MM/yyyy")
+                  )
+                ) : (
+                  <span>Selecione um período</span>
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                mode="single"
-                selected={date}
-                onSelect={onDateSelect}
                 initialFocus
+                mode="range"
+                defaultMonth={dateRange?.from}
+                selected={dateRange}
+                onSelect={onDateRangeSelect}
+                numberOfMonths={2}
                 className="rounded-md border shadow-lg"
               />
             </PopoverContent>
           </Popover>
 
-          {date && (
+          {dateRange && (
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onDateSelect(undefined)}
+              onClick={() => onDateRangeSelect(undefined)}
               className="transition-all hover:bg-destructive/10 hover:text-destructive"
             >
               <XCircle className="h-5 w-5" />
