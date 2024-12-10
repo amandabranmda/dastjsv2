@@ -1,6 +1,6 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { EditableCell } from "./EditableCell";
-import { calculateRoas } from "./utils";
+import { calculateRoas, calculateCPL } from "./utils";
 
 interface MetricasHot {
   id: number;
@@ -39,6 +39,7 @@ export function RoasTableRow({ metric, onUpdateVendas, onUpdateValorAds }: RoasT
           onEdit={(newValue) => onUpdateValorAds(metric, newValue)}
         />
       </TableCell>
+      <TableCell className="text-right">{calculateCPL(metric.valorAds, metric.envios)}</TableCell>
       <TableCell className="text-right">{calculateRoas(metric.vendas, metric.valorAds)}</TableCell>
     </TableRow>
   );

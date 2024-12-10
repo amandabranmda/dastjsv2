@@ -10,6 +10,7 @@ export function RoasTableHeader() {
         <TableHead className="text-right">% Cliques</TableHead>
         <TableHead className="text-right">Vendas</TableHead>
         <TableHead className="text-right">Valor Ads</TableHead>
+        <TableHead className="text-right">CPL</TableHead>
         <TableHead className="text-right">ROAS</TableHead>
       </TableRow>
     </TableHeader>
