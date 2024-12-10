@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Contact2, MessageSquare, ChartBar, Cpu } from "lucide-react";
+import { Contact2, MessageSquare, ChartBar, Cpu, TrendingUp } from "lucide-react";
 
 const Index = () => {
   return (
@@ -40,6 +40,13 @@ const Index = () => {
             <Button variant="secondary" className="w-full gap-2 text-lg bg-[#F97316] hover:bg-[#EA580C] transition-colors">
               <MessageSquare className="w-5 h-5" />
               Mensagens
+            </Button>
+          </Link>
+
+          <Link to="/roas">
+            <Button variant="secondary" className="w-full gap-2 text-lg bg-[#8B5CF6] hover:bg-[#7C3AED] transition-colors">
+              <TrendingUp className="w-5 h-5" />
+              Métricas ROAS
             </Button>
           </Link>
         </div>
