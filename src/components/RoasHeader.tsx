@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon, XCircle } from "lucide-react";
-import { format, subDays } from "date-fns";
+import { format, subDays, startOfMonth, endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ptBR } from "date-fns/locale";
 
 interface RoasHeaderProps {
   date: Date | undefined;
@@ -27,6 +29,20 @@ export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
         break;
     }
   };
+
+  const handleMonthSelect = (month: string) => {
+    const [year, monthNumber] = month.split('-').map(Number);
+    const startDate = startOfMonth(new Date(year, monthNumber - 1));
+    onDateSelect(startDate);
+  };
+
+  const months = Array.from({ length: 12 }, (_, i) => {
+    const date = new Date(2024, i);
+    return {
+      value: `2024-${i + 1}`,
+      label: format(date, 'MMMM', { locale: ptBR })
+    };
+  });
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -61,6 +77,19 @@ export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
             Últimos 30 dias
           </Button>
         </div>
+
+        <Select onValueChange={handleMonthSelect}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Selecione o mês" />
+          </SelectTrigger>
+          <SelectContent>
+            {months.map((month) => (
+              <SelectItem key={month.value} value={month.value}>
+                {month.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <div className="flex items-center gap-2">
           <Popover>
