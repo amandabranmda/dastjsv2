@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { RoasTableHeader } from "./roas/TableHeader";
 import { RoasTableRow } from "./roas/TableRow";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface MetricasHot {
   id: number;
@@ -21,6 +22,7 @@ interface RoasTableProps {
 
 export function RoasTable({ metrics, isLoading }: RoasTableProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Carregando métricas...</div>;
@@ -34,6 +36,8 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
         .eq('data', metric.data);
 
       if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ['metricas-hot'] });
 
       toast({
         title: "Sucesso",
@@ -57,6 +61,8 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
         .eq('data', metric.data);
 
       if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ['metricas-hot'] });
 
       toast({
         title: "Sucesso",
