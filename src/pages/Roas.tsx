@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { RoasHeader } from "@/components/RoasHeader";
 import { RoasTable } from "@/components/RoasTable";
+import { toast } from "@/components/ui/use-toast";
 
 interface MetricasHot {
   id: number;
@@ -13,6 +14,7 @@ interface MetricasHot {
   percentualCliques: number | null;
   vendas: number | null;
   valorAds: number | null;
+  roas: number | null;
 }
 
 const Roas = () => {
@@ -23,7 +25,7 @@ const Roas = () => {
     queryFn: async () => {
       let query = supabase
         .from("9-metricasHot")
-        .select("id,data,cliques,envios,percentualCliques,vendas,valorAds")
+        .select("*")
         .order("data", { ascending: false });
 
       if (date) {
@@ -35,6 +37,11 @@ const Roas = () => {
       const { data: queryData, error: queryError } = await query;
 
       if (queryError) {
+        toast({
+          title: "Erro ao carregar dados",
+          description: "Não foi possível carregar as métricas.",
+          variant: "destructive",
+        });
         throw queryError;
       }
 

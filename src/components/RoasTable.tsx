@@ -1,4 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { toast } from "@/components/ui/use-toast";
 
 interface MetricasHot {
   id: number;
@@ -8,6 +11,7 @@ interface MetricasHot {
   percentualCliques: number | null;
   vendas: number | null;
   valorAds: number | null;
+  roas: number | null;
 }
 
 interface RoasTableProps {
@@ -16,13 +20,42 @@ interface RoasTableProps {
 }
 
 export function RoasTable({ metrics, isLoading }: RoasTableProps) {
+  useEffect(() => {
+    const updateRoasValues = async () => {
+      if (!metrics) return;
+
+      for (const metric of metrics) {
+        const calculatedRoas = calculateRoas(metric.vendas, metric.valorAds);
+        
+        // Only update if the calculated ROAS is different from stored ROAS
+        if (calculatedRoas !== metric.roas) {
+          const { error } = await supabase
+            .from("9-metricasHot")
+            .update({ roas: calculatedRoas })
+            .eq("id", metric.id);
+
+          if (error) {
+            console.error("Error updating ROAS:", error);
+            toast({
+              title: "Erro ao atualizar ROAS",
+              description: "Não foi possível salvar o valor do ROAS.",
+              variant: "destructive",
+            });
+          }
+        }
+      }
+    };
+
+    updateRoasValues();
+  }, [metrics]);
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Carregando métricas...</div>;
   }
 
-  const calculateRoas = (vendas: number | null, valorAds: number | null): string => {
-    if (!vendas || !valorAds || valorAds === 0) return '0.00';
-    return (vendas / valorAds).toFixed(2);
+  const calculateRoas = (vendas: number | null, valorAds: number | null): number => {
+    if (!vendas || !valorAds || valorAds === 0) return 0;
+    return Number((vendas / valorAds).toFixed(2));
   };
 
   return (
@@ -50,7 +83,7 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
               </TableCell>
               <TableCell className="text-right">{metric.vendas ?? '0'}</TableCell>
               <TableCell className="text-right">{metric.valorAds ?? '0'}</TableCell>
-              <TableCell className="text-right">{calculateRoas(metric.vendas, metric.valorAds)}</TableCell>
+              <TableCell className="text-right">{metric.roas ?? '0.00'}</TableCell>
             </TableRow>
           ))}
         </TableBody>
