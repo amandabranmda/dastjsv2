@@ -8,6 +8,9 @@ interface MetricasHot {
   data: string;
   cliques: number | null;
   envios: number | null;
+  percentualCliques: number | null;
+  vendas: number | null;
+  valorAds: number | null;
 }
 
 const Roas = () => {
@@ -16,7 +19,7 @@ const Roas = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("9-metricasHot")
-        .select("id,data,cliques,envios")
+        .select("id,data,cliques,envios,percentualCliques,vendas,valorAds")
         .order("data", { ascending: false });
 
       if (error) {
@@ -51,6 +54,9 @@ const Roas = () => {
               <TableHead>Data</TableHead>
               <TableHead className="text-right">Cliques</TableHead>
               <TableHead className="text-right">Envios</TableHead>
+              <TableHead className="text-right">% Cliques</TableHead>
+              <TableHead className="text-right">Vendas</TableHead>
+              <TableHead className="text-right">Valor Ads</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,6 +70,15 @@ const Roas = () => {
                 </TableCell>
                 <TableCell className="text-right">
                   {metric.envios?.toLocaleString('pt-BR') || '0'}
+                </TableCell>
+                <TableCell className="text-right">
+                  {metric.percentualCliques?.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: 2 }) || '0%'}
+                </TableCell>
+                <TableCell className="text-right">
+                  {metric.vendas?.toLocaleString('pt-BR') || '0'}
+                </TableCell>
+                <TableCell className="text-right">
+                  {metric.valorAds?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || 'R$ 0,00'}
                 </TableCell>
               </TableRow>
             ))}
