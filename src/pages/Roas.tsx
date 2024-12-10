@@ -6,8 +6,8 @@ import { toast } from "@/components/ui/use-toast";
 interface MetricasHot {
   id: number;
   data: string;
-  cliques: number;
-  envios: number;
+  cliques: number | null;
+  envios: number | null;
 }
 
 const Roas = () => {
@@ -60,10 +60,10 @@ const Roas = () => {
                   {new Date(metric.data).toLocaleDateString('pt-BR')}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.cliques.toLocaleString('pt-BR')}
+                  {metric.cliques?.toLocaleString('pt-BR') || '0'}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.envios.toLocaleString('pt-BR')}
+                  {metric.envios?.toLocaleString('pt-BR') || '0'}
                 </TableCell>
               </TableRow>
             ))}
