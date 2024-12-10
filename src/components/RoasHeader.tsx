@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -17,29 +17,42 @@ export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
         Métricas Hot
       </h1>
       
-      <Popover>
-        <PopoverTrigger asChild>
+      <div className="flex items-center gap-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-[240px] justify-start text-left font-normal transition-all hover:border-primary/50 hover:bg-primary/5",
+                !date && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date ? format(date, "dd/MM/yyyy") : <span>Selecione uma data</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={onDateSelect}
+              initialFocus
+              className="rounded-md border shadow-lg"
+            />
+          </PopoverContent>
+        </Popover>
+
+        {date && (
           <Button
-            variant="outline"
-            className={cn(
-              "w-[240px] justify-start text-left font-normal transition-all hover:border-primary/50 hover:bg-primary/5",
-              !date && "text-muted-foreground"
-            )}
+            variant="ghost"
+            size="icon"
+            onClick={() => onDateSelect(undefined)}
+            className="transition-all hover:bg-destructive/10 hover:text-destructive"
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "dd/MM/yyyy") : <span>Selecione uma data</span>}
+            <XCircle className="h-5 w-5" />
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={onDateSelect}
-            initialFocus
-            className="rounded-md border shadow-lg"
-          />
-        </PopoverContent>
-      </Popover>
+        )}
+      </div>
     </div>
   );
 }
