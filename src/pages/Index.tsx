@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ChartBar, Cpu, TrendingUp } from "lucide-react";
+import { Cpu, ChartBar, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { PasswordDialog } from "@/components/PasswordDialog";
 
 const Index = () => {
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#2D3748] p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
@@ -14,7 +18,7 @@ const Index = () => {
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           <Link to="/instances">
             <Button variant="secondary" className="w-full gap-2 text-lg bg-[#9b87f5] hover:bg-[#8b77e5] transition-colors">
               <Cpu className="w-5 h-5" />
@@ -29,14 +33,21 @@ const Index = () => {
             </Button>
           </Link>
 
-          <Link to="/roas">
-            <Button variant="secondary" className="w-full gap-2 text-lg bg-[#0EA5E9] hover:bg-[#0284C7] transition-colors">
-              <TrendingUp className="w-5 h-5" />
-              Métricas Face
-            </Button>
-          </Link>
+          <Button 
+            variant="secondary" 
+            className="w-full gap-2 text-lg bg-[#0EA5E9] hover:bg-[#0284C7] transition-colors"
+            onClick={() => setIsPasswordDialogOpen(true)}
+          >
+            <TrendingUp className="w-5 h-5" />
+            Métricas Face
+          </Button>
         </div>
       </div>
+
+      <PasswordDialog 
+        isOpen={isPasswordDialogOpen}
+        onClose={() => setIsPasswordDialogOpen(false)}
+      />
     </div>
   );
 };
