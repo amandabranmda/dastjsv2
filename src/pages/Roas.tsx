@@ -32,11 +32,7 @@ const Roas = () => {
         .order("data", { ascending: false });
 
       if (date) {
-        // Formata a data para o formato dd-MM-yyyy para corresponder ao formato do banco
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        const formattedDate = `${day}-${month}-${year}`;
+        const formattedDate = format(date, "yyyy-MM-dd");
         console.log("Data formatada para busca:", formattedDate);
         query = query.eq("data", formattedDate);
       }
