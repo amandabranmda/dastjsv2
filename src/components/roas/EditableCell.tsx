@@ -30,7 +30,7 @@ export function EditableCell({ value, onEdit }: EditableCellProps) {
             handleEditComplete();
           }
         }}
-        className="w-20 h-7 px-1 text-right bg-transparent border-none focus:outline-none focus:ring-0"
+        className="w-20 h-7 px-1 text-right bg-transparent border-none focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         autoFocus
       />
     );
