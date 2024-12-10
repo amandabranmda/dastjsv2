@@ -25,7 +25,14 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
   const queryClient = useQueryClient();
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">Carregando métricas...</div>;
+    return (
+      <div className="flex justify-center items-center h-[400px]">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="h-8 w-8 bg-primary/20 rounded-full animate-spin" />
+          <p className="text-muted-foreground">Carregando métricas...</p>
+        </div>
+      </div>
+    );
   }
 
   const handleUpdateVendas = async (metric: MetricasHot, newValue: number) => {
@@ -79,20 +86,24 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
   };
 
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-      <Table>
-        <RoasTableHeader />
-        <TableBody>
-          {metrics?.map((metric) => (
-            <RoasTableRow
-              key={metric.id}
-              metric={metric}
-              onUpdateVendas={handleUpdateVendas}
-              onUpdateValorAds={handleUpdateValorAds}
-            />
-          ))}
-        </TableBody>
-      </Table>
+    <div className="space-y-4 animate-fade-in">
+      <div className="rounded-lg border bg-gradient-to-b from-card/60 to-card/30 backdrop-blur-xl shadow-xl">
+        <div className="p-1">
+          <Table>
+            <RoasTableHeader />
+            <TableBody>
+              {metrics?.map((metric) => (
+                <RoasTableRow
+                  key={metric.id}
+                  metric={metric}
+                  onUpdateVendas={handleUpdateVendas}
+                  onUpdateValorAds={handleUpdateValorAds}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   );
 }

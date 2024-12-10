@@ -12,15 +12,17 @@ interface RoasHeaderProps {
 
 export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
   return (
-    <div className="flex justify-between items-center mb-6">
-      <h1 className="text-2xl font-bold text-white">Métricas Hot</h1>
+    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+      <h1 className="text-3xl font-bold bg-gradient-to-r from-primary/80 to-secondary/80 bg-clip-text text-transparent">
+        Métricas Hot
+      </h1>
       
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             className={cn(
-              "w-[240px] justify-start text-left font-normal",
+              "w-[240px] justify-start text-left font-normal transition-all hover:border-primary/50 hover:bg-primary/5",
               !date && "text-muted-foreground"
             )}
           >
@@ -34,6 +36,7 @@ export function RoasHeader({ date, onDateSelect }: RoasHeaderProps) {
             selected={date}
             onSelect={onDateSelect}
             initialFocus
+            className="rounded-md border shadow-lg"
           />
         </PopoverContent>
       </Popover>

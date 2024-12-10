@@ -46,7 +46,6 @@ const Roas = () => {
   });
 
   useEffect(() => {
-    // Subscribe to ALL changes in the table
     const channel = supabase
       .channel('table-db-changes')
       .on(
@@ -57,22 +56,24 @@ const Roas = () => {
           table: '9-metricasHot'
         },
         () => {
-          // Invalidate and refetch when data changes
           queryClient.invalidateQueries({ queryKey: ['metricas-hot'] });
         }
       )
       .subscribe();
 
-    // Cleanup subscription on component unmount
     return () => {
       supabase.removeChannel(channel);
     };
   }, [queryClient]);
 
   return (
-    <div className="container mx-auto p-6">
-      <RoasHeader date={date} onDateSelect={setDate} />
-      <RoasTable metrics={metrics} isLoading={isLoading} />
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
+      <div className="container mx-auto p-6 space-y-8">
+        <div className="backdrop-blur-sm bg-card/10 rounded-lg p-6 shadow-lg">
+          <RoasHeader date={date} onDateSelect={setDate} />
+        </div>
+        <RoasTable metrics={metrics} isLoading={isLoading} />
+      </div>
     </div>
   );
 };
