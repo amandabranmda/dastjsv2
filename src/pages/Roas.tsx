@@ -4,6 +4,7 @@ import { format, eachDayOfInterval, startOfToday, subDays } from "date-fns";
 import { useState, useEffect } from "react";
 import { RoasHeader } from "@/components/RoasHeader";
 import { RoasTable } from "@/components/RoasTable";
+import { MetricsPanel } from "@/components/roas/MetricsPanel";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface MetricasHot {
@@ -86,6 +87,13 @@ const Roas = () => {
         <div className="backdrop-blur-sm bg-card/10 rounded-lg p-6 shadow-lg">
           <RoasHeader date={date} onDateSelect={setDate} />
         </div>
+        
+        {metrics && metrics.length > 0 && (
+          <div className="backdrop-blur-sm bg-card/10 rounded-lg p-6 shadow-lg animate-fade-in">
+            <MetricsPanel metrics={metrics} />
+          </div>
+        )}
+
         <RoasTable metrics={metrics} isLoading={isLoading} />
       </div>
     </div>
