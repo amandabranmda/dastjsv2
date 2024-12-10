@@ -72,7 +72,7 @@ const Roas = () => {
                   {metric.envios ?? '0'}
                 </TableCell>
                 <TableCell className="text-right">
-                  {metric.percentualCliques ?? '0'}
+                  {metric.percentualCliques ? metric.percentualCliques.toFixed(2) : '0.00'}
                 </TableCell>
                 <TableCell className="text-right">
                   {metric.vendas ?? '0'}
