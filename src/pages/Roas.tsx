@@ -2,6 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface MetricasHot {
   id: number;
@@ -14,13 +21,22 @@ interface MetricasHot {
 }
 
 const Roas = () => {
+  const [date, setDate] = useState<Date>();
+
   const { data: metrics, isLoading, error } = useQuery({
-    queryKey: ["metricas-hot"],
+    queryKey: ["metricas-hot", date],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("9-metricasHot")
         .select("id,data,cliques,envios,percentualCliques,vendas,valorAds")
         .order("data", { ascending: false });
+
+      if (date) {
+        const formattedDate = format(date, "dd-MM-yyyy");
+        query = query.eq("data", formattedDate);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         toast({
@@ -45,7 +61,32 @@ const Roas = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6 text-white">Métricas Hot</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-white">Métricas Hot</h1>
+        
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-[240px] justify-start text-left font-normal",
+                !date && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date ? format(date, "dd/MM/yyyy") : <span>Selecione uma data</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
       
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
         <Table>
