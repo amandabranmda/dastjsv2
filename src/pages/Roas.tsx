@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RoasHeader } from "@/components/RoasHeader";
 import { RoasTable } from "@/components/RoasTable";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface MetricasHot {
   id: number;
@@ -17,6 +18,7 @@ interface MetricasHot {
 
 const Roas = () => {
   const [date, setDate] = useState<Date>();
+  const queryClient = useQueryClient();
 
   const { data: metrics, isLoading } = useQuery({
     queryKey: ["metricas-hot", date],
@@ -42,6 +44,30 @@ const Roas = () => {
       return queryData as MetricasHot[];
     },
   });
+
+  useEffect(() => {
+    // Subscribe to ALL changes in the table
+    const channel = supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: '9-metricasHot'
+        },
+        () => {
+          // Invalidate and refetch when data changes
+          queryClient.invalidateQueries({ queryKey: ['metricas-hot'] });
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on component unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   return (
     <div className="container mx-auto p-6">
