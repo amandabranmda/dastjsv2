@@ -32,22 +32,25 @@ const Roas = () => {
         .order("data", { ascending: false });
 
       if (date) {
+        // Formata a data para o formato dd-MM-yyyy para corresponder ao formato do banco
         const formattedDate = format(date, "dd-MM-yyyy");
+        console.log("Data formatada para busca:", formattedDate);
         query = query.eq("data", formattedDate);
       }
 
-      const { data, error } = await query;
+      const { data: queryData, error: queryError } = await query;
 
-      if (error) {
+      if (queryError) {
         toast({
           variant: "destructive",
           title: "Erro ao carregar métricas",
-          description: error.message,
+          description: queryError.message,
         });
-        throw error;
+        throw queryError;
       }
 
-      return data as MetricasHot[];
+      console.log("Dados retornados:", queryData);
+      return queryData as MetricasHot[];
     },
   });
 
