@@ -20,11 +20,6 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
     return <div className="flex justify-center items-center h-screen">Carregando métricas...</div>;
   }
 
-  const calculateRoas = (vendas: number | null, valorAds: number | null): string => {
-    if (!vendas || !valorAds || valorAds === 0) return '0.00';
-    return (vendas / valorAds).toFixed(2);
-  };
-
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <Table>
@@ -36,7 +31,6 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
             <TableHead className="text-right">% Cliques</TableHead>
             <TableHead className="text-right">Vendas</TableHead>
             <TableHead className="text-right">Valor Ads</TableHead>
-            <TableHead className="text-right">ROAS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -50,7 +44,6 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
               </TableCell>
               <TableCell className="text-right">{metric.vendas ?? '0'}</TableCell>
               <TableCell className="text-right">{metric.valorAds ?? '0'}</TableCell>
-              <TableCell className="text-right">{calculateRoas(metric.vendas, metric.valorAds)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
