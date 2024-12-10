@@ -44,7 +44,7 @@ const Index = () => {
           </Link>
 
           <Link to="/roas">
-            <Button variant="secondary" className="w-full gap-2 text-lg bg-[#8B5CF6] hover:bg-[#7C3AED] transition-colors">
+            <Button variant="secondary" className="w-full gap-2 text-lg bg-[#0EA5E9] hover:bg-[#0284C7] transition-colors">
               <TrendingUp className="w-5 h-5" />
               Métricas Face
             </Button>
