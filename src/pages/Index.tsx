@@ -25,7 +25,7 @@ const Index = () => {
           <Link to="/metrics">
             <Button variant="secondary" className="w-full gap-2 text-lg bg-[#10B981] hover:bg-[#059669] transition-colors">
               <ChartBar className="w-5 h-5" />
-              Ver Métricas
+              Métricas Chips
             </Button>
           </Link>
 
