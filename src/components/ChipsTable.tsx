@@ -70,7 +70,7 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
       <TableHeader>
         <TableRow>
           <TableHead className="w-[50px]">
-            {title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Liberado"}
+            {title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Ban Permanente"}
           </TableHead>
           <TableHead className="w-[50px]">Liberado</TableHead>
           <TableHead>Número do Chip</TableHead>
