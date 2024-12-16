@@ -39,7 +39,7 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ statusChip: checked ? "liberado" : "❌verificarDesconexao" })
+        .update({ statusChip: checked ? "bam permanente" : "❌verificarDesconexao" })
         .eq("numeroChip", chipNumber);
 
       if (error) throw error;
@@ -53,7 +53,7 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
       }
 
       toast({
-        description: `Chip ${chipNumber} ${checked ? 'liberado' : 'marcado como desconectado'}!`,
+        description: `Chip ${chipNumber} ${checked ? 'banido permanentemente' : 'marcado como desconectado'}!`,
         duration: 2000,
       });
     } catch (err) {
