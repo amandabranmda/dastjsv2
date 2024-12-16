@@ -45,6 +45,7 @@ export function ChipsTable({
   };
 
   const handleLiberadoChange = async (chipNumber: string, checked: boolean) => {
+    if (!checked) return;
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
@@ -69,8 +70,7 @@ export function ChipsTable({
   };
 
   const handleBanPermanenteChange = async (chipNumber: string, checked: boolean) => {
-    if (!checked) return; // Só atualiza quando marcar o checkbox
-
+    if (!checked) return;
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
@@ -120,7 +120,13 @@ export function ChipsTable({
           <TableRow key={chip.numeroChip}>
             <TableCell>
               <Checkbox 
-                onCheckedChange={(checked) => handleBanPermanenteChange(chip.numeroChip, checked as boolean)}
+                onCheckedChange={(checked) => {
+                  if (title.includes("verificarDesconexao")) {
+                    onCheckboxChange(chip.numeroChip, checked as boolean, true);
+                  } else {
+                    handleBanPermanenteChange(chip.numeroChip, checked as boolean);
+                  }
+                }}
               />
             </TableCell>
             <TableCell>

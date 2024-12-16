@@ -3,10 +3,10 @@ import { Copy, MessageSquare, X, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "./ui/use-toast";
 import { useState } from "react";
-import { ChipsTable } from "./ChipsTable";
+import { ChipStatusDialog } from "./status/ChipStatusDialog";
 
 interface StatusCardProps {
   title: string;
@@ -19,6 +19,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [checkedChips, setCheckedChips] = useState<string[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: disconnectedChips, refetch: refetchDisconnected } = useQuery({
     queryKey: ["disconnected-chips"],
@@ -82,19 +83,22 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   };
 
   const handleCheckboxChange = async (chipNumber: string, checked: boolean, isDisconnected: boolean) => {
-    if (title.includes("Chips Liberados")) {
-      if (checked) {
-        setCheckedChips(prev => [...prev, chipNumber]);
-      } else {
-        setCheckedChips(prev => prev.filter(chip => chip !== chipNumber));
-      }
-      return;
-    }
-
+    const currentTitle = title;
     try {
-      const newStatus = checked ? 
-        (isDisconnected ? "aguardando desbloqueio" : "liberado") : 
-        (isDisconnected ? "❌verificarDesconexao" : "aguardando desbloqueio");
+      let newStatus = "";
+      
+      if (currentTitle.includes("verificarDesconexao")) {
+        newStatus = checked ? "aguardando desbloqueio" : "❌verificarDesconexao";
+      } else if (currentTitle.includes("Aguardando Desbloqueio")) {
+        newStatus = checked ? "liberado" : "aguardando desbloqueio";
+      } else if (currentTitle.includes("Chips Liberados")) {
+        if (checked) {
+          setCheckedChips(prev => [...prev, chipNumber]);
+        } else {
+          setCheckedChips(prev => prev.filter(chip => chip !== chipNumber));
+        }
+        return;
+      }
       
       const { error } = await supabase
         .from("1-chipsInstancias")
@@ -108,10 +112,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         duration: 2000,
       });
 
-      // Refetch all data after status update
-      refetchDisconnected();
-      refetchWaiting();
-      refetchReleased();
+      if (currentTitle.includes("verificarDesconexao")) {
+        refetchDisconnected();
+      } else if (currentTitle.includes("Aguardando Desbloqueio")) {
+        refetchWaiting();
+      } else if (currentTitle.includes("Chips Liberados")) {
+        refetchReleased();
+      }
     } catch (err) {
       toast({
         variant: "destructive",
@@ -136,21 +143,19 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     : title.includes("Chips Liberados")
     ? releasedChips
     : waitingUnlockChips;
-    
-  const dialogTitle = title.includes("verificarDesconexao") 
-    ? "Chips Desconectados" 
-    : title.includes("Chips Liberados")
-    ? "Chips Liberados"
-    : "Chips Aguardando Desbloqueio";
 
   const refetchData = () => {
-    refetchDisconnected();
-    refetchWaiting();
-    refetchReleased();
+    if (title.includes("verificarDesconexao")) {
+      refetchDisconnected();
+    } else if (title.includes("Aguardando Desbloqueio")) {
+      refetchWaiting();
+    } else if (title.includes("Chips Liberados")) {
+      refetchReleased();
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-4 sm:p-6 animate-fade-in-scale cursor-pointer hover:bg-[#1F2937]/50 transition-colors relative min-h-[120px] sm:min-h-[140px]">
           <button
@@ -180,32 +185,17 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       </DialogTrigger>
 
       {type === "closed" && (
-        <DialogContent className={cn(
-          "w-[95vw] sm:max-w-[600px]",
-          "max-h-[90vh] sm:max-h-[80vh]",
-          isFullScreen && "!w-[95vw] !h-[95vh]"
-        )}>
-          <DialogHeader>
-            <DialogTitle>{dialogTitle}</DialogTitle>
-            <DialogDescription>
-              Lista de chips com status {dialogTitle.toLowerCase()}
-            </DialogDescription>
-          </DialogHeader>
-          <div className={cn(
-            "overflow-y-auto",
-            isFullScreen ? "max-h-[80vh]" : "max-h-[60vh] sm:max-h-[400px]"
-          )}>
-            <ChipsTable
-              chips={chips || []}
-              title={title}
-              onCheckboxChange={handleCheckboxChange}
-              onCopyChip={handleCopyChip}
-              selectedChips={selectedChips}
-              checkedChips={checkedChips}
-              refetchData={refetchData}
-            />
-          </div>
-        </DialogContent>
+        <ChipStatusDialog
+          isOpen={dialogOpen}
+          title={title}
+          chips={chips || []}
+          selectedChips={selectedChips}
+          checkedChips={checkedChips}
+          onCopyChip={handleCopyChip}
+          onCheckboxChange={handleCheckboxChange}
+          refetchData={refetchData}
+          isFullScreen={isFullScreen}
+        />
       )}
     </Dialog>
   );
