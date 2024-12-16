@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "./ui/use-toast";
 import { useState } from "react";
 import { ChipsTable } from "./ChipsTable";
 
@@ -108,11 +108,10 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         duration: 2000,
       });
 
-      if (isDisconnected) {
-        refetchDisconnected();
-      } else {
-        refetchWaiting();
-      }
+      // Refetch all data after status update
+      refetchDisconnected();
+      refetchWaiting();
+      refetchReleased();
     } catch (err) {
       toast({
         variant: "destructive",
@@ -143,6 +142,12 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     : title.includes("Chips Liberados")
     ? "Chips Liberados"
     : "Chips Aguardando Desbloqueio";
+
+  const refetchData = () => {
+    refetchDisconnected();
+    refetchWaiting();
+    refetchReleased();
+  };
 
   return (
     <Dialog>
@@ -197,6 +202,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
               onCopyChip={handleCopyChip}
               selectedChips={selectedChips}
               checkedChips={checkedChips}
+              refetchData={refetchData}
             />
           </div>
         </DialogContent>

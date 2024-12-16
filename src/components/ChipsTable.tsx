@@ -14,9 +14,18 @@ interface ChipsTableProps {
   onCopyChip: (chipNumber: string) => void;
   selectedChips: string[];
   checkedChips: string[];
+  refetchData: () => void;
 }
 
-export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selectedChips, checkedChips }: ChipsTableProps) {
+export function ChipsTable({ 
+  chips, 
+  title, 
+  onCheckboxChange, 
+  onCopyChip, 
+  selectedChips, 
+  checkedChips,
+  refetchData 
+}: ChipsTableProps) {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const { toast } = useToast();
 
@@ -48,6 +57,9 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
         description: `Chip ${chipNumber} liberado com sucesso!`,
         duration: 2000,
       });
+
+      // Refetch data after successful update
+      refetchData();
     } catch (err) {
       toast({
         variant: "destructive",
@@ -66,18 +78,13 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
 
       if (error) throw error;
 
-      // Atualiza a interface removendo o chip da lista
-      if (checked) {
-        const chipIndex = chips.findIndex(chip => chip.numeroChip === chipNumber);
-        if (chipIndex !== -1) {
-          chips.splice(chipIndex, 1);
-        }
-      }
-
       toast({
         description: `Chip ${chipNumber} banido permanentemente!`,
         duration: 2000,
       });
+
+      // Refetch data after successful update
+      refetchData();
     } catch (err) {
       toast({
         variant: "destructive",
