@@ -39,7 +39,29 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ statusChip: checked ? "bam permanente" : "❌verificarDesconexao" })
+        .update({ statusChip: "liberado" })
+        .eq("numeroChip", chipNumber);
+
+      if (error) throw error;
+
+      toast({
+        description: `Chip ${chipNumber} liberado com sucesso!`,
+        duration: 2000,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Erro ao atualizar status do chip",
+        duration: 2000,
+      });
+    }
+  };
+
+  const handleBanPermanenteChange = async (chipNumber: string, checked: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("1-chipsInstancias")
+        .update({ statusChip: "bam permanente" })
         .eq("numeroChip", chipNumber);
 
       if (error) throw error;
@@ -53,7 +75,7 @@ export function ChipsTable({ chips, title, onCheckboxChange, onCopyChip, selecte
       }
 
       toast({
-        description: `Chip ${chipNumber} ${checked ? 'banido permanentemente' : 'marcado como desconectado'}!`,
+        description: `Chip ${chipNumber} banido permanentemente!`,
         duration: 2000,
       });
     } catch (err) {
