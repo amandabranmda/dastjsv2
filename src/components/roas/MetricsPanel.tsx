@@ -9,6 +9,7 @@ interface MetricasHot {
   percentualCliques: number | null;
   vendas: number | null;
   valorAds: number | null;
+  roas: number | null;
 }
 
 interface MetricsPanelProps {
