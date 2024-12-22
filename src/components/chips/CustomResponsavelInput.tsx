@@ -15,10 +15,19 @@ export function CustomResponsavelInput({ chipNumber, onCancel, onUpdate }: Custo
   const { toast } = useToast();
 
   const handleCustomSubmit = async () => {
+    if (!customValue.trim()) {
+      toast({
+        variant: "destructive",
+        description: "Por favor, digite um nome válido",
+        duration: 2000,
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ responsavelChip: customValue })
+        .update({ responsavelChip: customValue.trim() })
         .eq("numeroChip", chipNumber);
 
       if (error) throw error;
@@ -45,12 +54,19 @@ export function CustomResponsavelInput({ chipNumber, onCancel, onUpdate }: Custo
         value={customValue}
         onChange={(e) => setCustomValue(e.target.value)}
         placeholder="Digite o nome"
-        className="w-[180px]"
+        className="w-[180px] bg-white/5 border-white/10 text-white"
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleCustomSubmit();
+          }
+        }}
       />
       <Button 
         variant="outline" 
         size="sm"
         onClick={onCancel}
+        className="border-white/10 text-white hover:bg-white/5"
       >
         Cancelar
       </Button>
@@ -58,6 +74,7 @@ export function CustomResponsavelInput({ chipNumber, onCancel, onUpdate }: Custo
         variant="default" 
         size="sm"
         onClick={handleCustomSubmit}
+        className="bg-emerald-600 hover:bg-emerald-700"
       >
         Salvar
       </Button>

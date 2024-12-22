@@ -59,16 +59,22 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
       value={currentValue}
       onValueChange={handleResponsavelChange}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
         <SelectValue placeholder="Selecione um responsável" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="glass-dropdown">
         {USER_OPTIONS.map((user) => (
-          <SelectItem key={user} value={user}>
+          <SelectItem 
+            key={user} 
+            value={user}
+            className="hover:bg-white/5"
+          >
             {user}
           </SelectItem>
         ))}
-        <SelectItem value="custom">Digitar manualmente</SelectItem>
+        <SelectItem value="custom" className="hover:bg-white/5">
+          Digitar manualmente
+        </SelectItem>
       </SelectContent>
     </Select>
   );
