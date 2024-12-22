@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { USER_OPTIONS } from "@/constants/userOptions";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
+import { CustomResponsavelInput } from "./CustomResponsavelInput";
 
 interface ResponsavelSelectProps {
   chipNumber: string;
@@ -14,7 +13,6 @@ interface ResponsavelSelectProps {
 
 export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: ResponsavelSelectProps) {
   const [isCustom, setIsCustom] = useState(false);
-  const [customValue, setCustomValue] = useState("");
   const { toast } = useToast();
 
   const handleResponsavelChange = async (value: string) => {
@@ -46,55 +44,13 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
     }
   };
 
-  const handleCustomSubmit = async () => {
-    try {
-      const { error } = await supabase
-        .from("1-chipsInstancias")
-        .update({ responsavelChip: customValue })
-        .eq("numeroChip", chipNumber);
-
-      if (error) throw error;
-
-      toast({
-        description: `Responsável atualizado com sucesso!`,
-        duration: 2000,
-      });
-
-      setIsCustom(false);
-      onUpdate();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        description: "Erro ao atualizar responsável",
-        duration: 2000,
-      });
-    }
-  };
-
   if (isCustom) {
     return (
-      <div className="flex gap-2">
-        <Input
-          value={customValue}
-          onChange={(e) => setCustomValue(e.target.value)}
-          placeholder="Digite o nome"
-          className="w-[180px]"
-        />
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => setIsCustom(false)}
-        >
-          Cancelar
-        </Button>
-        <Button 
-          variant="default" 
-          size="sm"
-          onClick={handleCustomSubmit}
-        >
-          Salvar
-        </Button>
-      </div>
+      <CustomResponsavelInput
+        chipNumber={chipNumber}
+        onCancel={() => setIsCustom(false)}
+        onUpdate={onUpdate}
+      />
     );
   }
 

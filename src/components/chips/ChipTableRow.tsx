@@ -24,43 +24,17 @@ export function ChipTableRow({
 }: ChipTableRowProps) {
   const { toast } = useToast();
 
-  const handleLiberadoChange = async (chipNumber: string, checked: boolean) => {
-    if (!checked) return;
+  const handleStatusUpdate = async (chipNumber: string, status: string) => {
     try {
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ statusChip: "liberado" })
+        .update({ statusChip: status })
         .eq("numeroChip", chipNumber);
 
       if (error) throw error;
 
       toast({
-        description: `Chip ${chipNumber} liberado com sucesso!`,
-        duration: 2000,
-      });
-
-      refetchData();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        description: "Erro ao atualizar status do chip",
-        duration: 2000,
-      });
-    }
-  };
-
-  const handleBanPermanenteChange = async (chipNumber: string, checked: boolean) => {
-    if (!checked) return;
-    try {
-      const { error } = await supabase
-        .from("1-chipsInstancias")
-        .update({ statusChip: "bam permanente" })
-        .eq("numeroChip", chipNumber);
-
-      if (error) throw error;
-
-      toast({
-        description: `Chip ${chipNumber} banido permanentemente!`,
+        description: `Chip ${chipNumber} ${status === 'liberado' ? 'liberado' : 'banido permanentemente'}!`,
         duration: 2000,
       });
 
@@ -82,14 +56,14 @@ export function ChipTableRow({
             if (title.includes("verificarDesconexao")) {
               onCheckboxChange(chip.numeroChip, checked as boolean, true);
             } else {
-              handleBanPermanenteChange(chip.numeroChip, checked as boolean);
+              handleStatusUpdate(chip.numeroChip, "bam permanente");
             }
           }}
         />
       </TableCell>
       <TableCell>
         <Checkbox 
-          onCheckedChange={(checked) => handleLiberadoChange(chip.numeroChip, checked as boolean)}
+          onCheckedChange={(checked) => handleStatusUpdate(chip.numeroChip, "liberado")}
         />
       </TableCell>
       <TableCell 
