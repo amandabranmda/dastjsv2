@@ -99,13 +99,6 @@ const Metrics = () => {
               type="closed" 
             />
           </div>
-          <div className="animate-fade-in [animation-delay:2000ms]">
-            <StatusCard 
-              title="Chips em Produção Externa" 
-              value={isLoading ? "..." : instancesData?.productionCount || 0}
-              type="production" 
-            />
-          </div>
         </div>
       </div>
     </div>
