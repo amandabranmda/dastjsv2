@@ -1,111 +1,79 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { useEffect } from "react";
-import { toast } from "@/components/ui/use-toast";
 
 export const useInstances = () => {
-  const { data, refetch, error } = useQuery({
+  return useQuery({
     queryKey: ["instances"],
     queryFn: async () => {
-      try {
-        const [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult, releasedResult] = await Promise.all([
-          supabase
-            .from("1-chipsInstancias")
-            .select("*")
-            .eq("statusChip", "✅emProducao")
-            .eq("statusInstancia", "open"),
-          supabase
-            .from("1-chipsInstancias")
-            .select("*")
-            .eq("statusChip", "❌verificarDesconexao"),
-          supabase
-            .from("1-chipsInstancias")
-            .select("*")
-            .eq("statusEnvios", true)
-            .eq("statusInstancia", "open")
-            .eq("projeto", "ProjetHotGPT"),
-          supabase
-            .from("1-chipsInstancias")
-            .select("enviosDia")
-            .eq("projeto", "ProjetHotGPT"),
-          supabase
-            .from("1-chipsInstancias")
-            .select("cliquesRedirect")
-            .eq("projeto", "ProjetHotGPT"),
-          supabase
-            .from("1-chipsInstancias")
-            .select("limiteEnviosDia")
-            .eq("projeto", "ProjetHotGPT")
-            .eq("statusInstancia", "open"),
-          supabase
-            .from("1-chipsInstancias")
-            .select("*")
-            .eq("statusChip", "aguardando desbloqueio"),
-          supabase
-            .from("1-chipsInstancias")
-            .select("*")
-            .eq("statusChip", "liberado")
-        ]);
+      // Fetch online instances
+      const { data: onlineData } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", "online");
 
-        // Check for errors in any of the results
-        const results = [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult, releasedResult];
-        for (const result of results) {
-          if (result.error) {
-            throw result.error;
-          }
-        }
+      // Fetch sending instances
+      const { data: sendingData } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", "enviando");
 
-        const totalLeads = leadsResult.data?.reduce((sum, row) => sum + (row.enviosDia || 0), 0) || 0;
-        const totalClicks = clicksResult.data?.reduce((sum, row) => sum + (row.cliquesRedirect || 0), 0) || 0;
-        const totalSendingLimit = limitsResult.data?.reduce((sum, row) => sum + (row.limiteEnviosDia || 0), 0) || 0;
-        const availableSendingLimit = Math.round(totalSendingLimit * 0.35);
+      // Fetch closed instances
+      const { data: closedData } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", "❌verificarDesconexao");
 
-        return {
-          onlineCount: onlineResult.data?.length || 0,
-          closedCount: closedResult.data?.length || 0,
-          sendingCount: sendingResult.data?.length || 0,
-          waitingUnlockCount: waitingUnlockResult.data?.length || 0,
-          releasedCount: releasedResult.data?.length || 0,
-          totalLeads,
-          totalClicks,
-          totalSendingLimit: availableSendingLimit
-        };
-      } catch (error) {
-        console.error('Error fetching instances:', error);
-        toast({
-          title: "Erro ao carregar dados",
-          description: "Houve um problema ao carregar as instâncias. Por favor, tente novamente.",
-          variant: "destructive",
-        });
-        throw error;
-      }
+      // Fetch waiting unlock instances
+      const { data: waitingUnlockData } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", "aguardando desbloqueio");
+
+      // Fetch released instances
+      const { data: releasedData } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", "liberado");
+
+      // Fetch production instances
+      const { data: productionData } = await supabase
+        .from("1-chipsInstancias")
+        .select("*")
+        .eq("statusChip", "producao");
+
+      // Get sending limit
+      const { data: limitsData } = await supabase
+        .from("1-chipsInstancias")
+        .select("limiteEnviosDia")
+        .not("limiteEnviosDia", "is", null);
+
+      // Get total leads
+      const { data: leadsData } = await supabase
+        .from("1-chipsInstancias")
+        .select("enviosDia")
+        .not("enviosDia", "is", null);
+
+      // Get total clicks
+      const { data: clicksData } = await supabase
+        .from("1-chipsInstancias")
+        .select("cliquesRedirect")
+        .not("cliquesRedirect", "is", null);
+
+      const totalSendingLimit = limitsData?.reduce((acc, curr) => acc + (curr.limiteEnviosDia || 0), 0) || 0;
+      const totalLeads = leadsData?.reduce((acc, curr) => acc + (curr.enviosDia || 0), 0) || 0;
+      const totalClicks = clicksData?.reduce((acc, curr) => acc + (curr.cliquesRedirect || 0), 0) || 0;
+
+      return {
+        onlineCount: onlineData?.length || 0,
+        sendingCount: sendingData?.length || 0,
+        closedCount: closedData?.length || 0,
+        waitingUnlockCount: waitingUnlockData?.length || 0,
+        releasedCount: releasedData?.length || 0,
+        productionCount: productionData?.length || 0,
+        totalSendingLimit,
+        totalLeads,
+        totalClicks,
+      };
     },
-    refetchInterval: 1000,
-    refetchIntervalInBackground: true,
-    gcTime: 0
   });
-
-  useEffect(() => {
-    // Subscribe to ALL changes in the table
-    const channel = supabase
-      .channel('table-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: '1-chipsInstancias'
-        },
-        () => {
-          refetch();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [refetch]);
-
-  return { data, isLoading: !data, error };
 };
