@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,6 +27,30 @@ const Messages = () => {
       return data;
     },
   });
+
+  useEffect(() => {
+    // Subscribe to changes in the 1-chipsInstancias table
+    const subscription = supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: '1-chipsInstancias'
+        },
+        (payload) => {
+          console.log('Change received!', payload);
+          refetch();
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on component unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [refetch]);
 
   const handleResponsavelChange = async (chipNumber: string, newValue: string) => {
     try {
