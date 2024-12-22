@@ -70,6 +70,7 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
       });
 
       setIsCustom(false);
+      setCustomValue("");
       onUpdate();
     } catch (err) {
       toast({
@@ -88,7 +89,7 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
           onChange={(e) => setCustomValue(e.target.value)}
           placeholder="Digite o nome"
           className="w-[180px] bg-white/5 border-white/10 text-white"
-          onKeyPress={(e) => {
+          onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
               handleCustomSubmit();
@@ -99,7 +100,10 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
         <Button 
           variant="outline" 
           size="sm"
-          onClick={() => setIsCustom(false)}
+          onClick={() => {
+            setIsCustom(false);
+            setCustomValue("");
+          }}
           className="border-white/10 text-white hover:bg-white/5"
         >
           Cancelar
