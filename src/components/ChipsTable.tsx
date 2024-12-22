@@ -6,6 +6,8 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "./ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { USER_OPTIONS } from "@/constants/userOptions";
 
 interface ChipsTableProps {
   chips: any[];
@@ -94,6 +96,30 @@ export function ChipsTable({
     }
   };
 
+  const handleResponsavelChange = async (chipNumber: string, responsavel: string) => {
+    try {
+      const { error } = await supabase
+        .from("1-chipsInstancias")
+        .update({ responsavelChip: responsavel })
+        .eq("numeroChip", chipNumber);
+
+      if (error) throw error;
+
+      toast({
+        description: `Responsável atualizado com sucesso!`,
+        duration: 2000,
+      });
+
+      refetchData();
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Erro ao atualizar responsável",
+        duration: 2000,
+      });
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -113,6 +139,7 @@ export function ChipsTable({
               <ArrowUpDown className="h-4 w-4" />
             </Button>
           </TableHead>
+          <TableHead>Responsável</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -144,6 +171,23 @@ export function ChipsTable({
               {chip.numeroChip}
             </TableCell>
             <TableCell>{chip.localChip || '-'}</TableCell>
+            <TableCell>
+              <Select
+                defaultValue={chip.responsavelChip || ""}
+                onValueChange={(value) => handleResponsavelChange(chip.numeroChip, value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Selecione um responsável" />
+                </SelectTrigger>
+                <SelectContent>
+                  {USER_OPTIONS.map((user) => (
+                    <SelectItem key={user} value={user}>
+                      {user}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
