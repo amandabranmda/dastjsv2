@@ -16,12 +16,12 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
   const { toast } = useToast();
 
   const handleResponsavelChange = async (value: string) => {
-    try {
-      if (value === "custom") {
-        setIsCustom(true);
-        return;
-      }
+    if (value === "custom") {
+      setIsCustom(true);
+      return;
+    }
 
+    try {
       const { error } = await supabase
         .from("1-chipsInstancias")
         .update({ responsavelChip: value })
@@ -49,14 +49,17 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
       <CustomResponsavelInput
         chipNumber={chipNumber}
         onCancel={() => setIsCustom(false)}
-        onUpdate={onUpdate}
+        onUpdate={() => {
+          onUpdate();
+          setIsCustom(false);
+        }}
       />
     );
   }
 
   return (
     <Select
-      value={currentValue}
+      value={currentValue || undefined}
       onValueChange={handleResponsavelChange}
     >
       <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">

@@ -37,7 +37,6 @@ export function CustomResponsavelInput({ chipNumber, onCancel, onUpdate }: Custo
         duration: 2000,
       });
 
-      onCancel();
       onUpdate();
     } catch (err) {
       toast({
@@ -61,6 +60,7 @@ export function CustomResponsavelInput({ chipNumber, onCancel, onUpdate }: Custo
             handleCustomSubmit();
           }
         }}
+        autoFocus
       />
       <Button 
         variant="outline" 
