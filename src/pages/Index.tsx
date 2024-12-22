@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Cpu, ChartBar, TrendingUp, MessageSquare } from "lucide-react";
+import { Cpu, ChartBar, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { PasswordDialog } from "@/components/PasswordDialog";
 
@@ -47,16 +47,6 @@ const Index = () => {
             <TrendingUp className="w-5 h-5" />
             Métricas Face
           </Button>
-
-          <Link to="/messages" className="w-full">
-            <Button 
-              variant="secondary" 
-              className="w-full gap-2 text-lg py-6 bg-[#F59E0B] hover:bg-[#D97706] transition-colors"
-            >
-              <MessageSquare className="w-5 h-5" />
-              Chips em Produção Externa
-            </Button>
-          </Link>
         </div>
       </div>
 

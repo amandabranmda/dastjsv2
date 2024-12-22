@@ -1,79 +1,74 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
-export const useInstances = () => {
+export function useInstances() {
   return useQuery({
     queryKey: ["instances"],
     queryFn: async () => {
-      // Fetch online instances
-      const { data: onlineData } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "online");
+      const [
+        { count: onlineCount },
+        { count: closedCount },
+        { count: sendingCount },
+        { count: waitingUnlockCount },
+        { count: releasedCount },
+        { count: productionCount },
+        { data: totalClicksData },
+        { data: totalLeadsData },
+        { data: totalSendingLimitData }
+      ] = await Promise.all([
+        supabase
+          .from("1-chipsInstancias")
+          .select("*", { count: "exact", head: true })
+          .eq("statusChip", "online"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("*", { count: "exact", head: true })
+          .eq("statusChip", "❌verificarDesconexao"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("*", { count: "exact", head: true })
+          .eq("statusChip", "enviando"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("*", { count: "exact", head: true })
+          .eq("statusChip", "aguardando desbloqueio"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("*", { count: "exact", head: true })
+          .eq("statusChip", "liberado"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("*", { count: "exact", head: true })
+          .eq("statusChip", "producao externa"),
+        supabase
+          .from("1-chipsInstancias")
+          .select("totalClicks")
+          .not("totalClicks", "is", null),
+        supabase
+          .from("1-chipsInstancias")
+          .select("totalLeads")
+          .not("totalLeads", "is", null),
+        supabase
+          .from("1-chipsInstancias")
+          .select("sendingLimit")
+          .not("sendingLimit", "is", null)
+      ]);
 
-      // Fetch sending instances
-      const { data: sendingData } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "enviando");
-
-      // Fetch closed instances
-      const { data: closedData } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "❌verificarDesconexao");
-
-      // Fetch waiting unlock instances
-      const { data: waitingUnlockData } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "aguardando desbloqueio");
-
-      // Fetch released instances
-      const { data: releasedData } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "liberado");
-
-      // Fetch production instances
-      const { data: productionData } = await supabase
-        .from("1-chipsInstancias")
-        .select("*")
-        .eq("statusChip", "producao");
-
-      // Get sending limit
-      const { data: limitsData } = await supabase
-        .from("1-chipsInstancias")
-        .select("limiteEnviosDia")
-        .not("limiteEnviosDia", "is", null);
-
-      // Get total leads
-      const { data: leadsData } = await supabase
-        .from("1-chipsInstancias")
-        .select("enviosDia")
-        .not("enviosDia", "is", null);
-
-      // Get total clicks
-      const { data: clicksData } = await supabase
-        .from("1-chipsInstancias")
-        .select("cliquesRedirect")
-        .not("cliquesRedirect", "is", null);
-
-      const totalSendingLimit = limitsData?.reduce((acc, curr) => acc + (curr.limiteEnviosDia || 0), 0) || 0;
-      const totalLeads = leadsData?.reduce((acc, curr) => acc + (curr.enviosDia || 0), 0) || 0;
-      const totalClicks = clicksData?.reduce((acc, curr) => acc + (curr.cliquesRedirect || 0), 0) || 0;
+      const totalClicks = totalClicksData?.reduce((sum, item) => sum + (item.totalClicks || 0), 0) || 0;
+      const totalLeads = totalLeadsData?.reduce((sum, item) => sum + (item.totalLeads || 0), 0) || 0;
+      const totalSendingLimit = totalSendingLimitData?.reduce((sum, item) => sum + (item.sendingLimit || 0), 0) || 0;
 
       return {
-        onlineCount: onlineData?.length || 0,
-        sendingCount: sendingData?.length || 0,
-        closedCount: closedData?.length || 0,
-        waitingUnlockCount: waitingUnlockData?.length || 0,
-        releasedCount: releasedData?.length || 0,
-        productionCount: productionData?.length || 0,
-        totalSendingLimit,
-        totalLeads,
+        onlineCount: onlineCount || 0,
+        closedCount: closedCount || 0,
+        sendingCount: sendingCount || 0,
+        waitingUnlockCount: waitingUnlockCount || 0,
+        releasedCount: releasedCount || 0,
+        productionCount: productionCount || 0,
         totalClicks,
+        totalLeads,
+        totalSendingLimit
       };
-    },
+    }
   });
-};
+}

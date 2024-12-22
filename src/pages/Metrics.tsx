@@ -1,6 +1,5 @@
 import { MetricCard } from "@/components/MetricCard";
 import { StatusCard } from "@/components/StatusCard";
-import { Clock } from "lucide-react";
 import { useInstances } from "@/hooks/useInstances";
 
 const Metrics = () => {
@@ -104,7 +103,7 @@ const Metrics = () => {
             <StatusCard 
               title="Chips em Produção Externa" 
               value={isLoading ? "..." : instancesData?.productionCount || 0}
-              type="closed" 
+              type="production" 
             />
           </div>
         </div>

@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Metrics from "./pages/Metrics";
 import Instances from "./pages/Instances";
-import Messages from "./pages/Messages";
 import Roas from "./pages/Roas";
 import { useState, useEffect } from "react";
 
@@ -43,7 +42,7 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/metrics" element={<Metrics />} />
                 <Route path="/instances" element={<Instances />} />
-                <Route path="/messages" element={<Messages />} />
+                <Route path="/messages" element={<div>Página de Mensagens em Construção</div>} />
                 <Route path="/contacts" element={<div>Página de Contatos em Construção</div>} />
                 <Route path="/reports" element={<div>Página de Relatórios em Construção</div>} />
                 <Route path="/settings" element={<div>Página de Configurações em Construção</div>} />
