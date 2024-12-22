@@ -6,9 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "./ui/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { USER_OPTIONS } from "@/constants/userOptions";
-import { Input } from "./ui/input";
+import { ResponsavelSelect } from "./chips/ResponsavelSelect";
 
 interface ChipsTableProps {
   chips: any[];
@@ -31,8 +29,6 @@ export function ChipsTable({
 }: ChipsTableProps) {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const { toast } = useToast();
-  const [customResponsaveis, setCustomResponsaveis] = useState<Record<string, boolean>>({});
-  const [customInputValues, setCustomInputValues] = useState<Record<string, string>>({});
 
   const sortedChips = [...chips].sort((a, b) => {
     const locationA = (a.localChip || '').toLowerCase();
@@ -99,66 +95,6 @@ export function ChipsTable({
     }
   };
 
-  const handleResponsavelChange = async (chipNumber: string, value: string) => {
-    try {
-      if (value === "custom") {
-        setCustomResponsaveis(prev => ({ ...prev, [chipNumber]: true }));
-        return;
-      }
-
-      const { error } = await supabase
-        .from("1-chipsInstancias")
-        .update({ responsavelChip: value })
-        .eq("numeroChip", chipNumber);
-
-      if (error) throw error;
-
-      toast({
-        description: `Responsável atualizado com sucesso!`,
-        duration: 2000,
-      });
-
-      refetchData();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        description: "Erro ao atualizar responsável",
-        duration: 2000,
-      });
-    }
-  };
-
-  const handleCustomInputChange = async (chipNumber: string, value: string) => {
-    setCustomInputValues(prev => ({ ...prev, [chipNumber]: value }));
-  };
-
-  const handleCustomInputSubmit = async (chipNumber: string) => {
-    try {
-      const customValue = customInputValues[chipNumber];
-      
-      const { error } = await supabase
-        .from("1-chipsInstancias")
-        .update({ responsavelChip: customValue })
-        .eq("numeroChip", chipNumber);
-
-      if (error) throw error;
-
-      toast({
-        description: `Responsável atualizado com sucesso!`,
-        duration: 2000,
-      });
-
-      setCustomResponsaveis(prev => ({ ...prev, [chipNumber]: false }));
-      refetchData();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        description: "Erro ao atualizar responsável",
-        duration: 2000,
-      });
-    }
-  };
-
   return (
     <Table>
       <TableHeader>
@@ -211,49 +147,11 @@ export function ChipsTable({
             </TableCell>
             <TableCell>{chip.localChip || '-'}</TableCell>
             <TableCell>
-              {customResponsaveis[chip.numeroChip] ? (
-                <div className="flex gap-2">
-                  <Input
-                    value={customInputValues[chip.numeroChip] || ""}
-                    onChange={(e) => handleCustomInputChange(chip.numeroChip, e.target.value)}
-                    placeholder="Digite o nome"
-                    className="w-[180px]"
-                  />
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => {
-                      setCustomResponsaveis(prev => ({ ...prev, [chip.numeroChip]: false }));
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button 
-                    variant="default" 
-                    size="sm"
-                    onClick={() => handleCustomInputSubmit(chip.numeroChip)}
-                  >
-                    Salvar
-                  </Button>
-                </div>
-              ) : (
-                <Select
-                  value={chip.responsavelChip || ""}
-                  onValueChange={(value) => handleResponsavelChange(chip.numeroChip, value)}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Selecione um responsável" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {USER_OPTIONS.map((user) => (
-                      <SelectItem key={user} value={user}>
-                        {user}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">Digitar manualmente</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
+              <ResponsavelSelect
+                chipNumber={chip.numeroChip}
+                currentValue={chip.responsavelChip || ""}
+                onUpdate={refetchData}
+              />
             </TableCell>
           </TableRow>
         ))}
