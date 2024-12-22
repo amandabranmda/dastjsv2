@@ -29,7 +29,21 @@ export function CustomFormField({
   className 
 }: CustomFormFieldProps) {
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customValue, setCustomValue] = useState("");
   const sequentialNumbers = generateSequentialNumbers(1, 10);
+
+  const handleCustomSubmit = () => {
+    if (customValue.trim()) {
+      form.setValue(name, customValue.trim());
+      setShowCustomInput(false);
+      setCustomValue("");
+    }
+  };
+
+  const handleCancel = () => {
+    setShowCustomInput(false);
+    setCustomValue("");
+  };
 
   return (
     <FormField
@@ -70,19 +84,38 @@ export function CustomFormField({
             ) : (
               <div className="space-y-2">
                 <Input
+                  value={customValue}
+                  onChange={(e) => setCustomValue(e.target.value)}
                   placeholder="Digite o nome da instância"
                   className={cn("bg-white/5 border-emerald-600/20 text-white", className)}
-                  {...field}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleCustomSubmit();
+                    }
+                  }}
+                  autoFocus
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowCustomInput(false)}
-                  className="w-full border-emerald-600/20 hover:bg-emerald-900/20"
-                >
-                  Voltar para lista
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCancel}
+                    className="flex-1 border-emerald-600/20 hover:bg-emerald-900/20"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    onClick={handleCustomSubmit}
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Salvar
+                  </Button>
+                </div>
               </div>
             )}
           </FormControl>
