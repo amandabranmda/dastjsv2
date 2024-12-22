@@ -4,6 +4,5 @@ export const USER_OPTIONS = [
   "Thais",
   "Maikon",
   "Duda",
-  "João",
-  "loja"
+  "João"
 ] as const;

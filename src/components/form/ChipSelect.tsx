@@ -62,7 +62,7 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
                     field.onChange(value);
                   }
                 }}
-                defaultValue={field.value}
+                value={field.value}
               >
                 <SelectTrigger className={className}>
                   <SelectValue placeholder={placeholder} />
@@ -106,7 +106,6 @@ export function ChipSelect({ form, name, label, placeholder, className }: ChipSe
                   placeholder="Digite o número do chip"
                   className={className}
                   {...field}
-                  autoFocus
                 />
                 <Button
                   type="button"
