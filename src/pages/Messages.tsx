@@ -1,12 +1,9 @@
-import { StatusCard } from "@/components/StatusCard";
-import { useInstances } from "@/hooks/useInstances";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
 const Messages = () => {
-  const { data: instancesData, isLoading } = useInstances();
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: liberatedChips } = useQuery({
@@ -31,16 +28,6 @@ const Messages = () => {
     <div className="space-y-8">
       <h1 className="text-2xl font-bold">Chips em Produção Externa</h1>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="animate-fade-in [animation-delay:200ms]">
-          <StatusCard 
-            title="Chips em Produção Externa" 
-            value={isLoading ? "..." : instancesData?.productionCount || 0} 
-            type="closed" 
-          />
-        </div>
-      </div>
-
       <div className="space-y-4">
         <Input
           placeholder="Pesquisar chips liberados..."
