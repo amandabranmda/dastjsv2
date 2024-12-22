@@ -2,6 +2,8 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { MetricCard } from "@/components/MetricCard";
+import { Chip } from "lucide-react";
 
 const Messages = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +30,15 @@ const Messages = () => {
     <div className="space-y-8">
       <h1 className="text-2xl font-bold">Chips em Produção Externa</h1>
       
+      <div className="max-w-sm">
+        <MetricCard
+          title="Total de Chips Liberados"
+          value={liberatedChips?.length || 0}
+          change={<Chip className="h-4 w-4" />}
+          type="padrao"
+        />
+      </div>
+
       <div className="space-y-4">
         <Input
           placeholder="Pesquisar chips liberados..."
