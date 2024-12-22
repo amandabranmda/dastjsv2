@@ -54,7 +54,7 @@ const Index = () => {
               className="w-full gap-2 text-lg py-6 bg-[#F59E0B] hover:bg-[#D97706] transition-colors"
             >
               <MessageSquare className="w-5 h-5" />
-              Mensagens
+              Chips em Produção Externa
             </Button>
           </Link>
         </div>
