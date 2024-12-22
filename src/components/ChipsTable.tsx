@@ -173,7 +173,7 @@ export function ChipsTable({
             <TableCell>{chip.localChip || '-'}</TableCell>
             <TableCell>
               <Select
-                defaultValue={chip.responsavelChip || ""}
+                value={chip.responsavelChip || ""}
                 onValueChange={(value) => handleResponsavelChange(chip.numeroChip, value)}
               >
                 <SelectTrigger className="w-[180px]">
