@@ -58,12 +58,9 @@ export function ResponsavelSelect({ chipNumber, currentValue, onUpdate }: Respon
   }
 
   return (
-    <Select
-      value={currentValue || undefined}
-      onValueChange={handleResponsavelChange}
-    >
+    <Select onValueChange={handleResponsavelChange}>
       <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
-        <SelectValue placeholder="Selecione um responsável" />
+        <SelectValue placeholder="Selecione um responsável" defaultValue={currentValue} />
       </SelectTrigger>
       <SelectContent className="glass-dropdown">
         {USER_OPTIONS.map((user) => (
