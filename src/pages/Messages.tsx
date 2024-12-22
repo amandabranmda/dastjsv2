@@ -14,7 +14,7 @@ const Messages = () => {
     queryFn: async () => {
       const query = supabase
         .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
+        .select("numeroChip,localChip,responsavelChip")
         .eq("statusChip", "liberado");
 
       if (searchTerm) {
@@ -56,6 +56,7 @@ const Messages = () => {
                 <tr>
                   <th className="text-left py-2">Número do Chip</th>
                   <th className="text-left py-2">Local</th>
+                  <th className="text-left py-2">Responsável</th>
                 </tr>
               </thead>
               <tbody>
@@ -63,6 +64,7 @@ const Messages = () => {
                   <tr key={chip.numeroChip} className="border-t border-border">
                     <td className="py-2">{chip.numeroChip}</td>
                     <td className="py-2">{chip.localChip || '-'}</td>
+                    <td className="py-2">{chip.responsavelChip || '-'}</td>
                   </tr>
                 ))}
               </tbody>
