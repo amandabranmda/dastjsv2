@@ -1,74 +1,111 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
+import { toast } from "@/components/ui/use-toast";
 
-export function useInstances() {
-  return useQuery({
+export const useInstances = () => {
+  const { data, refetch, error } = useQuery({
     queryKey: ["instances"],
     queryFn: async () => {
-      const [
-        { count: onlineCount },
-        { count: closedCount },
-        { count: sendingCount },
-        { count: waitingUnlockCount },
-        { count: releasedCount },
-        { count: productionCount },
-        { data: totalClicksData },
-        { data: totalLeadsData },
-        { data: totalSendingLimitData }
-      ] = await Promise.all([
-        supabase
-          .from("1-chipsInstancias")
-          .select("*", { count: "exact", head: true })
-          .eq("statusChip", "online"),
-        supabase
-          .from("1-chipsInstancias")
-          .select("*", { count: "exact", head: true })
-          .eq("statusChip", "❌verificarDesconexao"),
-        supabase
-          .from("1-chipsInstancias")
-          .select("*", { count: "exact", head: true })
-          .eq("statusChip", "enviando"),
-        supabase
-          .from("1-chipsInstancias")
-          .select("*", { count: "exact", head: true })
-          .eq("statusChip", "aguardando desbloqueio"),
-        supabase
-          .from("1-chipsInstancias")
-          .select("*", { count: "exact", head: true })
-          .eq("statusChip", "liberado"),
-        supabase
-          .from("1-chipsInstancias")
-          .select("*", { count: "exact", head: true })
-          .eq("statusChip", "producao externa"),
-        supabase
-          .from("1-chipsInstancias")
-          .select("totalClicks")
-          .not("totalClicks", "is", null),
-        supabase
-          .from("1-chipsInstancias")
-          .select("totalLeads")
-          .not("totalLeads", "is", null),
-        supabase
-          .from("1-chipsInstancias")
-          .select("sendingLimit")
-          .not("sendingLimit", "is", null)
-      ]);
+      try {
+        const [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult, releasedResult] = await Promise.all([
+          supabase
+            .from("1-chipsInstancias")
+            .select("*")
+            .eq("statusChip", "✅emProducao")
+            .eq("statusInstancia", "open"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("*")
+            .eq("statusChip", "❌verificarDesconexao"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("*")
+            .eq("statusEnvios", true)
+            .eq("statusInstancia", "open")
+            .eq("projeto", "ProjetHotGPT"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("enviosDia")
+            .eq("projeto", "ProjetHotGPT"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("cliquesRedirect")
+            .eq("projeto", "ProjetHotGPT"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("limiteEnviosDia")
+            .eq("projeto", "ProjetHotGPT")
+            .eq("statusInstancia", "open"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("*")
+            .eq("statusChip", "aguardando desbloqueio"),
+          supabase
+            .from("1-chipsInstancias")
+            .select("*")
+            .eq("statusChip", "liberado")
+        ]);
 
-      const totalClicks = totalClicksData?.reduce((sum, item) => sum + (item.totalClicks || 0), 0) || 0;
-      const totalLeads = totalLeadsData?.reduce((sum, item) => sum + (item.totalLeads || 0), 0) || 0;
-      const totalSendingLimit = totalSendingLimitData?.reduce((sum, item) => sum + (item.sendingLimit || 0), 0) || 0;
+        // Check for errors in any of the results
+        const results = [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult, releasedResult];
+        for (const result of results) {
+          if (result.error) {
+            throw result.error;
+          }
+        }
 
-      return {
-        onlineCount: onlineCount || 0,
-        closedCount: closedCount || 0,
-        sendingCount: sendingCount || 0,
-        waitingUnlockCount: waitingUnlockCount || 0,
-        releasedCount: releasedCount || 0,
-        productionCount: productionCount || 0,
-        totalClicks,
-        totalLeads,
-        totalSendingLimit
-      };
-    }
+        const totalLeads = leadsResult.data?.reduce((sum, row) => sum + (row.enviosDia || 0), 0) || 0;
+        const totalClicks = clicksResult.data?.reduce((sum, row) => sum + (row.cliquesRedirect || 0), 0) || 0;
+        const totalSendingLimit = limitsResult.data?.reduce((sum, row) => sum + (row.limiteEnviosDia || 0), 0) || 0;
+        const availableSendingLimit = Math.round(totalSendingLimit * 0.35);
+
+        return {
+          onlineCount: onlineResult.data?.length || 0,
+          closedCount: closedResult.data?.length || 0,
+          sendingCount: sendingResult.data?.length || 0,
+          waitingUnlockCount: waitingUnlockResult.data?.length || 0,
+          releasedCount: releasedResult.data?.length || 0,
+          totalLeads,
+          totalClicks,
+          totalSendingLimit: availableSendingLimit
+        };
+      } catch (error) {
+        console.error('Error fetching instances:', error);
+        toast({
+          title: "Erro ao carregar dados",
+          description: "Houve um problema ao carregar as instâncias. Por favor, tente novamente.",
+          variant: "destructive",
+        });
+        throw error;
+      }
+    },
+    refetchInterval: 1000,
+    refetchIntervalInBackground: true,
+    gcTime: 0
   });
-}
+
+  useEffect(() => {
+    // Subscribe to ALL changes in the table
+    const channel = supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: '1-chipsInstancias'
+        },
+        () => {
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
+
+  return { data, isLoading: !data, error };
+};

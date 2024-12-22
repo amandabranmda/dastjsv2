@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Copy, MessageSquare, X, Maximize2, Database } from "lucide-react";
+import { Copy, MessageSquare, X, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -11,7 +11,7 @@ import { ChipStatusDialog } from "./status/ChipStatusDialog";
 interface StatusCardProps {
   title: string;
   value: number | string;
-  type: "online" | "closed" | "sending" | "production";
+  type: "online" | "closed" | "sending";
 }
 
 export function StatusCard({ title, value, type }: StatusCardProps) {
@@ -63,20 +63,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     enabled: type === "closed" && title.includes("Chips Liberados")
   });
 
-  const { data: productionChips, refetch: refetchProduction } = useQuery({
-    queryKey: ["production-chips"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
-        .eq("statusChip", "producao externa");
-
-      if (error) throw error;
-      return data;
-    },
-    enabled: type === "production" && title.includes("Produção Externa")
-  });
-
   const handleCopyChip = async (chipNumber: string) => {
     try {
       await navigator.clipboard.writeText(chipNumber);
@@ -96,7 +82,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
-  const handleCheckboxChange = async (chipNumber: string, checked: boolean) => {
+  const handleCheckboxChange = async (chipNumber: string, checked: boolean, isDisconnected: boolean) => {
     const currentTitle = title;
     try {
       let newStatus = "";
@@ -106,8 +92,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       } else if (currentTitle.includes("Aguardando Desbloqueio")) {
         newStatus = checked ? "liberado" : "aguardando desbloqueio";
       } else if (currentTitle.includes("Chips Liberados")) {
-        newStatus = checked ? "producao externa" : "liberado";
-      } else if (currentTitle.includes("Produção Externa")) {
         if (checked) {
           setCheckedChips(prev => [...prev, chipNumber]);
         } else {
@@ -128,7 +112,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         duration: 2000,
       });
 
-      refetchData();
+      if (currentTitle.includes("verificarDesconexao")) {
+        refetchDisconnected();
+      } else if (currentTitle.includes("Aguardando Desbloqueio")) {
+        refetchWaiting();
+      } else if (currentTitle.includes("Chips Liberados")) {
+        refetchReleased();
+      }
     } catch (err) {
       toast({
         variant: "destructive",
@@ -152,8 +142,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     ? disconnectedChips 
     : title.includes("Chips Liberados")
     ? releasedChips
-    : title.includes("Produção Externa")
-    ? productionChips
     : waitingUnlockChips;
 
   const refetchData = () => {
@@ -163,8 +151,6 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       refetchWaiting();
     } else if (title.includes("Chips Liberados")) {
       refetchReleased();
-    } else if (title.includes("Produção Externa")) {
-      refetchProduction();
     }
   };
 
@@ -187,8 +173,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
                 "w-2 h-2 rounded-full",
                 type === "online" && "bg-[#10B981]",
                 type === "closed" && title.includes("Aguardando Desbloqueio") ? "bg-[#F97316]" : "bg-[#0EA5E9]",
-                type === "sending" && "bg-[#9333EA]",
-                type === "production" && "bg-[#10B981]"
+                type === "sending" && "bg-[#9333EA]"
               )} />
               <h3 className="text-xs sm:text-sm text-gray-400 font-medium">{title}</h3>
             </div>
@@ -199,7 +184,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         </Card>
       </DialogTrigger>
 
-      {(type === "closed" || type === "production") && (
+      {type === "closed" && (
         <ChipStatusDialog
           isOpen={dialogOpen}
           title={title}
