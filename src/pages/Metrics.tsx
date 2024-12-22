@@ -1,5 +1,6 @@
 import { MetricCard } from "@/components/MetricCard";
 import { StatusCard } from "@/components/StatusCard";
+import { Clock } from "lucide-react";
 import { useInstances } from "@/hooks/useInstances";
 
 const Metrics = () => {
@@ -27,6 +28,7 @@ const Metrics = () => {
     <div className="space-y-8">
       <h1 className="text-2xl font-bold">Métricas</h1>
       
+      {/* Cards de Métricas Originais */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="animate-fade-in [animation-delay:200ms]">
           <MetricCard
@@ -54,6 +56,7 @@ const Metrics = () => {
         </div>
       </div>
 
+      {/* Cards de Status das Instâncias */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-6">Status das Instâncias</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -97,13 +100,6 @@ const Metrics = () => {
               title="Chips Liberados" 
               value={isLoading ? "..." : instancesData?.releasedCount || 0}
               type="closed" 
-            />
-          </div>
-          <div className="animate-fade-in [animation-delay:2000ms]">
-            <StatusCard 
-              title="Chips em Produção Externa" 
-              value={isLoading ? "..." : instancesData?.productionCount || 0}
-              type="production" 
             />
           </div>
         </div>
