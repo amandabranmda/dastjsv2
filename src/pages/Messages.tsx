@@ -2,23 +2,11 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-
-const LOJAS = [
-  "Loja 1",
-  "Loja 2",
-  "Loja 3",
-  "Loja 4",
-  "Loja 5",
-] as const;
 
 const Messages = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { toast } = useToast();
 
-  const { data: liberatedChips, refetch } = useQuery({
+  const { data: liberatedChips } = useQuery({
     queryKey: ["liberated-chips", searchTerm],
     queryFn: async () => {
       const query = supabase
@@ -35,30 +23,6 @@ const Messages = () => {
       return data;
     },
   });
-
-  const handleLojaChange = async (chipNumber: string, newValue: string) => {
-    try {
-      const { error } = await supabase
-        .from("1-chipsInstancias")
-        .update({ localChip: newValue })
-        .eq("numeroChip", chipNumber);
-
-      if (error) throw error;
-
-      toast({
-        description: "Local atualizado com sucesso!",
-        duration: 2000,
-      });
-
-      refetch();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        description: "Erro ao atualizar local",
-        duration: 2000,
-      });
-    }
-  };
 
   return (
     <div className="space-y-8">
@@ -86,24 +50,7 @@ const Messages = () => {
                 {liberatedChips.map((chip) => (
                   <tr key={chip.numeroChip} className="border-t border-border">
                     <td className="py-2">{chip.numeroChip}</td>
-                    <td className="py-2">
-                      <Select
-                        defaultValue={chip.localChip || ""}
-                        onValueChange={(value) => handleLojaChange(chip.numeroChip, value)}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Selecione uma loja" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {LOJAS.map((loja) => (
-                            <SelectItem key={loja} value={loja}>
-                              {loja}
-                            </SelectItem>
-                          ))}
-                          <SelectItem value="custom">Digitar manualmente</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </td>
+                    <td className="py-2">{chip.localChip || '-'}</td>
                     <td className="py-2">{chip.responsavelChip || '-'}</td>
                   </tr>
                 ))}
