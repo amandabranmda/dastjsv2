@@ -5,5 +5,6 @@ export const USER_OPTIONS = [
   "Maikon",
   "Duda",
   "João",
-  "Richard"
+  "Richard",
+  "Suelem"
 ] as const;
