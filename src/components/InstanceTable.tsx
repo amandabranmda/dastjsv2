@@ -4,7 +4,7 @@ import { Copy, MessageSquare, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Instance {
   id: string;
@@ -16,12 +16,14 @@ interface Instance {
 }
 
 export function InstanceTable() {
+  const [searchTerm, setSearchTerm] = useState("");
+  
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["instances-table"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("nomeInstancia, senderNumber, statusInstancia, statusQR, enviosChipFull")
+        .select("nomeInstancia, senderNumber, statusInstancia, statusQR, enviosChipFull, localChip")
         .eq("statusInstancia", "open");
 
       if (error) throw error;
@@ -50,14 +52,25 @@ export function InstanceTable() {
     };
   }, [refetch]);
 
+  // Filter function that checks both chip number and location
+  const filteredData = data?.filter(instance => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      instance.senderNumber?.toLowerCase().includes(searchLower) ||
+      instance.localChip?.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <Card className="glass-card p-6 animate-fade-in-scale">
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-medium">Gerenciamento de Instâncias</h3>
           <Input
-            placeholder="Filtrar por nome..."
+            placeholder="Buscar por número ou local..."
             className="max-w-xs bg-background/50"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="overflow-x-auto">
@@ -92,7 +105,7 @@ export function InstanceTable() {
                   </td>
                 </tr>
               ) : (
-                data?.map((instance) => (
+                filteredData?.map((instance) => (
                   <tr key={instance.nomeInstancia} className="border-b border-border">
                     <td className="py-3 text-sm">{instance.nomeInstancia}</td>
                     <td className="py-3 text-sm">{instance.senderNumber}</td>
