@@ -13,7 +13,6 @@ export function StatusCardHeader({
   title, 
   value, 
   type, 
-  responsavelChip, 
   onFullScreenClick 
 }: StatusCardHeaderProps) {
   return (
@@ -33,9 +32,6 @@ export function StatusCardHeader({
       </div>
       <div className="flex flex-col items-start">
         <p className="text-2xl sm:text-4xl font-semibold tracking-tight text-white">{value}</p>
-        {responsavelChip && (
-          <p className="text-sm text-gray-400 mt-2">Responsável: {responsavelChip}</p>
-        )}
       </div>
     </div>
   );
