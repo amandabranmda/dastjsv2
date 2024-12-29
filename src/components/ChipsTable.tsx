@@ -6,6 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "./ui/use-toast";
+import { Input } from "./ui/input";
 
 interface ChipsTableProps {
   chips: any[];
@@ -28,6 +29,8 @@ export function ChipsTable({
 }: ChipsTableProps) {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const { toast } = useToast();
+  const [editingChip, setEditingChip] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
 
   const sortedChips = [...chips].sort((a, b) => {
     const locationA = (a.localChip || '').toLowerCase();
@@ -94,6 +97,31 @@ export function ChipsTable({
     }
   };
 
+  const handleResponsavelEdit = async (chipNumber: string) => {
+    try {
+      const { error } = await supabase
+        .from("1-chipsInstancias")
+        .update({ responsavelChip: editValue })
+        .eq("numeroChip", chipNumber);
+
+      if (error) throw error;
+
+      toast({
+        description: "Responsável atualizado com sucesso!",
+        duration: 2000,
+      });
+
+      setEditingChip(null);
+      refetchData();
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Erro ao atualizar responsável",
+        duration: 2000,
+      });
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -148,7 +176,34 @@ export function ChipsTable({
             </TableCell>
             <TableCell>{chip.localChip || '-'}</TableCell>
             {title.includes("Chips Liberados") && (
-              <TableCell>{chip.responsavelChip || '-'}</TableCell>
+              <TableCell>
+                {editingChip === chip.numeroChip ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleResponsavelEdit(chip.numeroChip);
+                        }
+                      }}
+                      onBlur={() => handleResponsavelEdit(chip.numeroChip)}
+                      className="h-8 w-40"
+                      autoFocus
+                    />
+                  </div>
+                ) : (
+                  <span 
+                    onClick={() => {
+                      setEditingChip(chip.numeroChip);
+                      setEditValue(chip.responsavelChip || '');
+                    }}
+                    className="cursor-pointer hover:text-blue-500"
+                  >
+                    {chip.responsavelChip || '-'}
+                  </span>
+                )}
+              </TableCell>
             )}
           </TableRow>
         ))}
