@@ -2,24 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
 export function useChipStatus(title: string) {
-  const { data: responsavelChip } = useQuery({
-    queryKey: ["responsavel-chip", title],
-    queryFn: async () => {
-      if (!title.includes("Chips Liberados")) return null;
-      
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("responsavelChip")
-        .eq("statusChip", "liberado");
-
-      if (error) throw error;
-      
-      // Return the first responsavelChip if exists, otherwise null
-      return data?.[0]?.responsavelChip || null;
-    },
-    enabled: title.includes("Chips Liberados")
-  });
-
   const { data: disconnectedChips, refetch: refetchDisconnected } = useQuery({
     queryKey: ["disconnected-chips"],
     queryFn: async () => {
@@ -53,7 +35,7 @@ export function useChipStatus(title: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
+        .select("numeroChip,localChip,responsavelChip")
         .eq("statusChip", "liberado");
 
       if (error) throw error;
@@ -73,7 +55,6 @@ export function useChipStatus(title: string) {
   };
 
   return {
-    responsavelChip,
     chips: title.includes("verificarDesconexao") 
       ? disconnectedChips 
       : title.includes("Chips Liberados")

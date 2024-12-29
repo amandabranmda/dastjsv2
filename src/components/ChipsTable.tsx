@@ -113,6 +113,9 @@ export function ChipsTable({
               <ArrowUpDown className="h-4 w-4" />
             </Button>
           </TableHead>
+          {title.includes("Chips Liberados") && (
+            <TableHead>Responsável</TableHead>
+          )}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -144,6 +147,9 @@ export function ChipsTable({
               {chip.numeroChip}
             </TableCell>
             <TableCell>{chip.localChip || '-'}</TableCell>
+            {title.includes("Chips Liberados") && (
+              <TableCell>{chip.responsavelChip || '-'}</TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>
