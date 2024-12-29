@@ -91,15 +91,24 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
+  // Add handler for dialog open state change
+  const handleDialogOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (open) {
+      // Refetch data when dialog opens
+      refetchData();
+      console.log("Refetching data on dialog open");
+    }
+  };
+
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
         <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-4 sm:p-6 animate-fade-in-scale cursor-pointer hover:bg-[#1F2937]/50 transition-colors relative min-h-[120px] sm:min-h-[140px]">
           <StatusCardHeader
             title={title}
             value={value}
             type={type}
-            responsavelChip={title.includes("Chips Liberados") ? responsavelChip : undefined}
             onFullScreenClick={(e) => {
               e.stopPropagation();
               toggleFullScreen();
