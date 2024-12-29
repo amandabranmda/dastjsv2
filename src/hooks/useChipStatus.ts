@@ -7,7 +7,7 @@ export function useChipStatus(title: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
+        .select("numeroChip,localChip,responsavelChip")
         .eq("statusChip", "❌verificarDesconexao");
 
       if (error) throw error;
@@ -21,7 +21,7 @@ export function useChipStatus(title: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
+        .select("numeroChip,localChip,responsavelChip")
         .eq("statusChip", "aguardando desbloqueio");
 
       if (error) throw error;
@@ -60,6 +60,7 @@ export function useChipStatus(title: string) {
       : title.includes("Chips Liberados")
       ? releasedChips
       : waitingUnlockChips,
-    refetchData
+    refetchData,
+    responsavelChip: releasedChips?.[0]?.responsavelChip
   };
 }
