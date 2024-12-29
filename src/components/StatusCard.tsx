@@ -1,12 +1,11 @@
 import { Card } from "@/components/ui/card";
-import { Copy, MessageSquare, X, Maximize2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "./ui/use-toast";
 import { useState } from "react";
 import { ChipStatusDialog } from "./status/ChipStatusDialog";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { CardContent } from "./status/CardContent";
 
 interface StatusCardProps {
   title: string;
@@ -20,6 +19,23 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [checkedChips, setCheckedChips] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { data: responsavelChip } = useQuery({
+    queryKey: ["responsavel-chip", title],
+    queryFn: async () => {
+      if (!title.includes("Chips Liberados")) return null;
+      
+      const { data, error } = await supabase
+        .from("1-chipsInstancias")
+        .select("responsavelChip")
+        .eq("statusChip", "liberado")
+        .single();
+
+      if (error) throw error;
+      return data?.responsavelChip;
+    },
+    enabled: title.includes("Chips Liberados")
+  });
 
   const { data: disconnectedChips, refetch: refetchDisconnected } = useQuery({
     queryKey: ["disconnected-chips"],
@@ -82,7 +98,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
-  const handleCheckboxChange = async (chipNumber: string, checked: boolean, isDisconnected: boolean) => {
+  const handleCheckboxChange = async (chipNumber: string, checked: boolean) => {
     const currentTitle = title;
     try {
       let newStatus = "";
@@ -158,29 +174,16 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-4 sm:p-6 animate-fade-in-scale cursor-pointer hover:bg-[#1F2937]/50 transition-colors relative min-h-[120px] sm:min-h-[140px]">
-          <button
-            onClick={(e) => {
+          <CardContent
+            title={title}
+            value={value}
+            type={type}
+            responsavelChip={title.includes("Chips Liberados") ? responsavelChip : undefined}
+            onFullScreenClick={(e) => {
               e.stopPropagation();
               toggleFullScreen();
             }}
-            className="absolute top-2 right-2 p-1 hover:bg-gray-200/10 rounded-full transition-colors"
-          >
-            <Maximize2 className="w-4 h-4 text-gray-400" />
-          </button>
-          <div className="flex flex-col gap-3 sm:gap-4">
-            <div className="flex items-center gap-2">
-              <span className={cn(
-                "w-2 h-2 rounded-full",
-                type === "online" && "bg-[#10B981]",
-                type === "closed" && title.includes("Aguardando Desbloqueio") ? "bg-[#F97316]" : "bg-[#0EA5E9]",
-                type === "sending" && "bg-[#9333EA]"
-              )} />
-              <h3 className="text-xs sm:text-sm text-gray-400 font-medium">{title}</h3>
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-2xl sm:text-4xl font-semibold tracking-tight text-white">{value}</p>
-            </div>
-          </div>
+          />
         </Card>
       </DialogTrigger>
 
