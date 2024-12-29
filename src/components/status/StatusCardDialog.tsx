@@ -32,29 +32,36 @@ export function StatusCardDialog({
 
   return (
     <DialogContent className={`
-      w-[95vw] sm:max-w-[600px]
+      w-[95vw] sm:max-w-[900px]
       max-h-[90vh] sm:max-h-[80vh]
+      bg-[#111827]/95 backdrop-blur-md border border-sky-600/20
       ${isFullScreen ? "!w-[95vw] !h-[95vh]" : ""}
     `}>
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">{dialogTitle}</h2>
-        <p className="text-sm text-gray-400">
-          Lista de chips com status {dialogTitle.toLowerCase()}
-        </p>
-      </div>
-      <div className={`
-        overflow-y-auto
-        ${isFullScreen ? "max-h-[80vh]" : "max-h-[60vh] sm:max-h-[400px]"}
-      `}>
-        <ChipsTable
-          chips={chips || []}
-          title={title}
-          onCheckboxChange={onCheckboxChange}
-          onCopyChip={onCopyChip}
-          selectedChips={selectedChips}
-          checkedChips={checkedChips}
-          refetchData={refetchData}
-        />
+      <div className="space-y-6">
+        <div className="border-b border-gray-700 pb-4">
+          <h2 className="text-2xl font-semibold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+            {dialogTitle}
+          </h2>
+          <p className="text-sm text-gray-400 mt-1">
+            Lista de chips com status {dialogTitle.toLowerCase()}
+          </p>
+        </div>
+
+        <div className={`
+          overflow-y-auto
+          ${isFullScreen ? "max-h-[80vh]" : "max-h-[60vh] sm:max-h-[500px]"}
+          scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent
+        `}>
+          <ChipsTable
+            chips={chips || []}
+            title={title}
+            onCheckboxChange={onCheckboxChange}
+            onCopyChip={onCopyChip}
+            selectedChips={selectedChips}
+            checkedChips={checkedChips}
+            refetchData={refetchData}
+          />
+        </div>
       </div>
     </DialogContent>
   );

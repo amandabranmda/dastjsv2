@@ -31,9 +31,10 @@ export function ChipRow({
   onSave,
 }: ChipRowProps) {
   return (
-    <TableRow>
+    <TableRow className="hover:bg-sky-950/30 transition-colors">
       <TableCell>
         <Checkbox 
+          className="border-sky-600/50"
           onCheckedChange={(checked) => {
             if (title.includes("verificarDesconexao")) {
               onCheckboxChange(chip.numeroChip, checked as boolean, true);
@@ -45,24 +46,25 @@ export function ChipRow({
       </TableCell>
       <TableCell>
         <Checkbox 
+          className="border-sky-600/50"
           onCheckedChange={(checked) => onLiberadoChange(chip.numeroChip, checked as boolean)}
         />
       </TableCell>
       <TableCell 
         onClick={() => onCopyChip(chip.numeroChip)}
         className={cn(
-          "cursor-pointer hover:text-[#FFD700] transition-colors",
-          selectedChips.includes(chip.numeroChip) ? "text-[#FFD700]" : ""
+          "cursor-pointer hover:text-sky-400 transition-colors font-medium",
+          selectedChips.includes(chip.numeroChip) ? "text-sky-400" : ""
         )}
       >
         {chip.numeroChip}
       </TableCell>
-      <TableCell>{chip.localChip || '-'}</TableCell>
+      <TableCell className="font-medium">{chip.localChip || '-'}</TableCell>
       {title.includes("Chips Liberados") && (
         <ResponsibleCell
           chipNumber={chip.numeroChip}
           responsavelChip={chip.responsavelChip}
-          isEditing={isEditing && chip.numeroChip === chip.numeroChip}
+          isEditing={isEditing}
           editValue={editValue}
           onEdit={onEdit}
           onEditValueChange={onEditValueChange}

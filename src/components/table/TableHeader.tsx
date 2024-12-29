@@ -1,30 +1,26 @@
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
-interface TableHeaderProps {
+interface ChipsTableHeaderProps {
   title: string;
   onSort: () => void;
 }
 
-export function ChipsTableHeader({ title, onSort }: TableHeaderProps) {
+export function ChipsTableHeader({ title, onSort }: ChipsTableHeaderProps) {
   return (
-    <TableHeader>
+    <TableHeader className="bg-black/40 sticky top-0">
       <TableRow>
-        <TableHead className="w-[50px]">
-          {title.includes("verificarDesconexao") ? "Pedido Desbloqueio" : "Ban Permanente"}
-        </TableHead>
-        <TableHead className="w-[50px]">Liberado</TableHead>
+        <TableHead className="w-[50px]">Ban</TableHead>
+        <TableHead className="w-[80px]">Liberado</TableHead>
         <TableHead>Número do Chip</TableHead>
-        <TableHead>
-          <Button 
-            variant="ghost" 
-            onClick={onSort}
-            className="hover:bg-transparent p-0 h-auto font-medium text-muted-foreground flex items-center gap-1"
-          >
+        <TableHead 
+          onClick={onSort}
+          className="cursor-pointer hover:text-sky-400 transition-colors"
+        >
+          <div className="flex items-center gap-2">
             Local do Chip
             <ArrowUpDown className="h-4 w-4" />
-          </Button>
+          </div>
         </TableHead>
         {title.includes("Chips Liberados") && (
           <TableHead>Responsável</TableHead>
