@@ -10,11 +10,12 @@ export function useChipStatus(title: string) {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
         .select("responsavelChip")
-        .eq("statusChip", "liberado")
-        .single();
+        .eq("statusChip", "liberado");
 
       if (error) throw error;
-      return data?.responsavelChip;
+      
+      // Return the first responsavelChip if exists, otherwise null
+      return data?.[0]?.responsavelChip || null;
     },
     enabled: title.includes("Chips Liberados")
   });

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { StatusCardHeader } from "./status/StatusCardHeader";
 import { StatusCardDialog } from "./status/StatusCardDialog";
 import { useChipStatus } from "@/hooks/useChipStatus";
+import { supabase } from "@/lib/supabase";
 
 interface StatusCardProps {
   title: string;
