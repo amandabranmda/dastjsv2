@@ -2,10 +2,9 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "./ui/use-toast";
 import { useState } from "react";
-import { ChipStatusDialog } from "./status/ChipStatusDialog";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-import { CardContent } from "./status/CardContent";
+import { StatusCardHeader } from "./status/StatusCardHeader";
+import { StatusCardDialog } from "./status/StatusCardDialog";
+import { useChipStatus } from "@/hooks/useChipStatus";
 
 interface StatusCardProps {
   title: string;
@@ -20,64 +19,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
   const [checkedChips, setCheckedChips] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: responsavelChip } = useQuery({
-    queryKey: ["responsavel-chip", title],
-    queryFn: async () => {
-      if (!title.includes("Chips Liberados")) return null;
-      
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("responsavelChip")
-        .eq("statusChip", "liberado")
-        .single();
-
-      if (error) throw error;
-      return data?.responsavelChip;
-    },
-    enabled: title.includes("Chips Liberados")
-  });
-
-  const { data: disconnectedChips, refetch: refetchDisconnected } = useQuery({
-    queryKey: ["disconnected-chips"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
-        .eq("statusChip", "❌verificarDesconexao");
-
-      if (error) throw error;
-      return data;
-    },
-    enabled: type === "closed" && title.includes("verificarDesconexao")
-  });
-
-  const { data: waitingUnlockChips, refetch: refetchWaiting } = useQuery({
-    queryKey: ["waiting-unlock-chips"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
-        .eq("statusChip", "aguardando desbloqueio");
-
-      if (error) throw error;
-      return data;
-    },
-    enabled: type === "closed" && title.includes("Aguardando Desbloqueio")
-  });
-
-  const { data: releasedChips, refetch: refetchReleased } = useQuery({
-    queryKey: ["released-chips"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("numeroChip,localChip")
-        .eq("statusChip", "liberado");
-
-      if (error) throw error;
-      return data;
-    },
-    enabled: type === "closed" && title.includes("Chips Liberados")
-  });
+  const { responsavelChip, chips, refetchData } = useChipStatus(title);
 
   const handleCopyChip = async (chipNumber: string) => {
     try {
@@ -128,13 +70,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         duration: 2000,
       });
 
-      if (currentTitle.includes("verificarDesconexao")) {
-        refetchDisconnected();
-      } else if (currentTitle.includes("Aguardando Desbloqueio")) {
-        refetchWaiting();
-      } else if (currentTitle.includes("Chips Liberados")) {
-        refetchReleased();
-      }
+      refetchData();
     } catch (err) {
       toast({
         variant: "destructive",
@@ -154,27 +90,11 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
-  const chips = title.includes("verificarDesconexao") 
-    ? disconnectedChips 
-    : title.includes("Chips Liberados")
-    ? releasedChips
-    : waitingUnlockChips;
-
-  const refetchData = () => {
-    if (title.includes("verificarDesconexao")) {
-      refetchDisconnected();
-    } else if (title.includes("Aguardando Desbloqueio")) {
-      refetchWaiting();
-    } else if (title.includes("Chips Liberados")) {
-      refetchReleased();
-    }
-  };
-
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Card className="bg-[#111827]/70 backdrop-blur-sm border border-white/5 p-4 sm:p-6 animate-fade-in-scale cursor-pointer hover:bg-[#1F2937]/50 transition-colors relative min-h-[120px] sm:min-h-[140px]">
-          <CardContent
+          <StatusCardHeader
             title={title}
             value={value}
             type={type}
@@ -188,7 +108,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       </DialogTrigger>
 
       {type === "closed" && (
-        <ChipStatusDialog
+        <StatusCardDialog
           isOpen={dialogOpen}
           title={title}
           chips={chips || []}
