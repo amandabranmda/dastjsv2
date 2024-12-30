@@ -30,45 +30,55 @@ const Login = () => {
           return;
         }
 
-        // Primeiro, criar o usuário na auth
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        // Criar usuário na autenticação
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
-              name: name, // Adicionar o nome aos metadados do usuário
+              name: name,
             },
           },
         });
 
-        if (authError) throw authError;
-
-        if (!authData.user) {
-          throw new Error("Falha ao criar usuário");
+        if (error) {
+          toast.error(error.message);
+          return;
         }
 
-        // Depois, criar o perfil do usuário
+        if (!data.user) {
+          toast.error("Erro ao criar usuário");
+          return;
+        }
+
+        // Criar o perfil do usuário
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
             {
-              id: authData.user.id,
+              id: data.user.id,
               name: name,
               email: email,
             }
           ]);
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          toast.error(profileError.message);
+          return;
+        }
 
         toast.success("Cadastro realizado com sucesso!");
         navigate("/");
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (signInError) throw signInError;
+        if (error) {
+          toast.error(error.message);
+          return;
+        }
 
         toast.success("Login realizado com sucesso!");
         navigate("/");
