@@ -41,7 +41,7 @@ export function SearchBar({
       <div className="flex gap-2">
         <Input
           id="chipNumber"
-          placeholder="Digite o número, local ou responsável do chip"
+          placeholder="Digite o número, local, status ou responsável do chip"
           value={searchNumber}
           onChange={(e) => setSearchNumber(e.target.value)}
           onKeyPress={handleKeyPress}
