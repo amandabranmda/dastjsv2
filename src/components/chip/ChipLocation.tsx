@@ -4,8 +4,10 @@ interface ChipLocationProps {
 
 export function ChipLocation({ localChip }: ChipLocationProps) {
   return (
-    <p className="text-white font-medium">
-      {localChip || '-'}
-    </p>
+    <div className="flex items-center">
+      <p className="text-white font-medium">
+        {localChip || '-'}
+      </p>
+    </div>
   );
 }

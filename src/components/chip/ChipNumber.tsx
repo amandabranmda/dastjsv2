@@ -1,20 +1,39 @@
-import { Copy } from "lucide-react";
+import { useState } from "react";
+import { Copy, Check } from "lucide-react";
+import { toast } from "sonner";
 
 interface ChipNumberProps {
   numeroChip: string;
-  onCopy: () => void;
 }
 
-export function ChipNumber({ numeroChip, onCopy }: ChipNumberProps) {
+export function ChipNumber({ numeroChip }: ChipNumberProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyChip = async () => {
+    try {
+      await navigator.clipboard.writeText(numeroChip);
+      setCopied(true);
+      toast.success("Número do chip copiado!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Erro ao copiar número:", error);
+      toast.error("Erro ao copiar número do chip");
+    }
+  };
+
   return (
     <div 
       className="flex items-center gap-2 group cursor-pointer"
-      onClick={onCopy}
+      onClick={handleCopyChip}
     >
       <p className="text-white font-medium group-hover:text-sky-400 transition-colors">
-        {numeroChip || '-'}
+        {numeroChip}
       </p>
-      <Copy className="w-4 h-4 text-gray-500 group-hover:text-sky-400 transition-colors" />
+      {copied ? (
+        <Check className="w-4 h-4 text-emerald-500" />
+      ) : (
+        <Copy className="w-4 h-4 text-gray-500 group-hover:text-sky-400 transition-colors" />
+      )}
     </div>
   );
 }
