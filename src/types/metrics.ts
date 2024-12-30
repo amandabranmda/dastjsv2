@@ -1,9 +1,10 @@
 export interface MetricasHot {
   id: number;
   data: string;
-  cliques: number | null;
-  percentualCliques: number | null;
-  vendas: number | null;
-  valorAds: number | null;
-  roas: number | null;
+  leads: number;
+  cliques: number;
+  conversoes: number;
+  valor: number;
+  roas: number;
+  created_at?: string;
 }

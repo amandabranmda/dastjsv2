@@ -10,38 +10,47 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Erro ao fazer login",
-          description: error.message,
+      if (isRegistering) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
         });
-        return;
-      }
 
-      toast({
-        title: "Login realizado com sucesso",
-        description: "Bem-vindo de volta!",
-      });
-      navigate("/");
-    } catch (error) {
+        if (error) throw error;
+
+        toast({
+          title: "Cadastro realizado com sucesso",
+          description: "Verifique seu email para confirmar o cadastro.",
+        });
+        setIsRegistering(false);
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Login realizado com sucesso",
+          description: "Bem-vindo de volta!",
+        });
+        navigate("/");
+      }
+    } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao fazer login",
-        description: "Ocorreu um erro inesperado",
+        title: isRegistering ? "Erro ao cadastrar" : "Erro ao fazer login",
+        description: error.message,
       });
     } finally {
       setIsLoading(false);
@@ -53,10 +62,16 @@ const Login = () => {
       <Card className="w-full max-w-md p-6 bg-black/50 backdrop-blur-sm border-white/10">
         <div className="space-y-6">
           <div className="space-y-2 text-center">
-            <h1 className="text-3xl font-bold text-white">Login</h1>
-            <p className="text-gray-400">Entre com suas credenciais para continuar</p>
+            <h1 className="text-3xl font-bold text-white">
+              {isRegistering ? "Cadastro" : "Login"}
+            </h1>
+            <p className="text-gray-400">
+              {isRegistering
+                ? "Crie sua conta para continuar"
+                : "Entre com suas credenciais para continuar"}
+            </p>
           </div>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-4">
             <div className="space-y-2">
               <Input
                 type="email"
@@ -82,9 +97,26 @@ const Login = () => {
               className="w-full bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity"
               disabled={isLoading}
             >
-              {isLoading ? "Entrando..." : "Entrar"}
+              {isLoading
+                ? isRegistering
+                  ? "Cadastrando..."
+                  : "Entrando..."
+                : isRegistering
+                ? "Cadastrar"
+                : "Entrar"}
             </Button>
           </form>
+          <div className="text-center">
+            <Button
+              variant="link"
+              className="text-gray-400 hover:text-white"
+              onClick={() => setIsRegistering(!isRegistering)}
+            >
+              {isRegistering
+                ? "Já tem uma conta? Faça login"
+                : "Não tem uma conta? Cadastre-se"}
+            </Button>
+          </div>
         </div>
       </Card>
     </div>
