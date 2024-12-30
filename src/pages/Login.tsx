@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -33,16 +34,20 @@ const Login = () => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
 
       navigate("/");
       toast({
         description: "Login realizado com sucesso!",
       });
     } catch (error: any) {
+      console.error("Login error details:", error);
       toast({
         variant: "destructive",
-        description: error.message || "Erro ao fazer login",
+        description: "Credenciais inválidas ou usuário não confirmado",
       });
     } finally {
       setLoading(false);
@@ -54,19 +59,30 @@ const Login = () => {
     setRegisterLoading(true);
 
     try {
+      // First, check if email is already registered
+      const { data: existingUsers } = await supabase
+        .from('users')
+        .select('email')
+        .eq('email', registerEmail)
+        .single();
+
+      if (existingUsers) {
+        throw new Error('Este email já está cadastrado');
+      }
+
       const { data: { user }, error } = await supabase.auth.signUp({
         email: registerEmail,
         password: registerPassword,
         options: {
           data: {
-            full_name: registerName,
-          }
+            name: registerName,
+          },
+          emailRedirectTo: window.location.origin
         }
       });
 
       if (error) throw error;
 
-      // Add user to the users table for chip responsibility
       if (user) {
         const { error: profileError } = await supabase
           .from('users')
@@ -82,15 +98,16 @@ const Login = () => {
       }
 
       toast({
-        description: "Cadastro realizado com sucesso! Verifique seu email para confirmar o cadastro.",
+        description: "Cadastro realizado! Verifique seu email para confirmar a conta.",
       });
       setRegisterEmail("");
       setRegisterPassword("");
       setRegisterName("");
     } catch (error: any) {
+      console.error("Registration error:", error);
       toast({
         variant: "destructive",
-        description: error.message || "Erro ao fazer cadastro",
+        description: error.message || "Erro ao fazer cadastro. Tente novamente.",
       });
     } finally {
       setRegisterLoading(false);
@@ -151,6 +168,9 @@ const Login = () => {
               <DialogContent className="sm:max-w-md bg-gray-800/90 border-gray-700">
                 <DialogHeader>
                   <DialogTitle className="text-white">Criar nova conta</DialogTitle>
+                  <DialogDescription className="text-gray-400">
+                    Preencha os dados abaixo para criar sua conta
+                  </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleRegister} className="space-y-4">
                   <Input
