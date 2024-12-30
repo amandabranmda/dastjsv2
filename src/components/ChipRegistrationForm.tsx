@@ -134,23 +134,11 @@ export function ChipRegistrationForm() {
       <h1 style={{ fontSize: '24px', marginBottom: '20px', color: '#000' }}>
         Relatório de Chips
       </h1>
-      {chipDetails.map((chip, index) => (
-        <div key={chip.numeroChip} style={{ marginBottom: '40px', color: '#000' }}>
-          <div style={{ marginBottom: '10px' }}>
-            <p style={{ margin: '5px 0', fontSize: '16px' }}>Número do Chip: {chip.numeroChip}</p>
-            <p style={{ margin: '5px 0', fontSize: '16px' }}>Local: {chip.localChip || '-'}</p>
-          </div>
-          <div style={{ 
-            height: '100px', 
-            border: '1px solid #ccc', 
-            borderRadius: '4px',
-            padding: '8px',
-            backgroundColor: '#f9f9f9'
-          }}>
-            <p style={{ color: '#666', fontStyle: 'italic', fontSize: '14px' }}>
-              Espaço para anotações
-            </p>
-          </div>
+      {chipDetails.map((chip) => (
+        <div key={chip.numeroChip} style={{ marginBottom: '20px', color: '#000' }}>
+          <p style={{ margin: '5px 0', fontSize: '16px' }}>Número do Chip: {chip.numeroChip}</p>
+          <p style={{ margin: '5px 0', fontSize: '16px' }}>Local: {chip.localChip || '-'}</p>
+          <p style={{ margin: '5px 0', fontSize: '16px' }}>Responsável: {chip.responsavelChip || '-'}</p>
           <div style={{ margin: '15px 0', borderBottom: '1px solid #ccc' }} />
         </div>
       ))}
