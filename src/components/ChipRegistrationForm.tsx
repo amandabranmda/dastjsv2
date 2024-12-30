@@ -20,7 +20,7 @@ export function ChipRegistrationForm() {
   const [searchNumber, setSearchNumber] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [chipExists, setChipExists] = useState(false);
-  const [chipDetails, setChipDetails] = useState<ChipDetails | null>(null);
+  const [chipDetails, setChipDetails] = useState<ChipDetails[]>([]);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [formData, setFormData] = useState({
     numeroChip: "",
@@ -43,7 +43,7 @@ export function ChipRegistrationForm() {
   const clearForm = () => {
     setSearchNumber("");
     setChipExists(false);
-    setChipDetails(null);
+    setChipDetails([]);
     setShowRegistrationForm(false);
     setFormData({
       numeroChip: "",
@@ -70,11 +70,11 @@ export function ChipRegistrationForm() {
 
       if (data && data.length > 0) {
         setChipExists(true);
-        setChipDetails(data[0]);
+        setChipDetails(data);
         setShowRegistrationForm(false);
       } else {
         setChipExists(false);
-        setChipDetails(null);
+        setChipDetails([]);
         setShowRegistrationForm(true);
         setFormData({ ...formData, numeroChip: searchNumber });
       }
@@ -119,14 +119,26 @@ export function ChipRegistrationForm() {
           showRegistrationForm={showRegistrationForm}
         />
 
-        {chipExists && chipDetails && (
-          <ChipDetails 
-            numeroChip={chipDetails.numeroChip}
-            localChip={chipDetails.localChip} 
-            statusChip={chipDetails.statusChip}
-            responsavelChip={chipDetails.responsavelChip}
-            onUpdate={handleSearch}
-          />
+        {chipExists && chipDetails.length > 0 && (
+          <div className="mt-4 space-y-6">
+            <p className="text-center text-red-200 mb-4">
+              {chipDetails.length === 1 
+                ? "Este número já consta no banco de dados"
+                : `Foram encontrados ${chipDetails.length} resultados`}
+            </p>
+            <div className="space-y-6">
+              {chipDetails.map((chip, index) => (
+                <ChipDetails 
+                  key={chip.numeroChip}
+                  numeroChip={chip.numeroChip}
+                  localChip={chip.localChip} 
+                  statusChip={chip.statusChip}
+                  responsavelChip={chip.responsavelChip}
+                  onUpdate={handleSearch}
+                />
+              ))}
+            </div>
+          </div>
         )}
 
         {showRegistrationForm && (

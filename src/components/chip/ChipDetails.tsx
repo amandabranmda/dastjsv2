@@ -51,11 +51,8 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
   };
 
   return (
-    <div className="mt-4 space-y-4">
-      <p className="text-center text-red-200 mb-4">
-        Este número já consta no banco de dados
-      </p>
-      <div className="grid grid-cols-4 gap-4">
+    <div className="p-4 bg-black/20 rounded-lg border border-sky-600/20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <Label className="text-red-200">Número do Chip</Label>
           <p 
