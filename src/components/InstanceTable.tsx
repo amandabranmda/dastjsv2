@@ -7,12 +7,13 @@ import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
 interface Instance {
-  id: string;
   nomeInstancia: string;
   senderNumber: string;
   statusInstancia: string;
   statusQR: string;
   enviosChipFull: number;
+  localChip?: string;
+  responsavelChip?: string;
 }
 
 export function InstanceTable() {
@@ -23,7 +24,7 @@ export function InstanceTable() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("nomeInstancia, senderNumber, statusInstancia, statusQR, enviosChipFull, localChip")
+        .select("nomeInstancia, senderNumber, statusInstancia, statusQR, enviosChipFull, localChip, responsavelChip")
         .eq("statusInstancia", "open");
 
       if (error) throw error;
@@ -52,7 +53,6 @@ export function InstanceTable() {
     };
   }, [refetch]);
 
-  // Filter function that checks both chip number and location
   const filteredData = data?.filter(instance => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -84,6 +84,12 @@ export function InstanceTable() {
                   Número
                 </th>
                 <th className="text-left py-3 text-sm font-medium text-gray-400">
+                  Local
+                </th>
+                <th className="text-left py-3 text-sm font-medium text-gray-400">
+                  Responsável
+                </th>
+                <th className="text-left py-3 text-sm font-medium text-gray-400">
                   Status
                 </th>
                 <th className="text-left py-3 text-sm font-medium text-gray-400">
@@ -100,7 +106,7 @@ export function InstanceTable() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-4">
+                  <td colSpan={8} className="text-center py-4">
                     Carregando...
                   </td>
                 </tr>
@@ -109,6 +115,8 @@ export function InstanceTable() {
                   <tr key={instance.nomeInstancia} className="border-b border-border">
                     <td className="py-3 text-sm">{instance.nomeInstancia}</td>
                     <td className="py-3 text-sm">{instance.senderNumber}</td>
+                    <td className="py-3 text-sm">{instance.localChip || '-'}</td>
+                    <td className="py-3 text-sm">{instance.responsavelChip || '-'}</td>
                     <td className="py-3">
                       <span className="status-badge online">
                         {instance.statusInstancia}
