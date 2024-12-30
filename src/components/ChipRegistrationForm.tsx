@@ -76,8 +76,18 @@ export function ChipRegistrationForm() {
       if (error) throw error;
 
       if (data && data.length > 0) {
+        // Sort the results to prioritize matches in localChip
+        const sortedData = [...data].sort((a, b) => {
+          const aMatchesLocal = a.localChip?.toLowerCase().includes(searchNumber.toLowerCase());
+          const bMatchesLocal = b.localChip?.toLowerCase().includes(searchNumber.toLowerCase());
+          
+          if (aMatchesLocal && !bMatchesLocal) return -1;
+          if (!aMatchesLocal && bMatchesLocal) return 1;
+          return 0;
+        });
+
         setChipExists(true);
-        setChipDetails(data);
+        setChipDetails(sortedData);
         setShowRegistrationForm(false);
       } else {
         setChipExists(false);
