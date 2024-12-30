@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Copy, Edit2 } from "lucide-react";
@@ -16,6 +17,7 @@ interface ChipDetailsProps {
 export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip, onUpdate }: ChipDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(responsavelChip);
+  const [isEditingStatus, setIsEditingStatus] = useState(false);
 
   const capitalizeFirstLetter = (string: string) => {
     if (!string) return string;
@@ -38,6 +40,25 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
     } catch (error) {
       console.error("Erro ao atualizar responsável:", error);
       toast.error("Erro ao atualizar responsável");
+    }
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from("1-chipsInstancias")
+        .update({ statusChip: newStatus })
+        .eq("numeroChip", numeroChip);
+
+      if (error) throw error;
+
+      toast.success("Status atualizado com sucesso!");
+      onUpdate();
+    } catch (error) {
+      console.error("Erro ao atualizar status:", error);
+      toast.error("Erro ao atualizar status");
+    } finally {
+      setIsEditingStatus(false);
     }
   };
 
@@ -89,9 +110,30 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
 
         <div className="space-y-2">
           <Label className="text-gray-400 text-sm">Status do Chip</Label>
-          <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(statusChip)}`}>
-            {statusChip || '-'}
-          </div>
+          {isEditingStatus ? (
+            <Select 
+              defaultValue={statusChip}
+              onValueChange={handleStatusChange}
+              onOpenChange={(open) => !open && setIsEditingStatus(false)}
+            >
+              <SelectTrigger className="bg-black/20 border-sky-600/20 text-white">
+                <SelectValue placeholder="Selecione o status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="liberado">Liberado</SelectItem>
+                <SelectItem value="❌verificarDesconexao">Verificar Desconexão</SelectItem>
+                <SelectItem value="✅emProducao">Em Produção</SelectItem>
+                <SelectItem value="aguardando desbloqueio">Aguardando Desbloqueio</SelectItem>
+              </SelectContent>
+            </Select>
+          ) : (
+            <div 
+              className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(statusChip)} cursor-pointer hover:opacity-80 transition-opacity`}
+              onClick={() => setIsEditingStatus(true)}
+            >
+              {statusChip || '-'}
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
