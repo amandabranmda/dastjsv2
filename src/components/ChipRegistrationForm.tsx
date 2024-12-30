@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { SearchBar } from "./chip/SearchBar";
 import { ChipRegistrationFormFields } from "./form/ChipRegistrationFormFields";
 import { ChipDetails } from "./chip/ChipDetails";
 
@@ -85,13 +86,6 @@ export function ChipRegistrationForm() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSearch();
-    }
-  };
-
   const handleRegister = async () => {
     if (!formData.numeroChip || !formData.localChip || !formData.statusChip) {
       toast.error("Preencha todos os campos");
@@ -116,35 +110,14 @@ export function ChipRegistrationForm() {
   return (
     <div className="w-full">
       <Card className={`p-6 ${showRegistrationForm ? 'bg-gradient-to-br from-emerald-900/20 to-emerald-800/10' : 'bg-gradient-to-br from-sky-900/20 to-sky-800/10'} backdrop-blur-sm transition-colors duration-300`}>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <Label htmlFor="chipNumber">Consulta/Cadastro Chip</Label>
-            <Button 
-              variant="ghost" 
-              onClick={clearForm}
-              className="text-sm hover:bg-white/5"
-            >
-              Limpar
-            </Button>
-          </div>
-          <div className="flex gap-2">
-            <Input
-              id="chipNumber"
-              placeholder="Digite o número ou local do chip"
-              value={searchNumber}
-              onChange={(e) => setSearchNumber(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className={`bg-white/5 ${showRegistrationForm ? 'border-emerald-600/20' : 'border-sky-600/20'}`}
-            />
-            <Button 
-              onClick={handleSearch}
-              disabled={isSearching}
-              className={showRegistrationForm ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-sky-600 hover:bg-sky-700'}
-            >
-              {isSearching ? "Buscando..." : "Buscar"}
-            </Button>
-          </div>
-        </div>
+        <SearchBar 
+          searchNumber={searchNumber}
+          setSearchNumber={setSearchNumber}
+          handleSearch={handleSearch}
+          isSearching={isSearching}
+          clearForm={clearForm}
+          showRegistrationForm={showRegistrationForm}
+        />
 
         {chipExists && chipDetails && (
           <ChipDetails 
