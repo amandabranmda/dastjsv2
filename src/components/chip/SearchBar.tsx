@@ -29,7 +29,12 @@ export function SearchBar({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <Label htmlFor="chipNumber">Consulta/Cadastro Chip</Label>
+        <div className="space-y-1">
+          <Label htmlFor="chipNumber">Consulta/Cadastro Chip</Label>
+          <p className="text-sm text-gray-400">
+            Separe múltiplos termos por vírgula (ex: João, liberado)
+          </p>
+        </div>
         <Button 
           variant="ghost" 
           onClick={clearForm}
@@ -41,7 +46,7 @@ export function SearchBar({
       <div className="flex gap-2">
         <Input
           id="chipNumber"
-          placeholder="Digite o número, local, status ou responsável do chip"
+          placeholder="Digite número, local, status ou responsável (separe por vírgula)"
           value={searchNumber}
           onChange={(e) => setSearchNumber(e.target.value)}
           onKeyPress={handleKeyPress}

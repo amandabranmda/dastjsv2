@@ -40,27 +40,61 @@ export function useChipSearch() {
 
   const handleSearch = async () => {
     if (!searchNumber.trim()) {
-      toast.error("Digite um número, local, status ou responsável do chip");
+      toast.error("Digite um termo para buscar");
       return;
     }
 
     setIsSearching(true);
     try {
-      const { data, error } = await supabase
+      // Split search terms by comma and trim whitespace
+      const searchTerms = searchNumber.split(',').map(term => term.trim());
+      
+      let query = supabase
         .from("1-chipsInstancias")
-        .select("numeroChip, localChip, statusChip, responsavelChip, obsChip")
-        .or(`numeroChip.ilike.%${searchNumber}%,localChip.ilike.%${searchNumber}%,responsavelChip.ilike.%${searchNumber}%,statusChip.ilike.%${searchNumber}%`);
+        .select("numeroChip, localChip, statusChip, responsavelChip, obsChip");
+
+      // Build dynamic filter based on search terms
+      const filterConditions = searchTerms.map(term => {
+        return `numeroChip.ilike.%${term}%,localChip.ilike.%${term}%,responsavelChip.ilike.%${term}%,statusChip.ilike.%${term}%`;
+      });
+
+      // Combine all filter conditions
+      query = query.or(filterConditions.join(','));
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
       if (data && data.length > 0) {
         const sortedData = [...data].sort((a, b) => {
-          const aMatchesLocal = a.localChip?.toLowerCase().includes(searchNumber.toLowerCase());
-          const bMatchesLocal = b.localChip?.toLowerCase().includes(searchNumber.toLowerCase());
-          
-          if (aMatchesLocal && !bMatchesLocal) return -1;
-          if (!aMatchesLocal && bMatchesLocal) return 1;
-          return 0;
+          // First, check for exact matches in any field
+          const aExactMatch = searchTerms.some(term => 
+            Object.values(a).some(value => 
+              value?.toString().toLowerCase() === term.toLowerCase()
+            )
+          );
+          const bExactMatch = searchTerms.some(term => 
+            Object.values(b).some(value => 
+              value?.toString().toLowerCase() === term.toLowerCase()
+            )
+          );
+
+          if (aExactMatch && !bExactMatch) return -1;
+          if (!aExactMatch && bExactMatch) return 1;
+
+          // Then sort by how many search terms match
+          const aMatchCount = searchTerms.filter(term =>
+            Object.values(a).some(value =>
+              value?.toString().toLowerCase().includes(term.toLowerCase())
+            )
+          ).length;
+          const bMatchCount = searchTerms.filter(term =>
+            Object.values(b).some(value =>
+              value?.toString().toLowerCase().includes(term.toLowerCase())
+            )
+          ).length;
+
+          return bMatchCount - aMatchCount;
         });
 
         setChipExists(true);
