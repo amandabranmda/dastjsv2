@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Copy, Edit2 } from "lucide-react";
+import { ChipNumber } from "./ChipNumber";
+import { ChipLocation } from "./ChipLocation";
+import { ChipStatus } from "./ChipStatus";
+import { ChipResponsible } from "./ChipResponsible";
 
 interface ChipDetailsProps {
   numeroChip: string;
@@ -13,7 +14,13 @@ interface ChipDetailsProps {
   onUpdate: () => void;
 }
 
-export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip, onUpdate }: ChipDetailsProps) {
+export function ChipDetails({ 
+  numeroChip, 
+  localChip, 
+  statusChip, 
+  responsavelChip, 
+  onUpdate 
+}: ChipDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(responsavelChip);
   const [isEditingStatus, setIsEditingStatus] = useState(false);
@@ -90,76 +97,36 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
     <div className="p-6 bg-gradient-to-br from-slate-900/80 to-slate-800/50 rounded-xl border border-sky-600/20 shadow-lg hover:shadow-sky-600/10 transition-all duration-300">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div>
-          <div 
-            className="flex items-center gap-2 group cursor-pointer"
-            onClick={handleCopyChip}
-          >
-            <p className="text-white font-medium group-hover:text-sky-400 transition-colors">
-              {numeroChip || '-'}
-            </p>
-            <Copy className="w-4 h-4 text-gray-500 group-hover:text-sky-400 transition-colors" />
-          </div>
+          <ChipNumber 
+            numeroChip={numeroChip} 
+            onCopy={handleCopyChip} 
+          />
         </div>
 
         <div>
-          <p className="text-white font-medium">{localChip || '-'}</p>
+          <ChipLocation localChip={localChip} />
         </div>
 
         <div>
-          {isEditingStatus ? (
-            <Select 
-              defaultValue={statusChip}
-              onValueChange={handleStatusChange}
-              onOpenChange={(open) => !open && setIsEditingStatus(false)}
-            >
-              <SelectTrigger className="bg-black/20 border-sky-600/20 text-white">
-                <SelectValue placeholder="Selecione o status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="liberado">Liberado</SelectItem>
-                <SelectItem value="❌verificarDesconexao">Verificar Desconexão</SelectItem>
-                <SelectItem value="✅emProducao">Em Produção</SelectItem>
-                <SelectItem value="aguardando desbloqueio">Aguardando Desbloqueio</SelectItem>
-              </SelectContent>
-            </Select>
-          ) : (
-            <div 
-              className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(statusChip)} cursor-pointer hover:opacity-80 transition-opacity`}
-              onClick={() => setIsEditingStatus(true)}
-            >
-              {statusChip || '-'}
-            </div>
-          )}
+          <ChipStatus 
+            statusChip={statusChip}
+            isEditing={isEditingStatus}
+            onStatusChange={handleStatusChange}
+            onEditingChange={setIsEditingStatus}
+            getStatusColor={getStatusColor}
+          />
         </div>
 
         <div>
-          {isEditing ? (
-            <Input
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              onBlur={handleSave}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSave();
-                } else if (e.key === 'Escape') {
-                  setIsEditing(false);
-                  setEditValue(responsavelChip);
-                }
-              }}
-              className="bg-black/20 border-sky-600/20 text-white"
-              autoFocus
-            />
-          ) : (
-            <div 
-              className="flex items-center gap-2 group cursor-pointer"
-              onClick={() => setIsEditing(true)}
-            >
-              <p className="text-white font-medium group-hover:text-sky-400 transition-colors">
-                {responsavelChip ? capitalizeFirstLetter(responsavelChip) : '-'}
-              </p>
-              <Edit2 className="w-4 h-4 text-gray-500 group-hover:text-sky-400 transition-colors" />
-            </div>
-          )}
+          <ChipResponsible 
+            responsavelChip={responsavelChip}
+            isEditing={isEditing}
+            editValue={editValue}
+            onEdit={() => setIsEditing(true)}
+            onEditValueChange={setEditValue}
+            onSave={handleSave}
+            capitalizeFirstLetter={capitalizeFirstLetter}
+          />
         </div>
       </div>
     </div>
