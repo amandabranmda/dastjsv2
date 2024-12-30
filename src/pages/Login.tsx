@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
 const Login = () => {
@@ -13,7 +13,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +20,7 @@ const Login = () => {
 
     try {
       if (isRegistering) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -31,33 +30,33 @@ const Login = () => {
           },
         });
 
-        if (error) throw error;
+        if (error) {
+          toast.error(error.message);
+          return;
+        }
 
-        toast({
-          title: "Cadastro realizado com sucesso",
-          description: "Verifique seu email para confirmar o cadastro.",
-        });
-        setIsRegistering(false);
+        if (data.user) {
+          toast.success("Cadastro realizado com sucesso! Verifique seu email para confirmar o cadastro.");
+          setIsRegistering(false);
+        }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) throw error;
+        if (error) {
+          toast.error(error.message);
+          return;
+        }
 
-        toast({
-          title: "Login realizado com sucesso",
-          description: "Bem-vindo de volta!",
-        });
-        navigate("/");
+        if (data.user) {
+          toast.success("Login realizado com sucesso!");
+          navigate("/");
+        }
       }
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: isRegistering ? "Erro ao cadastrar" : "Erro ao fazer login",
-        description: error.message,
-      });
+      toast.error(error.message || "Ocorreu um erro durante a autenticação");
     } finally {
       setIsLoading(false);
     }
