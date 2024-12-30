@@ -45,11 +45,14 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     const currentTitle = title;
     try {
       let newStatus = "";
+      let toastMessage = "";
       
       if (currentTitle.includes("verificarDesconexao")) {
         newStatus = checked ? "aguardando desbloqueio" : "❌verificarDesconexao";
+        toastMessage = checked ? "Chip movido para aguardando desbloqueio" : "Chip movido para verificar desconexão";
       } else if (currentTitle.includes("Aguardando Desbloqueio")) {
         newStatus = checked ? "liberado" : "aguardando desbloqueio";
+        toastMessage = checked ? "Chip liberado com sucesso!" : "Chip movido para aguardando desbloqueio";
       } else if (currentTitle.includes("Chips Liberados")) {
         if (checked) {
           setCheckedChips(prev => [...prev, chipNumber]);
@@ -67,7 +70,7 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
       if (error) throw error;
 
       toast({
-        description: `Status do chip ${chipNumber} atualizado com sucesso!`,
+        description: toastMessage,
         duration: 2000,
       });
 
