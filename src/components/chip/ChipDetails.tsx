@@ -133,7 +133,11 @@ export function ChipDetails({
         </div>
 
         <div>
-          <ChipObservation obsChip={obsChip} />
+          <ChipObservation 
+            obsChip={obsChip} 
+            numeroChip={numeroChip}
+            onUpdate={onUpdate}
+          />
         </div>
       </div>
     </div>
