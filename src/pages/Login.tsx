@@ -20,21 +20,19 @@ const Login = () => {
 
     try {
       if (isRegistering) {
-        // Validações
+        // Validações básicas
         if (!name.trim()) {
           toast.error("Por favor, insira seu nome");
-          setIsLoading(false);
           return;
         }
 
         if (password.length < 6) {
           toast.error("A senha deve ter pelo menos 6 caracteres");
-          setIsLoading(false);
           return;
         }
 
         // Registro do usuário
-        const { data, error: signUpError } = await supabase.auth.signUp({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -45,26 +43,23 @@ const Login = () => {
         });
 
         if (signUpError) {
+          console.error("Erro no signup:", signUpError);
           toast.error(signUpError.message);
-          setIsLoading(false);
           return;
         }
 
-        if (data?.user) {
-          // Criação do perfil
+        if (signUpData?.user) {
+          // Criar perfil do usuário
           const { error: profileError } = await supabase
-            .from('profiles')
-            .insert([
-              {
-                id: data.user.id,
-                name: name,
-              }
-            ]);
+            .from("profiles")
+            .insert({
+              id: signUpData.user.id,
+              name: name,
+            });
 
           if (profileError) {
             console.error("Erro ao criar perfil:", profileError);
             toast.error("Erro ao criar perfil do usuário");
-            setIsLoading(false);
             return;
           }
 
@@ -79,8 +74,8 @@ const Login = () => {
         });
 
         if (signInError) {
+          console.error("Erro no login:", signInError);
           toast.error(signInError.message);
-          setIsLoading(false);
           return;
         }
 
@@ -93,6 +88,13 @@ const Login = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const toggleMode = () => {
+    setIsRegistering(!isRegistering);
+    setEmail("");
+    setPassword("");
+    setName("");
   };
 
   return (
@@ -111,37 +113,31 @@ const Login = () => {
           </div>
           <form onSubmit={handleAuth} className="space-y-4">
             {isRegistering && (
-              <div className="space-y-2">
-                <Input
-                  type="text"
-                  placeholder="Nome"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white"
-                  required={isRegistering}
-                />
-              </div>
+              <Input
+                type="text"
+                placeholder="Nome"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="bg-white/5 border-white/10 text-white"
+                required
+              />
             )}
-            <div className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/5 border-white/10 text-white"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-white/5 border-white/10 text-white"
-                required
-              />
-            </div>
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-white/5 border-white/10 text-white"
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-white/5 border-white/10 text-white"
+              required
+            />
             <Button
               type="submit"
               className="w-full bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity"
@@ -160,12 +156,8 @@ const Login = () => {
             <Button
               variant="link"
               className="text-gray-400 hover:text-white"
-              onClick={() => {
-                setIsRegistering(!isRegistering);
-                setName("");
-                setEmail("");
-                setPassword("");
-              }}
+              onClick={toggleMode}
+              type="button"
             >
               {isRegistering
                 ? "Já tem uma conta? Faça login"
