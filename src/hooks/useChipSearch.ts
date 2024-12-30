@@ -53,20 +53,31 @@ export function useChipSearch() {
         .from("1-chipsInstancias")
         .select("numeroChip, localChip, statusChip, responsavelChip, obsChip");
 
-      // Build dynamic filter based on search terms
-      const filterConditions = searchTerms.map(term => {
-        return `numeroChip.ilike.%${term}%,localChip.ilike.%${term}%,responsavelChip.ilike.%${term}%,statusChip.ilike.%${term}%`;
+      // Apply each search term as a filter condition (AND)
+      searchTerms.forEach(term => {
+        query = query.or(`numeroChip.ilike.%${term}%,localChip.ilike.%${term}%,responsavelChip.ilike.%${term}%,statusChip.ilike.%${term}%`);
       });
-
-      // Combine all filter conditions
-      query = query.or(filterConditions.join(','));
 
       const { data, error } = await query;
 
       if (error) throw error;
 
       if (data && data.length > 0) {
-        const sortedData = [...data].sort((a, b) => {
+        // Filter results to only include items that match ALL search terms
+        const filteredData = data.filter(item => {
+          return searchTerms.every(term => {
+            const termLower = term.toLowerCase();
+            return (
+              item.numeroChip?.toLowerCase().includes(termLower) ||
+              item.localChip?.toLowerCase().includes(termLower) ||
+              item.responsavelChip?.toLowerCase().includes(termLower) ||
+              item.statusChip?.toLowerCase().includes(termLower)
+            );
+          });
+        });
+
+        // Sort filtered results
+        const sortedData = [...filteredData].sort((a, b) => {
           // First, check for exact matches in any field
           const aExactMatch = searchTerms.some(term => 
             Object.values(a).some(value => 
@@ -82,19 +93,19 @@ export function useChipSearch() {
           if (aExactMatch && !bExactMatch) return -1;
           if (!aExactMatch && bExactMatch) return 1;
 
-          // Then sort by how many search terms match
-          const aMatchCount = searchTerms.filter(term =>
+          // Then sort by how many exact matches
+          const aExactMatchCount = searchTerms.filter(term =>
             Object.values(a).some(value =>
-              value?.toString().toLowerCase().includes(term.toLowerCase())
+              value?.toString().toLowerCase() === term.toLowerCase()
             )
           ).length;
-          const bMatchCount = searchTerms.filter(term =>
+          const bExactMatchCount = searchTerms.filter(term =>
             Object.values(b).some(value =>
-              value?.toString().toLowerCase().includes(term.toLowerCase())
+              value?.toString().toLowerCase() === term.toLowerCase()
             )
           ).length;
 
-          return bMatchCount - aMatchCount;
+          return bExactMatchCount - aExactMatchCount;
         });
 
         setChipExists(true);
