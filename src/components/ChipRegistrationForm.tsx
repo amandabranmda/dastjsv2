@@ -134,11 +134,13 @@ export function ChipRegistrationForm() {
       padding: '20px', 
       fontFamily: 'Arial, sans-serif',
       width: '210mm', // A4 width
+      minHeight: '297mm', // A4 height
       backgroundColor: 'white',
-      margin: '0 auto'
+      margin: '20mm auto',
+      boxSizing: 'border-box'
     }}>
       <h1 style={{ 
-        fontSize: '16px', 
+        fontSize: '14px', 
         marginBottom: '15px', 
         color: '#000',
         borderBottom: '1px solid #ccc',
@@ -149,36 +151,36 @@ export function ChipRegistrationForm() {
       <div style={{ 
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px'
+        gap: '4px',
+        pageBreakInside: 'auto'
       }}>
         {chipDetails.map((chip, index) => (
           <div 
             key={chip.numeroChip} 
             style={{ 
               color: '#000',
-              padding: '4px 8px',
+              padding: '2px 4px',
               borderBottom: '1px solid #eee',
-              pageBreakInside: 'avoid', // Prevents breaking inside an item
-              breakInside: 'avoid-page', // Modern browsers support
-              fontSize: '11px',
+              pageBreakInside: 'avoid',
+              breakInside: 'avoid-page',
+              fontSize: '10px',
               display: 'grid',
               gridTemplateColumns: '1fr',
-              gap: '2px'
+              gap: '1px',
+              marginBottom: '2px'
             }}
           >
-            <p style={{ margin: '1px 0' }}>Número do Chip: {chip.numeroChip}</p>
-            <p style={{ margin: '1px 0' }}>Local: {chip.localChip || '-'}</p>
-            <p style={{ margin: '1px 0' }}>Responsável: {chip.responsavelChip || '-'}</p>
+            <p style={{ margin: '0' }}>Número do Chip: {chip.numeroChip}</p>
+            <p style={{ margin: '0' }}>Local: {chip.localChip || '-'}</p>
+            <p style={{ margin: '0' }}>Responsável: {chip.responsavelChip || '-'}</p>
           </div>
         ))}
       </div>
       <p style={{ 
-        marginTop: '20px', 
-        fontSize: '9px', 
+        fontSize: '8px', 
         color: '#666',
-        position: 'fixed',
-        bottom: '20px',
-        left: '20px'
+        position: 'relative',
+        marginTop: '20px'
       }}>
         Gerado em: {new Date().toLocaleDateString()}
       </p>
