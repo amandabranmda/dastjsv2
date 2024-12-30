@@ -6,7 +6,6 @@ import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { ChipRegistrationForm } from "@/components/ChipRegistrationForm";
-import { InstanceTable } from "@/components/InstanceTable";
 
 const Index = () => {
   const { data: instancesData, isLoading } = useInstances();
@@ -96,10 +95,6 @@ const Index = () => {
 
       <div className="animate-fade-in [animation-delay:1600ms]">
         <ChipRegistrationForm />
-      </div>
-
-      <div className="animate-fade-in [animation-delay:1800ms]">
-        <InstanceTable />
       </div>
     </div>
   );
