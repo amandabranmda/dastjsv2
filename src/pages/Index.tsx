@@ -1,40 +1,106 @@
+import { StatusCard } from "@/components/StatusCard";
+import { useInstances } from "@/hooks/useInstances";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Cpu } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { CreateInstanceForm } from "@/components/CreateInstanceForm";
 import { useState } from "react";
-import { PasswordDialog } from "@/components/PasswordDialog";
+import { Plus } from "lucide-react";
+import { ChipRegistrationForm } from "@/components/ChipRegistrationForm";
+import { InstanceTable } from "@/components/InstanceTable";
 
 const Index = () => {
-  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const { data: instancesData, isLoading } = useInstances();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isGeneratingQR, setIsGeneratingQR] = useState(false);
+
+  const calculateIdleInstances = () => {
+    if (!instancesData?.onlineCount || !instancesData?.sendingCount) return "0";
+    const idle = instancesData.onlineCount - instancesData.sendingCount;
+    return idle;
+  };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#2D3748] p-4 sm:p-6 md:p-8 space-y-6 overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      
-      <div className="relative">
-        <div className="flex flex-col items-center justify-center gap-4 mb-8 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            Zaps Dashboard
+    <div className="space-y-4 sm:space-y-8 max-w-[1400px] mx-auto px-2 sm:px-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/20 p-4 sm:p-6 rounded-lg backdrop-blur-sm border border-sky-600/20">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+            Gerenciamento de Instâncias
           </h1>
+          <p className="text-sm sm:text-base text-gray-400 mt-1">
+            Gerencie todas as suas instâncias em um só lugar
+          </p>
         </div>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <Button 
+            variant="default" 
+            onClick={() => setDialogOpen(true)} 
+            className="w-full sm:w-auto gap-2 bg-gradient-to-r from-[#10B981] to-[#0EA5E9] hover:opacity-90 transition-opacity"
+          >
+            <Plus className="w-4 h-4" />
+            Nova Instância
+          </Button>
+          <DialogContent className="w-[95vw] sm:w-auto max-w-2xl">
+            <CreateInstanceForm 
+              onClose={() => setDialogOpen(false)} 
+              onQRGenerationStart={() => setIsGeneratingQR(true)}
+              onQRGenerationEnd={() => setIsGeneratingQR(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
 
-        <div className="grid grid-cols-1 gap-4 max-w-md mx-auto px-4 sm:px-0">
-          <Link to="/instances" className="w-full">
-            <Button 
-              variant="secondary" 
-              className="w-full gap-2 text-lg py-6 bg-[#9b87f5] hover:bg-[#8b77e5] transition-colors"
-            >
-              <Cpu className="w-5 h-5" />
-              Gerenciar Instâncias
-            </Button>
-          </Link>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+        <div className="animate-fade-in [animation-delay:400ms] hover:scale-[1.02] transition-transform duration-200">
+          <StatusCard 
+            title="Instâncias Online" 
+            value={isLoading ? "..." : instancesData?.onlineCount || 0} 
+            type="online" 
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:600ms] hover:scale-[1.02] transition-transform duration-200">
+          <StatusCard 
+            title="Instâncias Enviando" 
+            value={isLoading ? "..." : instancesData?.sendingCount || 0} 
+            type="sending" 
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:800ms] hover:scale-[1.02] transition-transform duration-200">
+          <StatusCard
+            title="Instâncias Aguardando"
+            value={isLoading ? "..." : calculateIdleInstances()}
+            type="online"
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:1000ms] hover:scale-[1.02] transition-transform duration-200">
+          <StatusCard 
+            title="❌verificarDesconexao" 
+            value={isLoading ? "..." : instancesData?.closedCount || 0} 
+            type="closed" 
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:1200ms] hover:scale-[1.02] transition-transform duration-200">
+          <StatusCard 
+            title="Aguardando Desbloqueio" 
+            value={isLoading ? "..." : instancesData?.waitingUnlockCount || 0}
+            type="closed" 
+          />
+        </div>
+        <div className="animate-fade-in [animation-delay:1400ms] hover:scale-[1.02] transition-transform duration-200">
+          <StatusCard 
+            title="Chips Liberados" 
+            value={isLoading ? "..." : instancesData?.releasedCount || 0}
+            type="closed" 
+          />
         </div>
       </div>
 
-      <PasswordDialog 
-        isOpen={isPasswordDialogOpen}
-        onClose={() => setIsPasswordDialogOpen(false)}
-      />
+      <div className="animate-fade-in [animation-delay:1600ms]">
+        <ChipRegistrationForm />
+      </div>
+
+      <div className="animate-fade-in [animation-delay:1800ms]">
+        <InstanceTable />
+      </div>
     </div>
   );
 };
