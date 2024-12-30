@@ -26,56 +26,44 @@ const Login = () => {
           return;
         }
 
-        const { data, error } = await supabase.auth.signUp({
+        const { data: { user }, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
               name: name,
             },
-            emailRedirectTo: undefined,
           },
         });
 
-        if (error) {
-          toast.error(error.message);
+        if (signUpError) {
+          toast.error(signUpError.message);
+          setIsLoading(false);
           return;
         }
 
-        if (data.user) {
+        if (user) {
           toast.success("Cadastro realizado com sucesso!");
           // Clear form
           setName("");
           setEmail("");
           setPassword("");
-          // Automatically sign in after registration
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
-
-          if (signInError) {
-            toast.error(signInError.message);
-            return;
-          }
-
           navigate("/");
         }
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) {
-          toast.error(error.message);
+        if (signInError) {
+          toast.error(signInError.message);
+          setIsLoading(false);
           return;
         }
 
-        if (data.user) {
-          toast.success("Login realizado com sucesso!");
-          navigate("/");
-        }
+        toast.success("Login realizado com sucesso!");
+        navigate("/");
       }
     } catch (error: any) {
       toast.error(error.message || "Ocorreu um erro durante a autenticação");
@@ -151,7 +139,7 @@ const Login = () => {
               className="text-gray-400 hover:text-white"
               onClick={() => {
                 setIsRegistering(!isRegistering);
-                setName(""); // Clear name when switching modes
+                setName("");
               }}
             >
               {isRegistering
