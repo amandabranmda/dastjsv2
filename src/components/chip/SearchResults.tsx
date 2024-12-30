@@ -11,6 +11,7 @@ interface SearchResultsProps {
     localChip: string;
     statusChip: string;
     responsavelChip: string;
+    obsChip: string;
   }>;
   onUpdate: () => void;
   searchNumber: string;
@@ -62,6 +63,7 @@ export function SearchResults({ chipDetails, onUpdate, searchNumber }: SearchRes
             localChip={chip.localChip} 
             statusChip={chip.statusChip}
             responsavelChip={chip.responsavelChip}
+            obsChip={chip.obsChip}
             onUpdate={onUpdate}
           />
         ))}
