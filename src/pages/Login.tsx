@@ -18,6 +18,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
+  const [registerName, setRegisterName] = useState("");
   const [registerLoading, setRegisterLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -53,18 +54,39 @@ const Login = () => {
     setRegisterLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data: { user }, error } = await supabase.auth.signUp({
         email: registerEmail,
         password: registerPassword,
+        options: {
+          data: {
+            full_name: registerName,
+          }
+        }
       });
 
       if (error) throw error;
+
+      // Add user to the users table for chip responsibility
+      if (user) {
+        const { error: profileError } = await supabase
+          .from('users')
+          .insert([
+            {
+              id: user.id,
+              name: registerName,
+              email: registerEmail,
+            }
+          ]);
+
+        if (profileError) throw profileError;
+      }
 
       toast({
         description: "Cadastro realizado com sucesso! Verifique seu email para confirmar o cadastro.",
       });
       setRegisterEmail("");
       setRegisterPassword("");
+      setRegisterName("");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -131,6 +153,14 @@ const Login = () => {
                   <DialogTitle className="text-white">Criar nova conta</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleRegister} className="space-y-4">
+                  <Input
+                    type="text"
+                    required
+                    className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
+                    placeholder="Nome completo"
+                    value={registerName}
+                    onChange={(e) => setRegisterName(e.target.value)}
+                  />
                   <Input
                     type="email"
                     required
