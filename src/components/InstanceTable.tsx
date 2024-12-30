@@ -1,7 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Copy, MessageSquare, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
@@ -10,7 +9,6 @@ interface Instance {
   nomeInstancia: string;
   senderNumber: string;
   statusInstancia: string;
-  statusQR: string;
   enviosChipFull: number;
   localChip?: string;
   responsavelChip?: string;
@@ -24,7 +22,7 @@ export function InstanceTable() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("nomeInstancia, senderNumber, statusInstancia, statusQR, enviosChipFull, localChip, responsavelChip")
+        .select("nomeInstancia, senderNumber, statusInstancia, enviosChipFull, localChip, responsavelChip")
         .eq("statusInstancia", "open");
 
       if (error) throw error;
@@ -96,9 +94,6 @@ export function InstanceTable() {
                   Total de Leads
                 </th>
                 <th className="text-left py-3 text-sm font-medium text-gray-400">
-                  Status do QR
-                </th>
-                <th className="text-left py-3 text-sm font-medium text-gray-400">
                   Ações
                 </th>
               </tr>
@@ -106,7 +101,7 @@ export function InstanceTable() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-4">
+                  <td colSpan={7} className="text-center py-4">
                     Carregando...
                   </td>
                 </tr>
@@ -123,11 +118,6 @@ export function InstanceTable() {
                       </span>
                     </td>
                     <td className="py-3 text-sm">{instance.enviosChipFull}</td>
-                    <td className="py-3">
-                      <span className="status-badge online">
-                        {instance.statusQR === "connected" ? "connected" : "disconnected"}
-                      </span>
-                    </td>
                     <td className="py-3">
                       <div className="flex items-center gap-2">
                         <button className="p-1 hover:bg-white/10 rounded-lg transition-colors">
