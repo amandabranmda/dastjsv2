@@ -8,6 +8,7 @@ interface ChipRegistrationFormFieldsProps {
     numeroChip: string;
     localChip: string;
     statusChip: string;
+    responsavelChip: string;
   };
   setFormData: (data: any) => void;
   onRegister: () => void;
@@ -28,6 +29,16 @@ export function ChipRegistrationFormFields({
           placeholder="Digite o local do chip"
           value={formData.localChip}
           onChange={(e) => setFormData({ ...formData, localChip: e.target.value, numeroChip: searchNumber })}
+          className="bg-white/5 border-emerald-600/20"
+        />
+      </div>
+
+      <div>
+        <Label>Responsável</Label>
+        <Input
+          placeholder="Digite o nome do responsável"
+          value={formData.responsavelChip}
+          onChange={(e) => setFormData({ ...formData, responsavelChip: e.target.value, numeroChip: searchNumber })}
           className="bg-white/5 border-emerald-600/20"
         />
       </div>

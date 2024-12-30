@@ -12,6 +12,7 @@ interface ChipDetails {
   numeroChip: string;
   localChip: string;
   statusChip: string;
+  responsavelChip: string;
 }
 
 export function ChipRegistrationForm() {
@@ -23,7 +24,8 @@ export function ChipRegistrationForm() {
   const [formData, setFormData] = useState({
     numeroChip: "",
     localChip: "",
-    statusChip: ""
+    statusChip: "",
+    responsavelChip: ""
   });
 
   useEffect(() => {
@@ -45,7 +47,8 @@ export function ChipRegistrationForm() {
     setFormData({
       numeroChip: "",
       localChip: "",
-      statusChip: ""
+      statusChip: "",
+      responsavelChip: ""
     });
   };
 
@@ -59,7 +62,7 @@ export function ChipRegistrationForm() {
     try {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip, localChip, statusChip")
+        .select("numeroChip, localChip, statusChip, responsavelChip")
         .or(`numeroChip.ilike.%${searchNumber}%,localChip.ilike.%${searchNumber}%`);
 
       if (error) throw error;
@@ -146,7 +149,8 @@ export function ChipRegistrationForm() {
         {chipExists && chipDetails && (
           <ChipDetails 
             localChip={chipDetails.localChip} 
-            statusChip={chipDetails.statusChip} 
+            statusChip={chipDetails.statusChip}
+            responsavelChip={chipDetails.responsavelChip}
           />
         )}
 
