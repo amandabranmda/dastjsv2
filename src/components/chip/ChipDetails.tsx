@@ -17,7 +17,8 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
   const [editValue, setEditValue] = useState(responsavelChip);
 
   const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    if (!string) return string;
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
   const handleSave = async () => {
