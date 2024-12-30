@@ -130,19 +130,25 @@ export function ChipRegistrationForm() {
   };
 
   const PDFContent = () => (
-    <div className="p-8 space-y-4">
-      <h2 className="text-xl font-bold mb-6">Relatório de Chips</h2>
+    <div style={{ padding: '40px', fontFamily: 'Arial, sans-serif' }}>
+      <h1 style={{ fontSize: '24px', marginBottom: '20px', color: '#000' }}>
+        Relatório de Chips
+      </h1>
       {chipDetails.map((chip, index) => (
-        <div key={chip.numeroChip} className="mb-4">
-          <p className="font-bold">Chip #{index + 1}</p>
-          <p>Número: {chip.numeroChip}</p>
-          <p>Local: {chip.localChip || '-'}</p>
-          <p>Status: {chip.statusChip || '-'}</p>
-          <p>Responsável: {chip.responsavelChip || '-'}</p>
-          <hr className="my-2" />
+        <div key={chip.numeroChip} style={{ marginBottom: '30px', color: '#000' }}>
+          <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>
+            Chip #{index + 1}
+          </h2>
+          <div style={{ marginLeft: '20px' }}>
+            <p style={{ margin: '5px 0' }}>Número: {chip.numeroChip}</p>
+            <p style={{ margin: '5px 0' }}>Local: {chip.localChip || '-'}</p>
+            <p style={{ margin: '5px 0' }}>Status: {chip.statusChip || '-'}</p>
+            <p style={{ margin: '5px 0' }}>Responsável: {chip.responsavelChip || '-'}</p>
+          </div>
+          <div style={{ margin: '15px 0', borderBottom: '1px solid #ccc' }} />
         </div>
       ))}
-      <p className="text-sm text-gray-500 mt-4">
+      <p style={{ marginTop: '30px', fontSize: '12px', color: '#666' }}>
         Gerado em: {new Date().toLocaleDateString()}
       </p>
     </div>
@@ -191,7 +197,7 @@ export function ChipRegistrationForm() {
                   />
                 ))}
               </div>
-              <div style={{ display: 'none' }}>
+              <div style={{ position: 'absolute', left: '-9999px' }}>
                 <div ref={targetRef}>
                   <PDFContent />
                 </div>
