@@ -32,7 +32,9 @@ export function ChipRegistrationForm() {
   });
 
   const resultsRef = useRef<HTMLDivElement>(null);
-  const { toPDF } = usePDF();
+  const { toPDF, targetRef } = usePDF({
+    filename: `pesquisa-chips-${searchNumber}.pdf`,
+  });
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -112,18 +114,18 @@ export function ChipRegistrationForm() {
     }
   };
 
-  const handlePrintPDF = () => {
+  const handlePrintPDF = async () => {
     if (!chipDetails.length) {
       toast.error("Nenhum resultado para imprimir");
       return;
     }
 
-    if (resultsRef.current) {
-      toPDF({
-        filename: `pesquisa-chips-${searchNumber}.pdf`,
-        method: 'save'
-      });
+    try {
+      await toPDF();
       toast.success("PDF gerado e salvo com sucesso!");
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      toast.error("Erro ao gerar o PDF. Tente novamente.");
     }
   };
 
@@ -158,7 +160,7 @@ export function ChipRegistrationForm() {
                   Imprimir PDF
                 </Button>
               </div>
-              <div ref={resultsRef} className="space-y-6">
+              <div ref={targetRef} className="space-y-6">
                 {chipDetails.map((chip) => (
                   <ChipDetails 
                     key={chip.numeroChip}
