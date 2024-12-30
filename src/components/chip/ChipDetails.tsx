@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { supabase } from "@/lib/supabase";
@@ -90,8 +89,7 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
   return (
     <div className="p-6 bg-gradient-to-br from-slate-900/80 to-slate-800/50 rounded-xl border border-sky-600/20 shadow-lg hover:shadow-sky-600/10 transition-all duration-300">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="space-y-2">
-          <Label className="text-gray-400 text-sm">Número do Chip</Label>
+        <div>
           <div 
             className="flex items-center gap-2 group cursor-pointer"
             onClick={handleCopyChip}
@@ -103,13 +101,11 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-gray-400 text-sm">Local do Chip</Label>
+        <div>
           <p className="text-white font-medium">{localChip || '-'}</p>
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-gray-400 text-sm">Status do Chip</Label>
+        <div>
           {isEditingStatus ? (
             <Select 
               defaultValue={statusChip}
@@ -136,8 +132,7 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
           )}
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-gray-400 text-sm">Responsável</Label>
+        <div>
           {isEditing ? (
             <Input
               value={editValue}
