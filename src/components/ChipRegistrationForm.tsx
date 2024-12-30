@@ -130,19 +130,48 @@ export function ChipRegistrationForm() {
   };
 
   const PDFContent = () => (
-    <div style={{ padding: '40px', fontFamily: 'Arial, sans-serif' }}>
-      <h1 style={{ fontSize: '24px', marginBottom: '20px', color: '#000' }}>
+    <div style={{ 
+      padding: '20px', 
+      fontFamily: 'Arial, sans-serif',
+      width: '210mm', // A4 width
+      minHeight: '297mm', // A4 height
+      margin: '0 auto',
+      backgroundColor: 'white'
+    }}>
+      <h1 style={{ 
+        fontSize: '18px', 
+        marginBottom: '15px', 
+        color: '#000',
+        borderBottom: '1px solid #ccc',
+        paddingBottom: '5px'
+      }}>
         Relatório de Chips
       </h1>
-      {chipDetails.map((chip) => (
-        <div key={chip.numeroChip} style={{ marginBottom: '20px', color: '#000' }}>
-          <p style={{ margin: '5px 0', fontSize: '16px' }}>Número do Chip: {chip.numeroChip}</p>
-          <p style={{ margin: '5px 0', fontSize: '16px' }}>Local: {chip.localChip || '-'}</p>
-          <p style={{ margin: '5px 0', fontSize: '16px' }}>Responsável: {chip.responsavelChip || '-'}</p>
-          <div style={{ margin: '15px 0', borderBottom: '1px solid #ccc' }} />
-        </div>
-      ))}
-      <p style={{ marginTop: '30px', fontSize: '12px', color: '#666' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr',
+        gap: '10px'
+      }}>
+        {chipDetails.map((chip) => (
+          <div key={chip.numeroChip} style={{ 
+            color: '#000',
+            padding: '8px',
+            borderBottom: '1px solid #eee'
+          }}>
+            <p style={{ margin: '2px 0', fontSize: '12px' }}>Número do Chip: {chip.numeroChip}</p>
+            <p style={{ margin: '2px 0', fontSize: '12px' }}>Local: {chip.localChip || '-'}</p>
+            <p style={{ margin: '2px 0', fontSize: '12px' }}>Responsável: {chip.responsavelChip || '-'}</p>
+          </div>
+        ))}
+      </div>
+      <p style={{ 
+        marginTop: '20px', 
+        fontSize: '10px', 
+        color: '#666',
+        position: 'absolute',
+        bottom: '20px',
+        left: '20px'
+      }}>
         Gerado em: {new Date().toLocaleDateString()}
       </p>
     </div>
