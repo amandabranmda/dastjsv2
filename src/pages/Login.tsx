@@ -20,7 +20,6 @@ const Login = () => {
 
     try {
       if (isRegistering) {
-        // Validações básicas
         if (!name.trim()) {
           toast.error("Por favor, insira seu nome");
           return;
@@ -31,50 +30,45 @@ const Login = () => {
           return;
         }
 
-        // Registro do usuário
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        // Primeiro, criar o usuário na auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              name: name, // Adicionar o nome aos metadados do usuário
+            },
+          },
         });
 
-        if (signUpError) {
-          console.error("Erro no signup:", signUpError);
-          toast.error(signUpError.message);
-          return;
+        if (authError) throw authError;
+
+        if (!authData.user) {
+          throw new Error("Falha ao criar usuário");
         }
 
-        if (signUpData?.user) {
-          // Criar perfil do usuário com os campos que existem na tabela
-          const { error: profileError } = await supabase
-            .from("profiles")
-            .insert({
-              id: signUpData.user.id,
+        // Depois, criar o perfil do usuário
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: authData.user.id,
               name: name,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            });
+              email: email,
+            }
+          ]);
 
-          if (profileError) {
-            console.error("Erro ao criar perfil:", profileError);
-            toast.error("Erro ao criar perfil do usuário");
-            return;
-          }
+        if (profileError) throw profileError;
 
-          toast.success("Cadastro realizado com sucesso!");
-          navigate("/");
-        }
+        toast.success("Cadastro realizado com sucesso!");
+        navigate("/");
       } else {
-        // Login
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (signInError) {
-          console.error("Erro no login:", signInError);
-          toast.error(signInError.message);
-          return;
-        }
+        if (signInError) throw signInError;
 
         toast.success("Login realizado com sucesso!");
         navigate("/");
