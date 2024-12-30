@@ -35,11 +35,6 @@ const Login = () => {
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: {
-              name: name,
-            },
-          },
         });
 
         if (signUpError) {
@@ -49,12 +44,14 @@ const Login = () => {
         }
 
         if (signUpData?.user) {
-          // Criar perfil do usuário
+          // Criar perfil do usuário com os campos que existem na tabela
           const { error: profileError } = await supabase
             .from("profiles")
             .insert({
               id: signUpData.user.id,
               name: name,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
             });
 
           if (profileError) {
