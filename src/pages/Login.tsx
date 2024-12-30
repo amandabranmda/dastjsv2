@@ -22,55 +22,64 @@ const Login = () => {
       if (isRegistering) {
         if (!name.trim()) {
           toast.error("Por favor, insira seu nome");
+          setIsLoading(false);
           return;
         }
 
         if (password.length < 6) {
           toast.error("A senha deve ter pelo menos 6 caracteres");
+          setIsLoading(false);
           return;
         }
 
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        // Sign up
+        const signUpResult = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: {
-              name: name,
-            },
+            data: { name },
           },
         });
 
-        if (authError) {
-          toast.error(authError.message);
+        if (signUpResult.error) {
+          toast.error(signUpResult.error.message);
+          setIsLoading(false);
           return;
         }
 
-        if (!authData.user) {
+        if (!signUpResult.data.user) {
           toast.error("Erro ao criar usuário");
+          setIsLoading(false);
           return;
         }
 
-        const { error: profileError } = await supabase.from('profiles').insert({
-          id: authData.user.id,
-          name: name,
-          email: email,
-        });
+        // Create profile
+        const profileResult = await supabase.from("profiles").insert([
+          {
+            id: signUpResult.data.user.id,
+            name,
+            email,
+          },
+        ]);
 
-        if (profileError) {
-          toast.error(profileError.message);
+        if (profileResult.error) {
+          toast.error(profileResult.error.message);
+          setIsLoading(false);
           return;
         }
 
         toast.success("Cadastro realizado com sucesso!");
         navigate("/");
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        // Sign in
+        const signInResult = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (signInError) {
-          toast.error(signInError.message);
+        if (signInResult.error) {
+          toast.error(signInResult.error.message);
+          setIsLoading(false);
           return;
         }
 
