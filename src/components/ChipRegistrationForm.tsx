@@ -134,12 +134,11 @@ export function ChipRegistrationForm() {
       padding: '20px', 
       fontFamily: 'Arial, sans-serif',
       width: '210mm', // A4 width
-      minHeight: '297mm', // A4 height
-      margin: '0 auto',
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      margin: '0 auto'
     }}>
       <h1 style={{ 
-        fontSize: '18px', 
+        fontSize: '16px', 
         marginBottom: '15px', 
         color: '#000',
         borderBottom: '1px solid #ccc',
@@ -148,27 +147,36 @@ export function ChipRegistrationForm() {
         Relatório de Chips
       </h1>
       <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '1fr',
-        gap: '10px'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px'
       }}>
-        {chipDetails.map((chip) => (
-          <div key={chip.numeroChip} style={{ 
-            color: '#000',
-            padding: '8px',
-            borderBottom: '1px solid #eee'
-          }}>
-            <p style={{ margin: '2px 0', fontSize: '12px' }}>Número do Chip: {chip.numeroChip}</p>
-            <p style={{ margin: '2px 0', fontSize: '12px' }}>Local: {chip.localChip || '-'}</p>
-            <p style={{ margin: '2px 0', fontSize: '12px' }}>Responsável: {chip.responsavelChip || '-'}</p>
+        {chipDetails.map((chip, index) => (
+          <div 
+            key={chip.numeroChip} 
+            style={{ 
+              color: '#000',
+              padding: '4px 8px',
+              borderBottom: '1px solid #eee',
+              pageBreakInside: 'avoid', // Prevents breaking inside an item
+              breakInside: 'avoid-page', // Modern browsers support
+              fontSize: '11px',
+              display: 'grid',
+              gridTemplateColumns: '1fr',
+              gap: '2px'
+            }}
+          >
+            <p style={{ margin: '1px 0' }}>Número do Chip: {chip.numeroChip}</p>
+            <p style={{ margin: '1px 0' }}>Local: {chip.localChip || '-'}</p>
+            <p style={{ margin: '1px 0' }}>Responsável: {chip.responsavelChip || '-'}</p>
           </div>
         ))}
       </div>
       <p style={{ 
         marginTop: '20px', 
-        fontSize: '10px', 
+        fontSize: '9px', 
         color: '#666',
-        position: 'absolute',
+        position: 'fixed',
         bottom: '20px',
         left: '20px'
       }}>
