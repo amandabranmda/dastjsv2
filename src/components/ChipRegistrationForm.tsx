@@ -129,6 +129,25 @@ export function ChipRegistrationForm() {
     }
   };
 
+  const PDFContent = () => (
+    <div className="p-8 space-y-4">
+      <h2 className="text-xl font-bold mb-6">Relatório de Chips</h2>
+      {chipDetails.map((chip, index) => (
+        <div key={chip.numeroChip} className="mb-4">
+          <p className="font-bold">Chip #{index + 1}</p>
+          <p>Número: {chip.numeroChip}</p>
+          <p>Local: {chip.localChip || '-'}</p>
+          <p>Status: {chip.statusChip || '-'}</p>
+          <p>Responsável: {chip.responsavelChip || '-'}</p>
+          <hr className="my-2" />
+        </div>
+      ))}
+      <p className="text-sm text-gray-500 mt-4">
+        Gerado em: {new Date().toLocaleDateString()}
+      </p>
+    </div>
+  );
+
   return (
     <div className="w-full">
       <Card className={`p-4 sm:p-6 ${showRegistrationForm ? 'bg-gradient-to-br from-emerald-900/20 to-emerald-800/10' : 'bg-gradient-to-br from-sky-900/20 to-sky-800/10'} backdrop-blur-sm transition-colors duration-300`}>
@@ -160,7 +179,7 @@ export function ChipRegistrationForm() {
                   Imprimir PDF
                 </Button>
               </div>
-              <div ref={targetRef} className="space-y-6">
+              <div className="space-y-6">
                 {chipDetails.map((chip) => (
                   <ChipDetails 
                     key={chip.numeroChip}
@@ -171,6 +190,11 @@ export function ChipRegistrationForm() {
                     onUpdate={handleSearch}
                   />
                 ))}
+              </div>
+              <div style={{ display: 'none' }}>
+                <div ref={targetRef}>
+                  <PDFContent />
+                </div>
               </div>
             </div>
           )}
