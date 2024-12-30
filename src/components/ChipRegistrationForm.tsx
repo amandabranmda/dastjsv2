@@ -121,6 +121,7 @@ export function ChipRegistrationForm() {
 
         {chipExists && chipDetails && (
           <ChipDetails 
+            numeroChip={chipDetails.numeroChip}
             localChip={chipDetails.localChip} 
             statusChip={chipDetails.statusChip}
             responsavelChip={chipDetails.responsavelChip}

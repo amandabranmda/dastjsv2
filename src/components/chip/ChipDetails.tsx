@@ -1,18 +1,23 @@
 import { Label } from "../ui/label";
 
 interface ChipDetailsProps {
+  numeroChip: string;
   localChip: string;
   statusChip: string;
   responsavelChip: string;
 }
 
-export function ChipDetails({ localChip, statusChip, responsavelChip }: ChipDetailsProps) {
+export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip }: ChipDetailsProps) {
   return (
     <div className="mt-4 space-y-4">
       <p className="text-center text-red-200 mb-4">
         Este número já consta no banco de dados
       </p>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <Label className="text-red-200">Número do Chip</Label>
+          <p className="text-red-100">{numeroChip || '-'}</p>
+        </div>
         <div>
           <Label className="text-red-200">Local do Chip</Label>
           <p className="text-red-100">{localChip || '-'}</p>
