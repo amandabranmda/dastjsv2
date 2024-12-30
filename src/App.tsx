@@ -8,6 +8,7 @@ import Metrics from "./pages/Metrics";
 import Instances from "./pages/Instances";
 import Roas from "./pages/Roas";
 import { useState, useEffect } from "react";
+import { BackToTop } from "./components/BackToTop";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +52,7 @@ const App = () => {
               </Routes>
             </main>
           </div>
+          <BackToTop />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
