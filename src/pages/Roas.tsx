@@ -9,7 +9,7 @@ interface RoasTableRowProps {
   onUpdateValorAds: (metric: MetricasHot, newValue: number) => void;
 }
 
-export function RoasTableRow({ metric, onUpdateVendas, onUpdateValorAds }: RoasTableRowProps) {
+function RoasTableRow({ metric, onUpdateVendas, onUpdateValorAds }: RoasTableRowProps) {
   return (
     <TableRow>
       <TableCell>{metric.data}</TableCell>
@@ -35,3 +35,5 @@ export function RoasTableRow({ metric, onUpdateVendas, onUpdateValorAds }: RoasT
     </TableRow>
   );
 }
+
+export default RoasTableRow;
