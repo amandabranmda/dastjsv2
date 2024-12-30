@@ -125,6 +125,7 @@ export function ChipRegistrationForm() {
             localChip={chipDetails.localChip} 
             statusChip={chipDetails.statusChip}
             responsavelChip={chipDetails.responsavelChip}
+            onUpdate={handleSearch}
           />
         )}
 

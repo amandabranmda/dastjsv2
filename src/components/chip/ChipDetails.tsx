@@ -9,9 +9,10 @@ interface ChipDetailsProps {
   localChip: string;
   statusChip: string;
   responsavelChip: string;
+  onUpdate: () => void;
 }
 
-export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip }: ChipDetailsProps) {
+export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip, onUpdate }: ChipDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(responsavelChip);
 
@@ -26,6 +27,7 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
 
       toast.success("Responsável atualizado com sucesso!");
       setIsEditing(false);
+      onUpdate(); // Call the refetch function after successful update
     } catch (error) {
       console.error("Erro ao atualizar responsável:", error);
       toast.error("Erro ao atualizar responsável");
