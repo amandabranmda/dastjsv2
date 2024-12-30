@@ -9,7 +9,7 @@ import { SearchBar } from "./chip/SearchBar";
 import { ChipRegistrationFormFields } from "./form/ChipRegistrationFormFields";
 import { ChipDetails } from "./chip/ChipDetails";
 import { Printer } from "lucide-react";
-import { generatePDF } from "react-to-pdf";
+import { usePDF } from "react-to-pdf";
 
 interface ChipDetails {
   numeroChip: string;
@@ -32,6 +32,7 @@ export function ChipRegistrationForm() {
   });
 
   const resultsRef = useRef<HTMLDivElement>(null);
+  const { toPDF } = usePDF();
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -117,17 +118,13 @@ export function ChipRegistrationForm() {
       return;
     }
 
-    generatePDF({
-      filename: `pesquisa-chips-${searchNumber}.pdf`,
-      element: resultsRef.current,
-      configuration: {
-        jsPDF: {
-          format: 'a4',
-        },
-      },
-    });
-    
-    toast.success("PDF gerado com sucesso!");
+    if (resultsRef.current) {
+      toPDF({
+        targetRef: resultsRef.current,
+        filename: `pesquisa-chips-${searchNumber}.pdf`,
+      });
+      toast.success("PDF gerado com sucesso!");
+    }
   };
 
   return (
