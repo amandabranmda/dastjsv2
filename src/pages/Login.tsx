@@ -33,6 +33,7 @@ const Login = () => {
             data: {
               name: name,
             },
+            emailRedirectTo: undefined,
           },
         });
 
@@ -42,12 +43,23 @@ const Login = () => {
         }
 
         if (data.user) {
-          toast.success("Cadastro realizado com sucesso! Verifique seu email para confirmar o cadastro.");
-          setIsRegistering(false);
+          toast.success("Cadastro realizado com sucesso!");
           // Clear form
           setName("");
           setEmail("");
           setPassword("");
+          // Automatically sign in after registration
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (signInError) {
+            toast.error(signInError.message);
+            return;
+          }
+
+          navigate("/");
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
