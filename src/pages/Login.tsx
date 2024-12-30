@@ -26,7 +26,7 @@ const Login = () => {
           return;
         }
 
-        // Primeiro registra o usuário
+        // Primeiro registra o usuário e armazena a resposta
         const { data: authData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -39,15 +39,12 @@ const Login = () => {
         }
 
         if (authData.user) {
-          // Depois cria o perfil do usuário
+          // Depois cria o perfil do usuário usando o ID retornado
           const { error: profileError } = await supabase
             .from('profiles')
-            .insert([
-              {
-                id: authData.user.id,
-                name: name,
-              }
-            ]);
+            .insert([{ id: authData.user.id, name: name }])
+            .select()
+            .single();
 
           if (profileError) {
             toast.error("Erro ao criar perfil do usuário");
@@ -56,7 +53,6 @@ const Login = () => {
           }
 
           toast.success("Cadastro realizado com sucesso!");
-          // Limpa o formulário
           setName("");
           setEmail("");
           setPassword("");
