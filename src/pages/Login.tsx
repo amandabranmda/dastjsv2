@@ -30,8 +30,7 @@ const Login = () => {
           return;
         }
 
-        // Criar usuário na autenticação
-        const { data, error } = await supabase.auth.signUp({
+        const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -41,26 +40,21 @@ const Login = () => {
           },
         });
 
-        if (error) {
-          toast.error(error.message);
+        if (authError) {
+          toast.error(authError.message);
           return;
         }
 
-        if (!data.user) {
+        if (!authData.user) {
           toast.error("Erro ao criar usuário");
           return;
         }
 
-        // Criar o perfil do usuário
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              name: name,
-              email: email,
-            }
-          ]);
+        const { error: profileError } = await supabase.from('profiles').insert({
+          id: authData.user.id,
+          name: name,
+          email: email,
+        });
 
         if (profileError) {
           toast.error(profileError.message);
@@ -70,13 +64,13 @@ const Login = () => {
         toast.success("Cadastro realizado com sucesso!");
         navigate("/");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) {
-          toast.error(error.message);
+        if (signInError) {
+          toast.error(signInError.message);
           return;
         }
 
@@ -84,7 +78,6 @@ const Login = () => {
         navigate("/");
       }
     } catch (error: any) {
-      console.error("Erro durante autenticação:", error);
       toast.error(error.message || "Ocorreu um erro durante a autenticação");
     } finally {
       setIsLoading(false);
