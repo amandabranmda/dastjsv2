@@ -3,6 +3,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { Copy, Edit2 } from "lucide-react";
 
 interface ChipDetailsProps {
   numeroChip: string;
@@ -50,28 +51,51 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'liberado':
+        return 'bg-sky-500/20 text-sky-500';
+      case '✅emproducao':
+        return 'bg-emerald-500/20 text-emerald-500';
+      case '❌verificardesconexao':
+        return 'bg-red-500/20 text-red-500';
+      case 'aguardando desbloqueio':
+        return 'bg-yellow-500/20 text-yellow-500';
+      default:
+        return 'bg-gray-500/20 text-gray-500';
+    }
+  };
+
   return (
-    <div className="p-4 bg-black/20 rounded-lg border border-sky-600/20">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <Label className="text-red-200">Número do Chip</Label>
-          <p 
-            className="text-red-100 cursor-pointer hover:text-red-300 transition-colors"
+    <div className="p-6 bg-gradient-to-br from-slate-900/80 to-slate-800/50 rounded-xl border border-sky-600/20 shadow-lg hover:shadow-sky-600/10 transition-all duration-300">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="space-y-2">
+          <Label className="text-gray-400 text-sm">Número do Chip</Label>
+          <div 
+            className="flex items-center gap-2 group cursor-pointer"
             onClick={handleCopyChip}
           >
-            {numeroChip || '-'}
-          </p>
+            <p className="text-white font-medium group-hover:text-sky-400 transition-colors">
+              {numeroChip || '-'}
+            </p>
+            <Copy className="w-4 h-4 text-gray-500 group-hover:text-sky-400 transition-colors" />
+          </div>
         </div>
-        <div>
-          <Label className="text-red-200">Local do Chip</Label>
-          <p className="text-red-100">{localChip || '-'}</p>
+
+        <div className="space-y-2">
+          <Label className="text-gray-400 text-sm">Local do Chip</Label>
+          <p className="text-white font-medium">{localChip || '-'}</p>
         </div>
-        <div>
-          <Label className="text-red-200">Status do Chip</Label>
-          <p className="text-red-100">{statusChip || '-'}</p>
+
+        <div className="space-y-2">
+          <Label className="text-gray-400 text-sm">Status do Chip</Label>
+          <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(statusChip)}`}>
+            {statusChip || '-'}
+          </div>
         </div>
-        <div>
-          <Label className="text-red-200">Responsável</Label>
+
+        <div className="space-y-2">
+          <Label className="text-gray-400 text-sm">Responsável</Label>
           {isEditing ? (
             <Input
               value={editValue}
@@ -85,16 +109,19 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
                   setEditValue(responsavelChip);
                 }
               }}
-              className="bg-white/5 border-red-600/20 text-red-100"
+              className="bg-black/20 border-sky-600/20 text-white"
               autoFocus
             />
           ) : (
-            <p 
-              className="text-red-100 cursor-pointer hover:text-red-300 transition-colors"
+            <div 
+              className="flex items-center gap-2 group cursor-pointer"
               onClick={() => setIsEditing(true)}
             >
-              {responsavelChip ? capitalizeFirstLetter(responsavelChip) : '-'}
-            </p>
+              <p className="text-white font-medium group-hover:text-sky-400 transition-colors">
+                {responsavelChip ? capitalizeFirstLetter(responsavelChip) : '-'}
+              </p>
+              <Edit2 className="w-4 h-4 text-gray-500 group-hover:text-sky-400 transition-colors" />
+            </div>
           )}
         </div>
       </div>
