@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Cpu, ChartBar, TrendingUp } from "lucide-react";
+import { Cpu } from "lucide-react";
 import { useState } from "react";
 import { PasswordDialog } from "@/components/PasswordDialog";
 
@@ -28,25 +28,6 @@ const Index = () => {
               Gerenciar Instâncias
             </Button>
           </Link>
-          
-          <Link to="/metrics" className="w-full">
-            <Button 
-              variant="secondary" 
-              className="w-full gap-2 text-lg py-6 bg-[#10B981] hover:bg-[#059669] transition-colors"
-            >
-              <ChartBar className="w-5 h-5" />
-              Métricas Chips
-            </Button>
-          </Link>
-
-          <Button 
-            variant="secondary" 
-            className="w-full gap-2 text-lg py-6 bg-[#0EA5E9] hover:bg-[#0284C7] transition-colors"
-            onClick={() => setIsPasswordDialogOpen(true)}
-          >
-            <TrendingUp className="w-5 h-5" />
-            Métricas Face
-          </Button>
         </div>
       </div>
 
