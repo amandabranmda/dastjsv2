@@ -20,6 +20,7 @@ const Login = () => {
 
     try {
       if (isRegistering) {
+        // Validações
         if (!name.trim()) {
           toast.error("Por favor, insira seu nome");
           setIsLoading(false);
@@ -32,8 +33,8 @@ const Login = () => {
           return;
         }
 
-        // Primeiro, registra o usuário
-        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        // Registro do usuário
+        const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -49,28 +50,29 @@ const Login = () => {
           return;
         }
 
-        if (authData.user) {
-          // Depois, cria o perfil do usuário
+        if (data?.user) {
+          // Criação do perfil
           const { error: profileError } = await supabase
             .from('profiles')
-            .insert([{ 
-              id: authData.user.id, 
-              name: name 
-            }]);
+            .insert([
+              {
+                id: data.user.id,
+                name: name,
+              }
+            ]);
 
           if (profileError) {
+            console.error("Erro ao criar perfil:", profileError);
             toast.error("Erro ao criar perfil do usuário");
             setIsLoading(false);
             return;
           }
 
           toast.success("Cadastro realizado com sucesso!");
-          setName("");
-          setEmail("");
-          setPassword("");
           navigate("/");
         }
       } else {
+        // Login
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -86,6 +88,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error: any) {
+      console.error("Erro durante autenticação:", error);
       toast.error(error.message || "Ocorreu um erro durante a autenticação");
     } finally {
       setIsLoading(false);
@@ -160,6 +163,8 @@ const Login = () => {
               onClick={() => {
                 setIsRegistering(!isRegistering);
                 setName("");
+                setEmail("");
+                setPassword("");
               }}
             >
               {isRegistering
