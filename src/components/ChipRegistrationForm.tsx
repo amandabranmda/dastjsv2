@@ -55,7 +55,7 @@ export function ChipRegistrationForm() {
 
   const handleSearch = async () => {
     if (!searchNumber.trim()) {
-      toast.error("Digite um número ou local do chip");
+      toast.error("Digite um número, local ou responsável do chip");
       return;
     }
 
@@ -64,7 +64,7 @@ export function ChipRegistrationForm() {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
         .select("numeroChip, localChip, statusChip, responsavelChip")
-        .or(`numeroChip.ilike.%${searchNumber}%,localChip.ilike.%${searchNumber}%`);
+        .or(`numeroChip.ilike.%${searchNumber}%,localChip.ilike.%${searchNumber}%,responsavelChip.ilike.%${searchNumber}%`);
 
       if (error) throw error;
 
@@ -127,7 +127,7 @@ export function ChipRegistrationForm() {
                 : `Foram encontrados ${chipDetails.length} resultados`}
             </p>
             <div className="space-y-6">
-              {chipDetails.map((chip, index) => (
+              {chipDetails.map((chip) => (
                 <ChipDetails 
                   key={chip.numeroChip}
                   numeroChip={chip.numeroChip}
