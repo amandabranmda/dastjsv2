@@ -26,13 +26,19 @@ const Login = () => {
           return;
         }
 
+        if (password.length < 6) {
+          toast.error("A senha deve ter pelo menos 6 caracteres");
+          setIsLoading(false);
+          return;
+        }
+
         // Registra o usuário
         const { data: authData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
-              name: name, // Incluir o nome nos metadados do usuário
+              name: name,
             },
           },
         });
