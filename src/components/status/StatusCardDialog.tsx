@@ -35,14 +35,15 @@ export function StatusCardDialog({
       w-[95vw] sm:max-w-[900px]
       max-h-[90vh] sm:max-h-[80vh]
       bg-[#111827]/95 backdrop-blur-md border border-sky-600/20
+      p-2 sm:p-4
       ${isFullScreen ? "!w-[95vw] !h-[95vh]" : ""}
     `}>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div className="border-b border-gray-700 pb-4">
-          <h2 className="text-2xl font-semibold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          <h2 className="text-xl sm:text-2xl font-semibold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             {dialogTitle}
           </h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-gray-400 mt-1">
             Lista de chips com status {dialogTitle.toLowerCase()}
           </p>
         </div>
