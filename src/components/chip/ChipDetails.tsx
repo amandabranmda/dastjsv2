@@ -27,10 +27,20 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
 
       toast.success("Responsável atualizado com sucesso!");
       setIsEditing(false);
-      onUpdate(); // Call the refetch function after successful update
+      onUpdate();
     } catch (error) {
       console.error("Erro ao atualizar responsável:", error);
       toast.error("Erro ao atualizar responsável");
+    }
+  };
+
+  const handleCopyChip = async () => {
+    try {
+      await navigator.clipboard.writeText(numeroChip);
+      toast.success("Número do chip copiado!");
+    } catch (error) {
+      console.error("Erro ao copiar número:", error);
+      toast.error("Erro ao copiar número do chip");
     }
   };
 
@@ -42,7 +52,12 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
       <div className="grid grid-cols-4 gap-4">
         <div>
           <Label className="text-red-200">Número do Chip</Label>
-          <p className="text-red-100">{numeroChip || '-'}</p>
+          <p 
+            className="text-red-100 cursor-pointer hover:text-red-300 transition-colors"
+            onClick={handleCopyChip}
+          >
+            {numeroChip || '-'}
+          </p>
         </div>
         <div>
           <Label className="text-red-200">Local do Chip</Label>
