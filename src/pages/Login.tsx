@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
@@ -23,6 +24,11 @@ const Login = () => {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              name: name,
+            },
+          },
         });
 
         if (error) throw error;
@@ -72,6 +78,18 @@ const Login = () => {
             </p>
           </div>
           <form onSubmit={handleAuth} className="space-y-4">
+            {isRegistering && (
+              <div className="space-y-2">
+                <Input
+                  type="text"
+                  placeholder="Nome"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-white/5 border-white/10 text-white"
+                  required={isRegistering}
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Input
                 type="email"
@@ -110,7 +128,10 @@ const Login = () => {
             <Button
               variant="link"
               className="text-gray-400 hover:text-white"
-              onClick={() => setIsRegistering(!isRegistering)}
+              onClick={() => {
+                setIsRegistering(!isRegistering);
+                setName(""); // Clear name when switching modes
+              }}
             >
               {isRegistering
                 ? "Já tem uma conta? Faça login"
