@@ -120,10 +120,10 @@ export function ChipRegistrationForm() {
 
     if (resultsRef.current) {
       toPDF({
-        targetRef: resultsRef.current,
         filename: `pesquisa-chips-${searchNumber}.pdf`,
+        method: 'save'
       });
-      toast.success("PDF gerado com sucesso!");
+      toast.success("PDF gerado e salvo com sucesso!");
     }
   };
 
