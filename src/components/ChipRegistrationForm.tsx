@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { SearchBar } from "./chip/SearchBar";
 import { ChipRegistrationFormFields } from "./form/ChipRegistrationFormFields";
 import { ChipDetails } from "./chip/ChipDetails";
+import { Printer } from "lucide-react";
+import { generatePDF } from "react-to-pdf";
 
 interface ChipDetails {
   numeroChip: string;
@@ -28,6 +30,8 @@ export function ChipRegistrationForm() {
     statusChip: "",
     responsavelChip: ""
   });
+
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -107,48 +111,80 @@ export function ChipRegistrationForm() {
     }
   };
 
+  const handlePrintPDF = () => {
+    if (!chipDetails.length) {
+      toast.error("Nenhum resultado para imprimir");
+      return;
+    }
+
+    generatePDF({
+      filename: `pesquisa-chips-${searchNumber}.pdf`,
+      element: resultsRef.current,
+      configuration: {
+        jsPDF: {
+          format: 'a4',
+        },
+      },
+    });
+    
+    toast.success("PDF gerado com sucesso!");
+  };
+
   return (
     <div className="w-full">
       <Card className={`p-4 sm:p-6 ${showRegistrationForm ? 'bg-gradient-to-br from-emerald-900/20 to-emerald-800/10' : 'bg-gradient-to-br from-sky-900/20 to-sky-800/10'} backdrop-blur-sm transition-colors duration-300`}>
-        <SearchBar 
-          searchNumber={searchNumber}
-          setSearchNumber={setSearchNumber}
-          handleSearch={handleSearch}
-          isSearching={isSearching}
-          clearForm={clearForm}
-          showRegistrationForm={showRegistrationForm}
-        />
-
-        {chipExists && chipDetails.length > 0 && (
-          <div className="mt-4 space-y-6">
-            <p className="text-center text-red-200 mb-4">
-              {chipDetails.length === 1 
-                ? "Este número já consta no banco de dados"
-                : `Foram encontrados ${chipDetails.length} resultados`}
-            </p>
-            <div className="space-y-6">
-              {chipDetails.map((chip) => (
-                <ChipDetails 
-                  key={chip.numeroChip}
-                  numeroChip={chip.numeroChip}
-                  localChip={chip.localChip} 
-                  statusChip={chip.statusChip}
-                  responsavelChip={chip.responsavelChip}
-                  onUpdate={handleSearch}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {showRegistrationForm && (
-          <ChipRegistrationFormFields
-            formData={formData}
-            setFormData={setFormData}
-            onRegister={handleRegister}
+        <div className="flex flex-col space-y-4">
+          <SearchBar 
             searchNumber={searchNumber}
+            setSearchNumber={setSearchNumber}
+            handleSearch={handleSearch}
+            isSearching={isSearching}
+            clearForm={clearForm}
+            showRegistrationForm={showRegistrationForm}
           />
-        )}
+
+          {chipExists && chipDetails.length > 0 && (
+            <div className="mt-4 space-y-6">
+              <div className="flex justify-between items-center">
+                <p className="text-red-200">
+                  {chipDetails.length === 1 
+                    ? "Este número já consta no banco de dados"
+                    : `Foram encontrados ${chipDetails.length} resultados`}
+                </p>
+                <Button
+                  onClick={handlePrintPDF}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 text-sky-400 hover:text-sky-300 border-sky-400/50 hover:border-sky-300/50"
+                >
+                  <Printer className="w-4 h-4" />
+                  Imprimir PDF
+                </Button>
+              </div>
+              <div ref={resultsRef} className="space-y-6">
+                {chipDetails.map((chip) => (
+                  <ChipDetails 
+                    key={chip.numeroChip}
+                    numeroChip={chip.numeroChip}
+                    localChip={chip.localChip} 
+                    statusChip={chip.statusChip}
+                    responsavelChip={chip.responsavelChip}
+                    onUpdate={handleSearch}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {showRegistrationForm && (
+            <ChipRegistrationFormFields
+              formData={formData}
+              setFormData={setFormData}
+              onRegister={handleRegister}
+              searchNumber={searchNumber}
+            />
+          )}
+        </div>
       </Card>
     </div>
   );
