@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Edit2 } from "lucide-react";
-import { Input } from "../ui/input";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { USER_OPTIONS } from "@/constants/userOptions";
 
 interface ChipResponsibleProps {
   responsavelChip: string;
@@ -12,16 +13,10 @@ interface ChipResponsibleProps {
 
 export function ChipResponsible({ responsavelChip, numeroChip, onUpdate }: ChipResponsibleProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(responsavelChip);
 
-  const capitalizeFirstLetter = (string: string) => {
-    if (!string) return string;
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-  };
-
-  const handleSave = async () => {
+  const handleSave = async (newValue: string) => {
     try {
-      const capitalizedValue = capitalizeFirstLetter(editValue);
+      const capitalizedValue = newValue.charAt(0).toUpperCase() + newValue.slice(1).toLowerCase();
       const { error } = await supabase
         .from("1-chipsInstancias")
         .update({ responsavelChip: capitalizedValue })
@@ -40,20 +35,29 @@ export function ChipResponsible({ responsavelChip, numeroChip, onUpdate }: ChipR
 
   if (isEditing) {
     return (
-      <Input
-        value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-        onBlur={handleSave}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            handleSave();
-          }
-        }}
-        className="bg-black/20 border-sky-600/20 text-white"
-        autoFocus
-      />
+      <Select 
+        defaultValue={responsavelChip?.toLowerCase()}
+        onValueChange={handleSave}
+        onOpenChange={(open) => !open && setIsEditing(false)}
+      >
+        <SelectTrigger className="bg-black/20 border-sky-600/20 text-white">
+          <SelectValue placeholder="Selecione o responsável" />
+        </SelectTrigger>
+        <SelectContent>
+          {USER_OPTIONS.map((user) => (
+            <SelectItem key={user} value={user.toLowerCase()}>
+              {user}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     );
   }
+
+  const capitalizeFirstLetter = (string: string) => {
+    if (!string) return string;
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
 
   return (
     <div 
