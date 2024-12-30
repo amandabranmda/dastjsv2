@@ -20,6 +20,12 @@ const Login = () => {
 
     try {
       if (isRegistering) {
+        if (!name.trim()) {
+          toast.error("Por favor, insira seu nome");
+          setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -38,6 +44,10 @@ const Login = () => {
         if (data.user) {
           toast.success("Cadastro realizado com sucesso! Verifique seu email para confirmar o cadastro.");
           setIsRegistering(false);
+          // Clear form
+          setName("");
+          setEmail("");
+          setPassword("");
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
