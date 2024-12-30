@@ -51,8 +51,13 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
         newStatus = checked ? "aguardando desbloqueio" : "❌verificarDesconexao";
         toastMessage = checked ? "Chip movido para aguardando desbloqueio" : "Chip movido para verificar desconexão";
       } else if (currentTitle.includes("Aguardando Desbloqueio")) {
-        newStatus = checked ? "liberado" : "aguardando desbloqueio";
-        toastMessage = checked ? "Chip liberado com sucesso!" : "Chip movido para aguardando desbloqueio";
+        if (checked) {
+          newStatus = "bam permanente";
+          toastMessage = "Chip banido permanentemente!";
+        } else {
+          newStatus = "aguardando desbloqueio";
+          toastMessage = "Chip movido para aguardando desbloqueio";
+        }
       } else if (currentTitle.includes("Chips Liberados")) {
         if (checked) {
           setCheckedChips(prev => [...prev, chipNumber]);
@@ -94,11 +99,9 @@ export function StatusCard({ title, value, type }: StatusCardProps) {
     }
   };
 
-  // Add handler for dialog open state change
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open);
     if (open) {
-      // Refetch data when dialog opens
       refetchData();
       console.log("Refetching data on dialog open");
     }
