@@ -7,6 +7,7 @@ interface ChipDetails {
   localChip: string;
   statusChip: string;
   responsavelChip: string;
+  obsChip: string;
 }
 
 export function useChipSearch() {
@@ -19,7 +20,8 @@ export function useChipSearch() {
     numeroChip: "",
     localChip: "",
     statusChip: "",
-    responsavelChip: ""
+    responsavelChip: "",
+    obsChip: ""
   });
 
   const clearForm = () => {
@@ -31,7 +33,8 @@ export function useChipSearch() {
       numeroChip: "",
       localChip: "",
       statusChip: "",
-      responsavelChip: ""
+      responsavelChip: "",
+      obsChip: ""
     });
   };
 
@@ -45,7 +48,7 @@ export function useChipSearch() {
     try {
       const { data, error } = await supabase
         .from("1-chipsInstancias")
-        .select("numeroChip, localChip, statusChip, responsavelChip")
+        .select("numeroChip, localChip, statusChip, responsavelChip, obsChip")
         .or(`numeroChip.ilike.%${searchNumber}%,localChip.ilike.%${searchNumber}%,responsavelChip.ilike.%${searchNumber}%,statusChip.ilike.%${searchNumber}%`);
 
       if (error) throw error;
