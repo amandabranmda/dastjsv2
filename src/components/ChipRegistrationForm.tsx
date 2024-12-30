@@ -135,15 +135,21 @@ export function ChipRegistrationForm() {
         Relatório de Chips
       </h1>
       {chipDetails.map((chip, index) => (
-        <div key={chip.numeroChip} style={{ marginBottom: '30px', color: '#000' }}>
-          <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>
-            Chip #{index + 1}
-          </h2>
-          <div style={{ marginLeft: '20px' }}>
-            <p style={{ margin: '5px 0' }}>Número: {chip.numeroChip}</p>
-            <p style={{ margin: '5px 0' }}>Local: {chip.localChip || '-'}</p>
-            <p style={{ margin: '5px 0' }}>Status: {chip.statusChip || '-'}</p>
-            <p style={{ margin: '5px 0' }}>Responsável: {chip.responsavelChip || '-'}</p>
+        <div key={chip.numeroChip} style={{ marginBottom: '40px', color: '#000' }}>
+          <div style={{ marginBottom: '10px' }}>
+            <p style={{ margin: '5px 0', fontSize: '16px' }}>Número do Chip: {chip.numeroChip}</p>
+            <p style={{ margin: '5px 0', fontSize: '16px' }}>Local: {chip.localChip || '-'}</p>
+          </div>
+          <div style={{ 
+            height: '100px', 
+            border: '1px solid #ccc', 
+            borderRadius: '4px',
+            padding: '8px',
+            backgroundColor: '#f9f9f9'
+          }}>
+            <p style={{ color: '#666', fontStyle: 'italic', fontSize: '14px' }}>
+              Espaço para anotações
+            </p>
           </div>
           <div style={{ margin: '15px 0', borderBottom: '1px solid #ccc' }} />
         </div>
