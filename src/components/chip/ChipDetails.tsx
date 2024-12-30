@@ -16,11 +16,16 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(responsavelChip);
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   const handleSave = async () => {
     try {
+      const capitalizedValue = capitalizeFirstLetter(editValue);
       const { error } = await supabase
         .from("1-chipsInstancias")
-        .update({ responsavelChip: editValue })
+        .update({ responsavelChip: capitalizedValue })
         .eq("numeroChip", numeroChip);
 
       if (error) throw error;
@@ -90,7 +95,7 @@ export function ChipDetails({ numeroChip, localChip, statusChip, responsavelChip
               className="text-red-100 cursor-pointer hover:text-red-300 transition-colors"
               onClick={() => setIsEditing(true)}
             >
-              {responsavelChip || '-'}
+              {responsavelChip ? capitalizeFirstLetter(responsavelChip) : '-'}
             </p>
           )}
         </div>
