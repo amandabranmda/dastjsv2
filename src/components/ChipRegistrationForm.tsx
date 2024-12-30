@@ -1,40 +1,23 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Card } from "./ui/card";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { supabase } from "@/lib/supabase";
-import { toast } from "sonner";
 import { SearchBar } from "./chip/SearchBar";
-import { ChipRegistrationFormFields } from "./form/ChipRegistrationFormFields";
-import { ChipDetails } from "./chip/ChipDetails";
-import { Printer } from "lucide-react";
-import { usePDF } from "react-to-pdf";
-import { PDFContent } from "./pdf/PDFContent";
-
-interface ChipDetails {
-  numeroChip: string;
-  localChip: string;
-  statusChip: string;
-  responsavelChip: string;
-}
+import { SearchResults } from "./chip/SearchResults";
+import { ChipRegistration } from "./chip/ChipRegistration";
+import { useChipSearch } from "@/hooks/useChipSearch";
 
 export function ChipRegistrationForm() {
-  const [searchNumber, setSearchNumber] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [chipExists, setChipExists] = useState(false);
-  const [chipDetails, setChipDetails] = useState<ChipDetails[]>([]);
-  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-  const [formData, setFormData] = useState({
-    numeroChip: "",
-    localChip: "",
-    statusChip: "",
-    responsavelChip: ""
-  });
-
-  const { toPDF, targetRef } = usePDF({
-    filename: `pesquisa-chips-${searchNumber}.pdf`,
-  });
+  const {
+    searchNumber,
+    setSearchNumber,
+    isSearching,
+    chipExists,
+    chipDetails,
+    showRegistrationForm,
+    formData,
+    setFormData,
+    clearForm,
+    handleSearch
+  } = useChipSearch();
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -45,99 +28,7 @@ export function ChipRegistrationForm() {
 
     document.addEventListener('keydown', handleEscKey);
     return () => document.removeEventListener('keydown', handleEscKey);
-  }, []);
-
-  const clearForm = () => {
-    setSearchNumber("");
-    setChipExists(false);
-    setChipDetails([]);
-    setShowRegistrationForm(false);
-    setFormData({
-      numeroChip: "",
-      localChip: "",
-      statusChip: "",
-      responsavelChip: ""
-    });
-  };
-
-  const handleSearch = async () => {
-    if (!searchNumber.trim()) {
-      toast.error("Digite um número, local, status ou responsável do chip");
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      const { data, error } = await supabase
-        .from("1-chipsInstancias")
-        .select("numeroChip, localChip, statusChip, responsavelChip")
-        .or(`numeroChip.ilike.%${searchNumber}%,localChip.ilike.%${searchNumber}%,responsavelChip.ilike.%${searchNumber}%,statusChip.ilike.%${searchNumber}%`);
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        // Sort the results to prioritize matches in localChip
-        const sortedData = [...data].sort((a, b) => {
-          const aMatchesLocal = a.localChip?.toLowerCase().includes(searchNumber.toLowerCase());
-          const bMatchesLocal = b.localChip?.toLowerCase().includes(searchNumber.toLowerCase());
-          
-          if (aMatchesLocal && !bMatchesLocal) return -1;
-          if (!aMatchesLocal && bMatchesLocal) return 1;
-          return 0;
-        });
-
-        setChipExists(true);
-        setChipDetails(sortedData);
-        setShowRegistrationForm(false);
-      } else {
-        setChipExists(false);
-        setChipDetails([]);
-        setShowRegistrationForm(true);
-        setFormData({ ...formData, numeroChip: searchNumber });
-      }
-    } catch (error) {
-      console.error("Erro ao buscar chip:", error);
-      toast.error("Erro ao buscar chip. Tente novamente.");
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const handleRegister = async () => {
-    if (!formData.numeroChip || !formData.localChip || !formData.statusChip) {
-      toast.error("Preencha todos os campos");
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from("1-chipsInstancias")
-        .insert([formData]);
-
-      if (error) throw error;
-
-      toast.success("Chip cadastrado com sucesso!");
-      clearForm();
-    } catch (error) {
-      console.error("Erro ao cadastrar chip:", error);
-      toast.error("Erro ao cadastrar chip");
-    }
-  };
-
-  const handlePrintPDF = async () => {
-    if (!chipDetails.length) {
-      toast.error("Nenhum resultado para imprimir");
-      return;
-    }
-
-    try {
-      await toPDF();
-      toast.success("PDF gerado e salvo com sucesso!");
-    } catch (error) {
-      console.error("Erro ao gerar PDF:", error);
-      toast.error("Erro ao gerar o PDF. Tente novamente.");
-    }
-  };
+  }, [clearForm]);
 
   return (
     <div className="w-full">
@@ -153,49 +44,19 @@ export function ChipRegistrationForm() {
           />
 
           {chipExists && chipDetails.length > 0 && (
-            <div className="mt-4 space-y-6">
-              <div className="flex justify-between items-center">
-                <p className="text-red-200">
-                  {chipDetails.length === 1 
-                    ? "Este número já consta no banco de dados"
-                    : `Foram encontrados ${chipDetails.length} resultados`}
-                </p>
-                <Button
-                  onClick={handlePrintPDF}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 text-sky-400 hover:text-sky-300 border-sky-400/50 hover:border-sky-300/50"
-                >
-                  <Printer className="w-4 h-4" />
-                  Imprimir PDF
-                </Button>
-              </div>
-              <div className="space-y-6">
-                {chipDetails.map((chip) => (
-                  <ChipDetails 
-                    key={chip.numeroChip}
-                    numeroChip={chip.numeroChip}
-                    localChip={chip.localChip} 
-                    statusChip={chip.statusChip}
-                    responsavelChip={chip.responsavelChip}
-                    onUpdate={handleSearch}
-                  />
-                ))}
-              </div>
-              <div style={{ position: 'absolute', left: '-9999px' }}>
-                <div ref={targetRef}>
-                  <PDFContent chipDetails={chipDetails} />
-                </div>
-              </div>
-            </div>
+            <SearchResults 
+              chipDetails={chipDetails}
+              onUpdate={handleSearch}
+              searchNumber={searchNumber}
+            />
           )}
 
           {showRegistrationForm && (
-            <ChipRegistrationFormFields
+            <ChipRegistration
               formData={formData}
               setFormData={setFormData}
-              onRegister={handleRegister}
               searchNumber={searchNumber}
+              onSuccess={clearForm}
             />
           )}
         </div>
