@@ -1,7 +1,16 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { EditableCell } from "./EditableCell";
 import { calculateRoas, calculateCPL } from "./utils";
-import { MetricasHot } from "@/types/metrics";
+
+interface MetricasHot {
+  id: number;
+  data: string;
+  cliques: number | null;
+  envios: number | null;
+  percentualCliques: number | null;
+  vendas: number | null;
+  valorAds: number | null;
+}
 
 interface RoasTableRowProps {
   metric: MetricasHot;

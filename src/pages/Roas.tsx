@@ -7,7 +7,16 @@ import { RoasTable } from "@/components/RoasTable";
 import { MetricsPanel } from "@/components/roas/MetricsPanel";
 import { DateRange } from "react-day-picker";
 import { toast } from "@/components/ui/use-toast";
-import { MetricasHot } from "@/types/metrics";
+
+interface MetricasHot {
+  id: number;
+  data: string;
+  cliques: number | null;
+  envios: number | null;
+  percentualCliques: number | null;
+  vendas: number | null;
+  valorAds: number | null;
+}
 
 const Roas = () => {
   const [dateRange, setDateRange] = useState<DateRange>();
@@ -32,7 +41,7 @@ const Roas = () => {
       try {
         let query = supabase
           .from("9-metricasHot")
-          .select("id,data,cliques,envios,percentualCliques,vendas,valorAds,roas")
+          .select("id,data,cliques,envios,percentualCliques,vendas,valorAds")
           .order("data", { ascending: false });
 
         if (dateInterval.length > 0) {
@@ -63,19 +72,22 @@ const Roas = () => {
 
   // Implementação do Realtime
   useEffect(() => {
+    // Inscreve-se para todas as mudanças na tabela
     const channel = supabase
       .channel('table-db-changes')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: '*', // Escuta todos os eventos (INSERT, UPDATE, DELETE)
           schema: 'public',
           table: '9-metricasHot'
         },
         (payload) => {
           console.log('Mudança detectada:', payload);
+          // Invalida o cache e força uma nova busca
           queryClient.invalidateQueries({ queryKey: ['metricas-hot'] });
           
+          // Notifica o usuário sobre a atualização
           toast({
             title: "Dados atualizados",
             description: "As métricas foram atualizadas em tempo real.",
@@ -84,6 +96,7 @@ const Roas = () => {
       )
       .subscribe();
 
+    // Cleanup: remove o canal quando o componente é desmontado
     return () => {
       supabase.removeChannel(channel);
     };
