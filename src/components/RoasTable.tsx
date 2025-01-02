@@ -4,8 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import { RoasTableHeader } from "./roas/TableHeader";
 import { RoasTableRow } from "./roas/TableRow";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { MetricasHot } from "@/types/metrics";
+import { useRoasUpdate } from "@/hooks/useRoasUpdate";
 
 interface RoasTableProps {
   metrics: MetricasHot[] | undefined;
@@ -16,52 +16,7 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const updateRoasValues = async () => {
-      if (!metrics) return;
-
-      for (const metric of metrics) {
-        if (metric.vendas && metric.valorAds && metric.valorAds > 0) {
-          const roasValue = metric.vendas / metric.valorAds;
-          
-          if (roasValue !== metric.roas) {
-            try {
-              const { error } = await supabase
-                .from('9-metricasHot')
-                .update({ roas: roasValue })
-                .eq('data', metric.data);
-
-              if (error) throw error;
-
-              console.log(`ROAS atualizado para data ${metric.data}: ${roasValue}`);
-            } catch (error) {
-              console.error('Erro ao atualizar ROAS:', error);
-              toast({
-                title: "Erro",
-                description: `Erro ao atualizar ROAS para ${metric.data}`,
-                variant: "destructive",
-              });
-            }
-          }
-        }
-      }
-      
-      queryClient.invalidateQueries({ queryKey: ['metricas-hot'] });
-    };
-
-    updateRoasValues();
-  }, [metrics, toast, queryClient]);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="h-8 w-8 bg-primary/20 rounded-full animate-spin" />
-          <p className="text-muted-foreground">Carregando métricas...</p>
-        </div>
-      </div>
-    );
-  }
+  useRoasUpdate(metrics);
 
   const handleUpdateVendas = async (metric: MetricasHot, newValue: number) => {
     try {
@@ -112,6 +67,17 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
       });
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[400px]">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="h-8 w-8 bg-primary/20 rounded-full animate-spin" />
+          <p className="text-muted-foreground">Carregando métricas...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 animate-fade-in">
