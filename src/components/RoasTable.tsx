@@ -5,17 +5,7 @@ import { RoasTableHeader } from "./roas/TableHeader";
 import { RoasTableRow } from "./roas/TableRow";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-
-interface MetricasHot {
-  id: number;
-  data: string;
-  cliques: number | null;
-  envios: number | null;
-  percentualCliques: number | null;
-  vendas: number | null;
-  valorAds: number | null;
-  roas: number | null;
-}
+import { MetricasHot } from "@/types/metrics";
 
 interface RoasTableProps {
   metrics: MetricasHot[] | undefined;
@@ -34,7 +24,6 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
         if (metric.vendas && metric.valorAds && metric.valorAds > 0) {
           const roasValue = metric.vendas / metric.valorAds;
           
-          // Só atualiza se o ROAS calculado for diferente do armazenado
           if (roasValue !== metric.roas) {
             try {
               const { error } = await supabase
@@ -57,7 +46,6 @@ export function RoasTable({ metrics, isLoading }: RoasTableProps) {
         }
       }
       
-      // Atualiza os dados após todas as atualizações
       queryClient.invalidateQueries({ queryKey: ['metricas-hot'] });
     };
 
