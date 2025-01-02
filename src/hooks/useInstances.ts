@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 
 export const useInstances = () => {
   const { data, refetch, error } = useQuery({
@@ -47,11 +47,10 @@ export const useInstances = () => {
             .eq("statusChip", "liberado")
         ]);
 
-        // Verificar erros em qualquer um dos resultados
+        // Check for errors in any of the results
         const results = [onlineResult, closedResult, sendingResult, leadsResult, clicksResult, limitsResult, waitingUnlockResult, releasedResult];
         for (const result of results) {
           if (result.error) {
-            console.error('Erro na consulta:', result.error);
             throw result.error;
           }
         }
@@ -72,8 +71,12 @@ export const useInstances = () => {
           totalSendingLimit: availableSendingLimit
         };
       } catch (error) {
-        console.error('Erro ao buscar instâncias:', error);
-        toast.error("Erro ao carregar dados. Por favor, tente novamente.");
+        console.error('Error fetching instances:', error);
+        toast({
+          title: "Erro ao carregar dados",
+          description: "Houve um problema ao carregar as instâncias. Por favor, tente novamente.",
+          variant: "destructive",
+        });
         throw error;
       }
     },
@@ -83,6 +86,7 @@ export const useInstances = () => {
   });
 
   useEffect(() => {
+    // Subscribe to ALL changes in the table
     const channel = supabase
       .channel('table-db-changes')
       .on(
@@ -103,5 +107,5 @@ export const useInstances = () => {
     };
   }, [refetch]);
 
-  return { data, isLoading: !data && !error, error };
+  return { data, isLoading: !data, error };
 };

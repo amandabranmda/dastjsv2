@@ -7,4 +7,5 @@ export interface MetricasHot {
   vendas: number | null;
   valorAds: number | null;
   roas: number | null;
+  created_at?: string;
 }
