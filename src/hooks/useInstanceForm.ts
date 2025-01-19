@@ -84,7 +84,8 @@ export function useInstanceForm({
       });
 
       if (!response.ok) {
-        throw new Error('Falha na requisição');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -99,18 +100,24 @@ export function useInstanceForm({
           className: "bg-emerald-500 text-white border-emerald-600",
         });
       } else {
-        setAlertMessage(data.message || "Erro desconhecido na resposta");
+        const errorMessage = data.message || "Erro ao gerar QR Code";
+        setAlertMessage(errorMessage);
         setAlertType('error');
-        toast.error(data.message || "Erro desconhecido na resposta", {
+        toast.error(errorMessage, {
           duration: 5000,
           className: "bg-red-500 text-white border-red-600",
         });
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Erro ao conectar com o servidor. Por favor, tente novamente.';
+      
+      console.error("Error creating instance:", error);
       setAlertMessage(errorMessage);
       setAlertType('error');
       setQrCode(null);
+      
       toast.error(errorMessage, {
         duration: 5000,
         className: "bg-red-500 text-white border-red-600",
