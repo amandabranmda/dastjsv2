@@ -46,46 +46,65 @@ export function ChipDetails({
   };
 
   return (
-    <div className="flex items-center justify-between w-full p-4 bg-[#1A1F2C]/80 border border-sky-600/20 rounded-lg">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-white font-medium">{numeroChip}</span>
-          <Button
-            onClick={handleCopy}
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 text-sky-400 hover:text-sky-300"
-          >
-            <Copy className="h-4 w-4" />
-          </Button>
+    <Card className="p-4 space-y-4 bg-card/50">
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-card-foreground">
+              {numeroChip}
+            </h3>
+            <Button
+              onClick={handleCopy}
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Local: {localChip || "Não informado"}
+          </p>
         </div>
-        <span className="text-gray-400">{localChip || "chip803"}</span>
-        <div className="flex items-center gap-2">
-          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-            statusChip === 'emProducao' ? 'bg-emerald-400/20 text-emerald-400' : 'bg-amber-400/20 text-amber-400'
-          }`}>
-            {statusChip === 'emProducao' ? 'emProducao' : 'liberado'}
+        <Button
+          onClick={handleStatusUpdate}
+          variant="outline"
+          size="sm"
+          className="gap-2"
+        >
+          <Pencil className="w-4 h-4" />
+          {statusChip === 'liberado' ? 'Liberar' : 'Em Produção'}
+        </Button>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <span className="text-sm font-medium">Status do Chip:</span>
+          <span className={`text-sm ${statusChip === 'liberado' ? 'text-emerald-400' : 'text-amber-400'}`}>
+            {statusChip}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-gray-400">Loja</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 text-sky-400 hover:text-sky-300"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
+        {statusInstancia && (
+          <div className="flex gap-2">
+            <span className="text-sm font-medium">Status da Instância:</span>
+            <span className="text-sm text-sky-400">
+              {statusInstancia}
+            </span>
+          </div>
+        )}
+        <div className="flex gap-2">
+          <span className="text-sm font-medium">Responsável:</span>
+          <span className="text-sm text-muted-foreground">
+            {responsavelChip || "Não informado"}
+          </span>
         </div>
+        {obsChip && (
+          <div className="flex gap-2">
+            <span className="text-sm font-medium">Observações:</span>
+            <span className="text-sm text-muted-foreground">{obsChip}</span>
+          </div>
+        )}
       </div>
-      <Button
-        onClick={handleStatusUpdate}
-        variant="ghost"
-        size="icon"
-        className="h-6 w-6 text-sky-400 hover:text-sky-300"
-      >
-        <Pencil className="h-4 w-4" />
-      </Button>
-    </div>
+    </Card>
   );
 }
