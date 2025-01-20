@@ -46,33 +46,37 @@ export function ChipDetails({
   };
 
   return (
-    <Card className="glass-card">
-      <div className="flex items-center justify-between p-4 border-b border-sky-600/20">
+    <Card className="bg-[#0B1623] border-0">
+      <div className="flex items-center justify-between p-4 border-b border-gray-800">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-medium text-white">
+            <span className="text-lg font-medium text-gray-200">
               {numeroChip}
             </span>
             <Button
               onClick={handleCopy}
               variant="ghost"
               size="icon"
-              className="h-6 w-6 hover:bg-sky-500/10"
+              className="h-6 w-6 hover:bg-gray-800/50"
             >
-              <Copy className="h-4 w-4 text-sky-400" />
+              <Copy className="h-4 w-4 text-gray-400" />
             </Button>
           </div>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-gray-400">
             {localChip || "Não informado"}
           </span>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className={`status-badge ${statusChip === 'emProducao' ? 'online' : 'closed'}`}>
+            <span className={`px-2 py-1 rounded text-xs font-medium ${
+              statusChip === 'emProducao' 
+                ? 'bg-emerald-500/20 text-emerald-400' 
+                : 'bg-gray-500/20 text-gray-400'
+            }`}>
               {statusChip}
             </span>
             {statusInstancia && (
-              <span className="status-badge sending">
+              <span className="px-2 py-1 rounded text-xs font-medium bg-blue-500/20 text-blue-400">
                 {statusInstancia}
               </span>
             )}
@@ -81,9 +85,9 @@ export function ChipDetails({
             onClick={handleStatusUpdate}
             variant="ghost"
             size="icon"
-            className="h-8 w-8 hover:bg-sky-500/10"
+            className="h-8 w-8 hover:bg-gray-800/50"
           >
-            <Pencil className="h-4 w-4 text-sky-400" />
+            <Pencil className="h-4 w-4 text-gray-400" />
           </Button>
         </div>
       </div>
