@@ -46,64 +46,46 @@ export function ChipDetails({
   };
 
   return (
-    <Card className="p-4 space-y-4 bg-card/50">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
+    <Card className="glass-card">
+      <div className="flex items-center justify-between p-4 border-b border-sky-600/20">
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold text-card-foreground">
+            <span className="text-lg font-medium text-white">
               {numeroChip}
-            </h3>
+            </span>
             <Button
               onClick={handleCopy}
               variant="ghost"
               size="icon"
-              className="h-6 w-6"
+              className="h-6 w-6 hover:bg-sky-500/10"
             >
-              <Copy className="h-4 w-4" />
+              <Copy className="h-4 w-4 text-sky-400" />
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Local: {localChip || "Não informado"}
-          </p>
-        </div>
-        <Button
-          onClick={handleStatusUpdate}
-          variant="outline"
-          size="sm"
-          className="gap-2"
-        >
-          <Pencil className="w-4 h-4" />
-          {statusChip === 'liberado' ? 'Liberar' : 'Em Produção'}
-        </Button>
-      </div>
-
-      <div className="space-y-2">
-        <div className="flex gap-2">
-          <span className="text-sm font-medium">Status do Chip:</span>
-          <span className={`text-sm ${statusChip === 'liberado' ? 'text-emerald-400' : 'text-amber-400'}`}>
-            {statusChip}
-          </span>
-        </div>
-        {statusInstancia && (
-          <div className="flex gap-2">
-            <span className="text-sm font-medium">Status da Instância:</span>
-            <span className="text-sm text-sky-400">
-              {statusInstancia}
-            </span>
-          </div>
-        )}
-        <div className="flex gap-2">
-          <span className="text-sm font-medium">Responsável:</span>
           <span className="text-sm text-muted-foreground">
-            {responsavelChip || "Não informado"}
+            {localChip || "Não informado"}
           </span>
         </div>
-        {obsChip && (
-          <div className="flex gap-2">
-            <span className="text-sm font-medium">Observações:</span>
-            <span className="text-sm text-muted-foreground">{obsChip}</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className={`status-badge ${statusChip === 'emProducao' ? 'online' : 'closed'}`}>
+              {statusChip}
+            </span>
+            {statusInstancia && (
+              <span className="status-badge sending">
+                {statusInstancia}
+              </span>
+            )}
           </div>
-        )}
+          <Button
+            onClick={handleStatusUpdate}
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 hover:bg-sky-500/10"
+          >
+            <Pencil className="h-4 w-4 text-sky-400" />
+          </Button>
+        </div>
       </div>
     </Card>
   );
