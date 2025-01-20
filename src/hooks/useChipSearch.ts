@@ -8,6 +8,7 @@ interface ChipDetails {
   statusChip: string;
   responsavelChip: string;
   obsChip: string;
+  statusInstancia?: string;
 }
 
 export function useChipSearch() {
@@ -51,9 +52,9 @@ export function useChipSearch() {
       
       let query = supabase
         .from("1-chipsInstancias")
-        .select("numeroChip, localChip, statusChip, responsavelChip, obsChip");
+        .select("numeroChip, localChip, statusChip, responsavelChip, obsChip, statusInstancia");
 
-      // Apply each search term as a filter condition (AND)
+      // Apply each search term as a filter condition (OR)
       searchTerms.forEach(term => {
         query = query.or(`numeroChip.ilike.%${term}%,localChip.ilike.%${term}%,responsavelChip.ilike.%${term}%,statusChip.ilike.%${term}%`);
       });

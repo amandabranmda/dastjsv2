@@ -12,6 +12,7 @@ interface SearchResultsProps {
     statusChip: string;
     responsavelChip: string;
     obsChip: string;
+    statusInstancia?: string;
   }>;
   onUpdate: () => void;
   searchNumber: string;
@@ -64,6 +65,7 @@ export function SearchResults({ chipDetails, onUpdate, searchNumber }: SearchRes
             statusChip={chip.statusChip}
             responsavelChip={chip.responsavelChip}
             obsChip={chip.obsChip}
+            statusInstancia={chip.statusInstancia}
             onUpdate={onUpdate}
           />
         ))}
