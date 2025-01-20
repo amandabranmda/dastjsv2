@@ -56,7 +56,7 @@ export function SearchResults({ chipDetails, onUpdate, searchNumber }: SearchRes
           Imprimir PDF
         </Button>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-2">
         {chipDetails.map((chip) => (
           <ChipDetails 
             key={chip.numeroChip}
